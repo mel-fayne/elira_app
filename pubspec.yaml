@@ -44,7 +44,6 @@ dependencies:
   url_launcher: ^6.1.5
   percent_indicator: ^4.0.1
   video_player: ^2.6.1
-  font_awesome_flutter: ^8.8.1
 
 dev_dependencies:
   flutter_test:
