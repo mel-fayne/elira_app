@@ -1,5 +1,4 @@
 import 'package:elira_app/auth/auth_controller.dart';
-import 'package:elira_app/auth/login.dart';
 import 'package:elira_app/navigator.dart';
 import 'package:elira_app/onboard.dart';
 import 'package:elira_app/theme/colors.dart';
@@ -73,7 +72,6 @@ class _MyAppState extends State<MyApp> {
             }
           },
         ),
-        getPages: [GetPage(name: Login.routeName, page: () => const Login())],
         theme: ThemeData(
           scaffoldBackgroundColor: kCreamBg,
           primaryColor: kPriPurple,
