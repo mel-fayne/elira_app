@@ -1,7 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.elira_app">
     <application
-        android:label="elira_app"
+        android:label="Elira"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity
