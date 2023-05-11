@@ -72,13 +72,13 @@ class LoginState extends State<Login> {
                                 style: TextStyle(
                                     color: kPriPurple,
                                     fontSize: 34,
-                                    fontFamily: 'Comfortaa',
+                                    fontFamily: 'Nunito',
                                     fontWeight: FontWeight.w700))),
                         Text('Become a better graduate today',
                             style: TextStyle(
                                 color: kPriDark,
                                 fontSize: 14,
-                                fontFamily: 'Comfortaa',
+                                fontFamily: 'Nunito',
                                 fontWeight: FontWeight.w700)),
                       ])),
               Column(crossAxisAlignment: CrossAxisAlignment.center, children: [
@@ -127,7 +127,7 @@ class LoginState extends State<Login> {
                                           'Forgot Password?',
                                           style: TextStyle(
                                             color: kPriPurple,
-                                            fontFamily: 'Comfortaa',
+                                            fontFamily: 'Nunito',
                                             fontSize: 14,
                                             fontWeight: FontWeight.w700,
                                           ),

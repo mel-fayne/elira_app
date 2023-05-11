@@ -14,7 +14,10 @@ void showSnackbar({required String title, required String subtitle, path}) {
 }
 
 Widget primaryBtn(
-    {required String label, isLoading, required void Function()? function}) {
+    {required String label,
+    isLoading = false,
+    bgColor = kPriDark,
+    required void Function()? function}) {
   return Container(
     height: 70,
     width: 300,
@@ -24,7 +27,7 @@ Widget primaryBtn(
       onPressed: function,
       style: ElevatedButton.styleFrom(
         minimumSize: const Size(double.infinity, 70),
-        backgroundColor: kPriDark,
+        backgroundColor: bgColor,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
       ),
       child: (isLoading)

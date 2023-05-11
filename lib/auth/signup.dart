@@ -74,13 +74,13 @@ class _SignUpState extends State<SignUp> {
                               style: TextStyle(
                                   color: kPriPurple,
                                   fontSize: 34,
-                                  fontFamily: 'Comfortaa',
+                                  fontFamily: 'Nunito',
                                   fontWeight: FontWeight.w700))),
                       Text('Become a better graduate today',
                           style: TextStyle(
                               color: kPriDark,
                               fontSize: 14,
-                              fontFamily: 'Comfortaa',
+                              fontFamily: 'Nunito',
                               fontWeight: FontWeight.w700)),
                     ])),
             Column(crossAxisAlignment: CrossAxisAlignment.center, children: [

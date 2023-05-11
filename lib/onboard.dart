@@ -67,7 +67,7 @@ class _OnBoardState extends State<OnBoard> {
                           'Become a Better Graduate Today',
                           style: TextStyle(
                               color: kPriPurple,
-                              fontFamily: 'Comfortaa',
+                              fontFamily: 'Nunito',
                               fontWeight: FontWeight.w600,
                               fontSize: 14),
                         ),
