@@ -94,7 +94,7 @@ class AuthController extends GetxController {
     }
   }
 
-  updateUser(var body) async {
+  updateStudent(var body, String subtitle, String title, dynamic page) async {
     var prefs = await SharedPreferences.getInstance();
     var studentId = prefs.getInt("studentId");
 
@@ -110,11 +110,9 @@ class AuthController extends GetxController {
         setProfile(profile);
         debugPrint('Data posted');
         showSnackbar(
-            path: Icons.check_rounded,
-            title: "Details successfully updated!",
-            subtitle: "Onto the Next ...");
+            path: Icons.check_rounded, title: title, subtitle: subtitle);
         await Future.delayed(const Duration(seconds: 2));
-        Get.off(() => const AcademicProfilePage());
+        Get.off(() => page);
         return;
       } else {
         showSnackbar(

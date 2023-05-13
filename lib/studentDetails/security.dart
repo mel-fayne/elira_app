@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:elira_app/auth/auth_controller.dart';
+import 'package:elira_app/auth/studentDetails/academic_profile.dart';
 import 'package:elira_app/theme/colors.dart';
 import 'package:elira_app/theme/global_widgets.dart';
 import 'package:elira_app/theme/text_styles.dart';
@@ -176,7 +177,11 @@ class _SecurityQuestionsState extends State<SecurityQuestions> {
                           "favourite_flavour": favflavour.value,
                           "childhod_nickname": childname.value
                         });
-                        authCtrl.updateUser(studentBody);
+                        authCtrl.updateStudent(
+                            studentBody,
+                            "Your Account is now more secure",
+                            "Let's add your professional details and get the predictions going",
+                            AcademicProfilePage);
                       })
                 ])));
   }
