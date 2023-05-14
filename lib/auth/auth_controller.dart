@@ -1,8 +1,7 @@
 import 'dart:convert';
-import 'package:elira_app/auth/studentDetails/security.dart';
-import 'package:elira_app/auth/studentDetails/academic_profile.dart';
 import 'package:elira_app/navigator.dart';
 import 'package:elira_app/onboard.dart';
+import 'package:elira_app/studentDetails/security_questions.dart';
 import 'package:elira_app/theme/global_widgets.dart';
 import 'package:elira_app/utils/urls.dart';
 import 'package:flutter/material.dart';

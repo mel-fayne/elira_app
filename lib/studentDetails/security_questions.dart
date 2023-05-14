@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 import 'package:elira_app/auth/auth_controller.dart';
-import 'package:elira_app/auth/studentDetails/academic_profile.dart';
+import 'package:elira_app/studentDetails/academics/academic_profile.dart';
 import 'package:elira_app/theme/colors.dart';
 import 'package:elira_app/theme/global_widgets.dart';
 import 'package:elira_app/theme/text_styles.dart';
