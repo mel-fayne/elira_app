@@ -1,4 +1,5 @@
 import 'package:elira_app/theme/colors.dart';
+import 'package:elira_app/theme/text_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -239,6 +240,65 @@ Widget dropDownField(
               );
             }).toList(),
           )));
+}
+
+Widget formDropDownField(
+    {required dropdownValue,
+    required label,
+    required List<String> dropItems,
+    required void Function(String?)? function}) {
+  return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+    RichText(
+        text: TextSpan(children: [
+      TextSpan(text: label, style: kBlackTxt),
+      const TextSpan(
+        text: '*',
+        style: TextStyle(
+            fontSize: 12,
+            fontFamily: 'Nunito',
+            fontWeight: FontWeight.w500,
+            color: kPriRed),
+      ),
+    ])),
+    Container(
+        margin: const EdgeInsets.symmetric(vertical: 10),
+        width: double.infinity,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(4),
+          color: Colors.white,
+        ),
+        child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 10),
+            child: DropdownButton<String>(
+              dropdownColor: Colors.white,
+              value: dropdownValue,
+              icon: const Icon(
+                Icons.keyboard_arrow_down,
+                color: kPriPurple,
+                size: 16,
+              ),
+              elevation: 0,
+              underline: Container(),
+              style: const TextStyle(
+                  fontFamily: 'Nunito',
+                  fontSize: 16,
+                  fontWeight: FontWeight.w500),
+              onChanged: function,
+              items: dropItems.map<DropdownMenuItem<String>>((String value) {
+                return DropdownMenuItem<String>(
+                  value: value,
+                  child: Text(
+                    value,
+                    style: const TextStyle(
+                        color: Colors.black,
+                        fontFamily: 'Nunito',
+                        fontSize: 16,
+                        fontWeight: FontWeight.w500),
+                  ),
+                );
+              }).toList(),
+            )))
+  ]);
 }
 
 Widget popupScaffold({required List<Widget> children}) {
