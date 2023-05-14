@@ -3,7 +3,7 @@ import 'package:elira_app/navigator.dart';
 import 'package:elira_app/onboard.dart';
 import 'package:elira_app/studentDetails/security_questions.dart';
 import 'package:elira_app/theme/global_widgets.dart';
-import 'package:elira_app/utils/urls.dart';
+import 'package:elira_app/utils/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
@@ -11,10 +11,6 @@ import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class AuthController extends GetxController {
-  get headers {
-    return {"Content-Type": "application/json"};
-  }
-
   signUp(List userdata) async {
     var body = jsonEncode({
       'first_name': userdata[0],
@@ -26,10 +22,8 @@ class AuthController extends GetxController {
     try {
       var res =
           await http.post(Uri.parse(signUpUrl), body: body, headers: headers);
-      debugPrint("Got response ${res.statusCode}");
-      debugPrint(res.body);
       var respBody = json.decode(res.body);
-      if (res.statusCode == 201) {
+      if (res.statusCode == 200) {
         setlastLogin(DateFormat("EEE, dd/MM/yy, HH:mm").format(DateTime.now()));
         setProfile(respBody);
         showSnackbar(
@@ -38,7 +32,7 @@ class AuthController extends GetxController {
             subtitle: "Welcome to Elira");
 
         await Future.delayed(const Duration(seconds: 2));
-        Get.off(() => const NavigatorHandler(0));
+        Get.off(() => const SecurityQuestions());
       } else {
         showSnackbar(
             path: Icons.close_rounded,
@@ -47,7 +41,6 @@ class AuthController extends GetxController {
       }
       return;
     } catch (error) {
-      debugPrint("$error");
       showSnackbar(
           path: Icons.close_rounded,
           title: "Failed Sign Up!",
@@ -57,14 +50,10 @@ class AuthController extends GetxController {
 
   signIn(List userdata) async {
     var body = jsonEncode({'email': userdata[0], 'password': userdata[1]});
-    debugPrint(body);
 
     try {
       var res =
           await http.post(Uri.parse(signInUrl), body: body, headers: headers);
-
-      debugPrint("Got response ${res.statusCode}");
-      debugPrint(res.body);
       var respBody = json.decode(res.body);
       if (res.statusCode == 200) {
         setlastLogin(respBody['last_active']);
@@ -75,17 +64,21 @@ class AuthController extends GetxController {
             subtitle: "Welcome Back");
 
         await Future.delayed(const Duration(seconds: 2));
-        Get.off(() => const SecurityQuestions());
+        Get.off(() => const NavigatorHandler(0));
+      } else if (respBody['detail'] == 'Student not found!') {
+        showSnackbar(
+            path: Icons.close_rounded,
+            title: "Hey Newbie :)",
+            subtitle:
+                "No account with the given email! Please register to create an account");
       } else {
         showSnackbar(
             path: Icons.close_rounded,
-            title: "Failed Sign In!",
-            subtitle:
-                "Please confirm account credentials are correct or exist");
+            title: "Opps wrong password!",
+            subtitle: "Try again or click 'Forgot Password'");
       }
       return res;
     } catch (error) {
-      debugPrint('$error');
       showSnackbar(
           path: Icons.close_rounded,
           title: "Failed Sign In!",
@@ -102,12 +95,9 @@ class AuthController extends GetxController {
           Uri.parse(studentAccUrl + studentId.toString()),
           body: body,
           headers: headers);
-      debugPrint("Got response ${res.statusCode}");
-      debugPrint(res.body);
       if (res.statusCode == 200) {
         var profile = json.decode(res.body);
         setProfile(profile);
-        debugPrint('Data posted');
         showSnackbar(
             path: Icons.check_rounded, title: title, subtitle: subtitle);
         await Future.delayed(const Duration(seconds: 2));
@@ -121,7 +111,6 @@ class AuthController extends GetxController {
       }
       return;
     } catch (error) {
-      debugPrint("$error");
       showSnackbar(
           path: Icons.close_rounded,
           title: "Details not updated!",
@@ -150,7 +139,7 @@ class AuthController extends GetxController {
   void setProfile(var profile) async {
     var prefs = await SharedPreferences.getInstance();
     await prefs.setString("profile", json.encode(profile));
-    await prefs.setInt("studentId", profile['student_id']);
+    await prefs.setInt("studentId", profile['id']);
   }
 
   Future<String?> getProfile() async {
@@ -160,7 +149,6 @@ class AuthController extends GetxController {
   }
 
   Future<bool> logout() async {
-    debugPrint("Logging out...");
     var prefs = await SharedPreferences.getInstance();
     prefs.clear();
     await Future.delayed(const Duration(seconds: 2));

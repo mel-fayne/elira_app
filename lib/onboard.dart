@@ -1,6 +1,9 @@
+import 'package:elira_app/auth/login.dart';
+import 'package:elira_app/auth/signup.dart';
 import 'package:elira_app/theme/colors.dart';
 import 'package:elira_app/theme/global_widgets.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 // import 'package:get/get.dart';
 import 'package:video_player/video_player.dart';
 
@@ -78,13 +81,13 @@ class _OnBoardState extends State<OnBoard> {
                       isLoading: false,
                       label: 'Sign In',
                       function: () {
-                        // Get.to(const Login());
+                        Get.to(const Login());
                       }),
                   primaryBtn(
                       isLoading: false,
                       label: 'Get Started',
                       function: () {
-                        // Get.to(const SignUp());
+                        Get.to(const SignUp());
                       })
                 ],
               )));
