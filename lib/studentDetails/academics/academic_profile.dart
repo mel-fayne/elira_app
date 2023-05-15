@@ -1,6 +1,6 @@
 import 'package:elira_app/studentDetails/academics/academic_models.dart';
 import 'package:elira_app/studentDetails/academics/academic_profile_ctrl.dart';
-import 'package:elira_app/studentDetails/github/tech_profile.dart';
+import 'package:elira_app/theme/auth_widgets.dart';
 import 'package:elira_app/theme/colors.dart';
 import 'package:elira_app/theme/global_widgets.dart';
 import 'package:elira_app/theme/text_styles.dart';
@@ -45,10 +45,10 @@ class _AcademicProfilePageState extends State<AcademicProfilePage> {
                   fontSize: 18,
                   fontWeight: FontWeight.w700),
             ),
+            automaticallyImplyLeading: false,
             centerTitle: true),
-        body: SizedBox(
-            height: MediaQuery.of(context).size.height,
-            width: double.infinity,
+        body: SingleChildScrollView(
+            padding: const EdgeInsets.symmetric(vertical: 25, horizontal: 30),
             child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
@@ -56,17 +56,14 @@ class _AcademicProfilePageState extends State<AcademicProfilePage> {
                   const Padding(
                       padding: EdgeInsets.only(bottom: 12),
                       child: Text(
-                        'Please fill in these details to retreive your school transcripts',
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                            fontFamily: 'Nunito',
-                            fontSize: 24,
-                            fontWeight: FontWeight.w700),
-                      )),
+                          "“If knowledge is a power, then learning is a superpower.” ~ Jim Kwik",
+                          textAlign: TextAlign.center,
+                          style: kPurpleTitle)),
                   const Padding(
                       padding: EdgeInsets.only(bottom: 47),
                       child: Text(
-                          "“If knowledge is a power, then learning is a superpower.” ~ Jim Kwik",
+                          "Please fill in these details to retreive your school transcripts",
+                          textAlign: TextAlign.center,
                           style: kBlackTxt)),
                   Column(
                       crossAxisAlignment: CrossAxisAlignment.center,
@@ -100,9 +97,12 @@ class _AcademicProfilePageState extends State<AcademicProfilePage> {
                             )),
                         primaryBtn(
                             label: 'Load Transcripts',
-                            function: () async {
-                              await acProfCtrl.getTranscripts();
-                            })
+                            function: acProfCtrl.schoolDropdown.value == '' ||
+                                    acProfCtrl.semDropdown.value == ''
+                                ? null
+                                : () async {
+                                    await acProfCtrl.getTranscripts();
+                                  })
                       ])
                 ])));
   }
@@ -150,32 +150,50 @@ class _TranscriptPageState extends State<TranscriptPage> {
                   fontWeight: FontWeight.w700),
             ),
             centerTitle: true),
-        body: SizedBox(
-            height: MediaQuery.of(context).size.height,
-            width: double.infinity,
+        body: SingleChildScrollView(
+            padding: const EdgeInsets.symmetric(vertical: 25, horizontal: 30),
             child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
+                  const Padding(
+                      padding: EdgeInsets.only(top: 20, bottom: 10),
+                      child: Text('Your transcripts',
+                          textAlign: TextAlign.center, style: TextStyle())),
                   Padding(
-                      padding: const EdgeInsets.only(bottom: 12),
-                      child: Obx(() => Text(
-                            acProfCtrl.currentTranscript.semester.value,
-                            textAlign: TextAlign.center,
-                            style: const TextStyle(
-                                fontFamily: 'Nunito',
-                                fontSize: 24,
-                                fontWeight: FontWeight.w700),
-                          ))),
-                  acProfCtrl.currentTranscript.studentUnits.isNotEmpty
-                      ? ListView(
-                          shrinkWrap: true,
-                          physics: const NeverScrollableScrollPhysics(),
+                      padding: const EdgeInsets.only(top: 20, bottom: 10),
+                      child: acProfCtrl.semBoxes.isNotEmpty
+                          ? Wrap(children: [
+                              ...acProfCtrl.semBoxes.map(buildSemBox).toList()
+                            ])
+                          : Container()),
+                  const Padding(
+                      padding: EdgeInsets.only(left: 20, right: 40, top: 12),
+                      child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            ...acProfCtrl.currentTranscript.studentUnits
-                                .map(buildUnitRow)
-                                .toList()
-                          ],
+                            Text(
+                              'Unit',
+                              style: kPurpleTitle,
+                            ),
+                            Text(
+                              'Grade',
+                              style: kPurpleTitle,
+                            ),
+                          ])),
+                  const Divider(
+                    color: kPriPurple,
+                  ),
+                  acProfCtrl.currentTranscript.studentUnits.isNotEmpty
+                      ? Obx(
+                          () => ListView(
+                              shrinkWrap: true,
+                              physics: const NeverScrollableScrollPhysics(),
+                              children: [
+                                ...acProfCtrl.currentTranscript.studentUnits
+                                    .map(buildUnitRow)
+                                    .toList()
+                              ]),
                         )
                       : Container(),
                   primaryBtn(
@@ -192,18 +210,45 @@ class _TranscriptPageState extends State<TranscriptPage> {
     return Padding(
         padding: const EdgeInsets.symmetric(vertical: 10),
         child: Row(children: [
-          Padding(
-              padding: const EdgeInsets.all(15),
-              child: Text(unit.unitName, style: kBlackTxt)),
+          Container(
+              width: 225,
+              margin: const EdgeInsets.only(right: 25),
+              padding: const EdgeInsets.symmetric(horizontal: 15),
+              child: Text(
+                unit.unitName,
+                style: kBlackTxt,
+                softWrap: true,
+              )),
           dropDownField(
               dropdownValue: acProfCtrl.grades[0],
               dropItems: acProfCtrl.grades,
-              bgcolor: Colors.white,
+              bgcolor: kPriPurple,
               function: (String? newValue) {
                 setState(() {
                   unit.grade.value = newValue!;
                 });
               })
         ]));
+  }
+
+  Widget buildSemBox(Semester sem) => buildSingleSem(sem: sem);
+
+  Widget buildSingleSem({required Semester sem}) {
+    return Obx(() => Container(
+        width: 50,
+        height: 50,
+        margin: const EdgeInsets.symmetric(horizontal: 15),
+        padding: const EdgeInsets.symmetric(horizontal: 15),
+        decoration: BoxDecoration(
+            border: Border.all(width: 2.0, color: kPriMaroon),
+            color: sem.complete.value ? kPriMaroon : Colors.white),
+        child: sem.complete.value
+            ? const Icon(Icons.check_rounded, size: 18, color: Colors.white)
+            : Text(sem.title,
+                style: const TextStyle(
+                    fontSize: 16,
+                    color: kPriMaroon,
+                    fontFamily: 'Nunito',
+                    fontWeight: FontWeight.bold))));
   }
 }

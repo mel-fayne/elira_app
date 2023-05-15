@@ -11,9 +11,10 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class AcademicProfileCtrl extends GetxController {
   int? studentId;
-  List<String> schoolStrs = ['JKUAT', 'UoN', 'Strathmore'];
+  List<String> schoolStrs = ['', 'JKUAT', 'UoN', 'Strathmore'];
   RxString schoolDropdown = ''.obs;
   List<String> semesterStrs = [
+    '',
     '1.1',
     '1.2',
     '2.1',
@@ -27,60 +28,73 @@ class AcademicProfileCtrl extends GetxController {
   List<String> grades = ['', 'A', 'B', 'C', 'D', 'E'];
   List<Transcript> emptyTranscripts = [];
   Transcript currentTranscript = Transcript();
+  List<Semester> semBoxes = [];
   int transcriptIdx = 0;
+  AcademicProfile acProfile = AcademicProfile();
 
   @override
   void onInit() async {
     super.onInit();
     studentId = await getStudentId();
+    getAcademicProfile();
   }
 
+  getAcademicProfile() {}
+
   getTranscripts() async {
-    var body = jsonEncode(
-        {'school': schoolDropdown.value, 'current_sem': semDropdown.value});
+    var body = jsonEncode({
+      'student_id': studentId,
+      'school': schoolDropdown.value,
+      'current_sem': double.parse(semDropdown.value)
+    });
     try {
       var res = await http.post(Uri.parse(academicProfileUrl),
           body: body, headers: headers);
 
       debugPrint("Got response ${res.statusCode}");
-      debugPrint(res.body);
 
       if (res.statusCode == 200) {
         var respBody = json.decode(res.body);
 
-        // store academic profile Id
-        var prefs = await SharedPreferences.getInstance();
-        await prefs.setInt("acProfileId", respBody['id']);
-
         // store empty transcripts
-        int idx = 0;
-        for (var semester in respBody) {
-          if (idx < respBody.length) {
+        respBody.forEach((semester, units) {
+          if (units.isNotEmpty) {
             Transcript transcriptHolder = Transcript();
-            transcriptHolder.semester.value = semesterStrs[idx];
+            transcriptHolder.semester.value = semester;
+            Semester sem = Semester();
+            sem.title = semester;
+            semBoxes.add(sem);
 
-            for (var unit in semester[semesterStrs[idx]]) {
+            for (var unit in units) {
               var holder = StudentUnit.fromJson(unit);
               transcriptHolder.studentUnits.add(holder);
             }
-
             emptyTranscripts.add(transcriptHolder);
-            idx = idx + 1;
           }
-        }
+        });
+
+        // set current transcript
+        currentTranscript = emptyTranscripts[0];
+
+        // store academic profile Id
+        var prefs = await SharedPreferences.getInstance();
+        var acProdId = currentTranscript.studentUnits[0].acProfile;
+        await prefs.setInt("acProfileId", acProdId);
+
+        showSnackbar(
+            path: Icons.check_rounded,
+            title: "Transcripts Loaded!",
+            subtitle:
+                "Please fill in your details for each of your previous semesters");
+        await Future.delayed(const Duration(seconds: 2));
+        Get.off(() => const TranscriptPage());
+      } else {
+        showSnackbar(
+            path: Icons.close_rounded,
+            title: "Seems there's a problem on our side!",
+            subtitle: "Please try again later");
       }
-
-      // // set current transcript
-      currentTranscript = emptyTranscripts[0];
-
-      showSnackbar(
-          path: Icons.check_rounded,
-          title: "Transcripts Loaded!",
-          subtitle:
-              "Please fill in your details for each of the previosu semesters");
-      await Future.delayed(const Duration(seconds: 2));
-      Get.off(() => const TranscriptPage());
-      return res;
+      return;
     } catch (error) {
       showSnackbar(
           path: Icons.close_rounded,
@@ -108,6 +122,12 @@ class AcademicProfileCtrl extends GetxController {
 
       if (res.statusCode == 200) {
         // move to the next transcript
+        semBoxes
+            .where(
+                (element) => element.title == currentTranscript.semester.value)
+            .first
+            .complete
+            .value = true;
         transcriptIdx = transcriptIdx + 1;
         if (transcriptIdx == emptyTranscripts.length) {
           // store academic profile POST as done
@@ -127,8 +147,8 @@ class AcademicProfileCtrl extends GetxController {
               title: "Transcript Uploaded",
               subtitle: "Onto the next!");
           await Future.delayed(const Duration(seconds: 2));
-          update();
         }
+        update();
       } else {
         showSnackbar(
             path: Icons.close_rounded,
