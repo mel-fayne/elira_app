@@ -14,8 +14,8 @@ class StudentUnit {
       : id = json['id'],
         acProfile = json['ac_profile'],
         schoolUnit = json['school_unit'],
-        grade = json['grade'],
-        mark = json['mark'],
+        grade = json['grade'] ?? ''.obs,
+        mark = RxDouble(json['mark']),
         unitName = json['unit_name'],
         unitCodes = json['unit_codes'],
         unitPerc = json['unit_perc'];
@@ -33,8 +33,13 @@ class StudentUnit {
 }
 
 class Transcript {
-  late RxString semester;
-  late RxList<StudentUnit> studentUnits;
+  late RxString semester = '.'.obs;
+  late RxList<StudentUnit> studentUnits = RxList<StudentUnit>();
+}
+
+class Semester {
+  late String title = '';
+  late RxBool complete = false.obs;
 }
 
 class CompleteUnit {
@@ -58,6 +63,11 @@ class CompleteUnit {
         'grade': grade,
         'mark': gradeMark(grade).value,
       };
+}
+
+class AcademicProfile {
+  final double average = 0.0;
+  final String honours = 'Pass';
 }
 
 RxDouble gradeMark(String grade) {
