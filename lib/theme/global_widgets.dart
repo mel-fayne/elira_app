@@ -271,7 +271,7 @@ Widget formDropDownField(
         child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 10),
             child: DropdownButton<String>(
-              dropdownColor: Colors.white,
+              dropdownColor: kLightPurple,
               value: dropdownValue,
               icon: const Icon(
                 Icons.keyboard_arrow_down,
@@ -389,4 +389,27 @@ Widget loadingWidget() {
                   ),
                 )
               ]))));
+}
+
+Widget tabitem({label, path}) {
+  return Row(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Icon(
+          path,
+          size: 18,
+          color: Colors.white,
+        ),
+        Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 10),
+            child: Text(
+              label,
+              style: const TextStyle(
+                  fontFamily: 'Nunito',
+                  fontSize: 14,
+                  fontWeight: FontWeight.w500,
+                  color: Colors.white),
+            ))
+      ]);
 }

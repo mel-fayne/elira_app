@@ -1,7 +1,6 @@
 import 'dart:convert';
 
 import 'package:elira_app/auth/auth_controller.dart';
-import 'package:elira_app/studentDetails/academics/academic_profile.dart';
 import 'package:elira_app/theme/colors.dart';
 import 'package:elira_app/theme/global_widgets.dart';
 import 'package:flutter/material.dart';
@@ -146,7 +145,7 @@ class _SecurityQuestionsState extends State<SecurityQuestions> {
                               });
                               authCtrl.updateStudent(
                                   studentBody,
-                                  "Let's add your professional details and get the predictions going",
+                                  "Let's add your academic details next and get to predicting",
                                   "Your Account is now more secure",
                                   true);
                             }
