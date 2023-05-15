@@ -29,6 +29,7 @@ Widget primaryBtn(
       style: ElevatedButton.styleFrom(
         minimumSize: const Size(double.infinity, 70),
         backgroundColor: bgColor,
+        disabledBackgroundColor: kPriGrey,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
       ),
       child: (isLoading)

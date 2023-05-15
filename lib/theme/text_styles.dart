@@ -15,7 +15,7 @@ const kPageSubTitle = TextStyle(
 
 const kBlackTxt = TextStyle(
     color: kPriDark,
-    fontSize: 12,
+    fontSize: 14,
     fontWeight: FontWeight.w400,
     fontFamily: 'Nunito');
 

@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:elira_app/navigator.dart';
 import 'package:elira_app/onboard.dart';
+import 'package:elira_app/studentDetails/academics/academic_profile.dart';
 import 'package:elira_app/studentDetails/security_questions.dart';
 import 'package:elira_app/theme/global_widgets.dart';
 import 'package:elira_app/utils/constants.dart';
@@ -86,7 +87,8 @@ class AuthController extends GetxController {
     }
   }
 
-  updateStudent(var body, String subtitle, String title, dynamic page) async {
+  updateStudent(
+      var body, String subtitle, String title, bool fromSecurity) async {
     var prefs = await SharedPreferences.getInstance();
     var studentId = prefs.getInt("studentId");
 
@@ -95,14 +97,15 @@ class AuthController extends GetxController {
           Uri.parse(studentAccUrl + studentId.toString()),
           body: body,
           headers: headers);
+      debugPrint('Got resCode: ${res.statusCode}');
+      debugPrint(res.body);
       if (res.statusCode == 200) {
         var profile = json.decode(res.body);
         setProfile(profile);
         showSnackbar(
             path: Icons.check_rounded, title: title, subtitle: subtitle);
         await Future.delayed(const Duration(seconds: 2));
-        Get.off(() => page);
-        return;
+        fromSecurity ? Get.off(() => const AcademicProfilePage()) : Get.back();
       } else {
         showSnackbar(
             path: Icons.close_rounded,
