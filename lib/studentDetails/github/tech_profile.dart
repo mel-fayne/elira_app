@@ -55,10 +55,10 @@ class _TechProfilePageState extends State<TechProfilePage> {
                   fontSize: 18,
                   fontWeight: FontWeight.w700),
             ),
+            automaticallyImplyLeading: false,
             centerTitle: true),
-        body: SizedBox(
-            height: MediaQuery.of(context).size.height,
-            width: double.infinity,
+        body: SingleChildScrollView(
+            padding: const EdgeInsets.symmetric(vertical: 25, horizontal: 30),
             child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
@@ -66,17 +66,14 @@ class _TechProfilePageState extends State<TechProfilePage> {
                   const Padding(
                       padding: EdgeInsets.only(bottom: 12),
                       child: Text(
-                        'Please enter your github name to review your technical profile',
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                            fontFamily: 'Nunito',
-                            fontSize: 24,
-                            fontWeight: FontWeight.w700),
-                      )),
+                          "“Talk is cheap. Show me the code.” ~ Linus Torvalds",
+                          textAlign: TextAlign.center,
+                          style: kPurpleTitle)),
                   const Padding(
                       padding: EdgeInsets.only(bottom: 47),
                       child: Text(
-                          "“Talk is cheap. Show me the code.” ~ Linus Torvalds",
+                          "Please fill in these details to retreive your technical profile",
+                          textAlign: TextAlign.center,
                           style: kBlackTxt)),
                   Column(
                       crossAxisAlignment: CrossAxisAlignment.center,
@@ -98,7 +95,7 @@ class _TechProfilePageState extends State<TechProfilePage> {
                                         return null;
                                       }),
                                   primaryBtn(
-                                    label: '',
+                                    label: 'Create Technical Profile',
                                     isLoading: _isLoading,
                                     function: () async {
                                       setState(() {
@@ -106,7 +103,8 @@ class _TechProfilePageState extends State<TechProfilePage> {
                                       });
                                       if (_gitNameForm.currentState!
                                           .validate()) {
-                                        techProfCtrl.getGithubDetails();
+                                        techProfCtrl
+                                            .getGithubDetails(gitnamectrl.text);
                                       }
                                       await Future.delayed(
                                           const Duration(seconds: 2));
