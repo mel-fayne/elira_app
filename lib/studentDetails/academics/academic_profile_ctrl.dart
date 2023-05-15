@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'package:elira_app/studentDetails/academics/academic_models.dart';
 import 'package:elira_app/studentDetails/academics/academic_profile.dart';
-import 'package:elira_app/studentDetails/academics/academic_report.dart';
+import 'package:elira_app/studentDetails/github/tech_profile.dart';
 import 'package:elira_app/theme/global_widgets.dart';
 import 'package:elira_app/utils/constants.dart';
 import 'package:flutter/material.dart';
@@ -120,6 +120,9 @@ class AcademicProfileCtrl extends GetxController {
           body: body,
           headers: headers);
 
+      debugPrint("Got response ${res.statusCode}");
+      debugPrint(res.body);
+
       if (res.statusCode == 200) {
         // move to the next transcript
         semBoxes
@@ -137,9 +140,10 @@ class AcademicProfileCtrl extends GetxController {
           showSnackbar(
               path: Icons.check_rounded,
               title: "Academic Profile Complete!",
-              subtitle: "Here's a summary of your academic journey this far");
+              subtitle:
+                  "Let's add your technical details next and get to predicting");
           await Future.delayed(const Duration(seconds: 2));
-          Get.off(AcademicReportPage(fromSetup: fromSetup));
+          Get.off(const TechProfilePage());
         } else {
           currentTranscript = emptyTranscripts[transcriptIdx];
           showSnackbar(
@@ -153,7 +157,7 @@ class AcademicProfileCtrl extends GetxController {
         showSnackbar(
             path: Icons.close_rounded,
             title: "Transcript Upload Failed",
-            subtitle: "Please confirm your details!");
+            subtitle: "Please ensure you've filled in all your grades");
       }
       return;
     } catch (error) {

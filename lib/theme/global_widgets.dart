@@ -230,9 +230,10 @@ Widget dropDownField(
             elevation: 0,
             underline: Container(),
             style: const TextStyle(
+                color: Colors.white,
                 fontFamily: 'Nunito',
-                fontSize: 14,
-                fontWeight: FontWeight.w500),
+                fontSize: 16,
+                fontWeight: FontWeight.w700),
             onChanged: function,
             items: dropItems.map<DropdownMenuItem<String>>((String value) {
               return DropdownMenuItem<String>(

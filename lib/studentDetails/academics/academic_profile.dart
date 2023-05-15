@@ -118,6 +118,7 @@ class TranscriptPage extends StatefulWidget {
 }
 
 class _TranscriptPageState extends State<TranscriptPage> {
+  bool _isLoading = false;
   @override
   void initState() {
     super.initState();
@@ -156,14 +157,12 @@ class _TranscriptPageState extends State<TranscriptPage> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  const Padding(
-                      padding: EdgeInsets.only(top: 20, bottom: 10),
-                      child: Text('Your transcripts',
-                          textAlign: TextAlign.center, style: TextStyle())),
+                  const Text('Your transcripts',
+                      textAlign: TextAlign.center, style: kPurpleTitle),
                   Padding(
                       padding: const EdgeInsets.only(top: 20, bottom: 10),
                       child: acProfCtrl.semBoxes.isNotEmpty
-                          ? Wrap(children: [
+                          ? Wrap(runSpacing: 5.0, children: [
                               ...acProfCtrl.semBoxes.map(buildSemBox).toList()
                             ])
                           : Container()),
@@ -198,8 +197,16 @@ class _TranscriptPageState extends State<TranscriptPage> {
                       : Container(),
                   primaryBtn(
                       label: 'Upload Transcript',
-                      function: () {
+                      isLoading: _isLoading,
+                      function: () async {
+                        setState(() {
+                          _isLoading = true;
+                        });
                         acProfCtrl.updateAcademicProfile(true);
+                        await Future.delayed(const Duration(seconds: 5));
+                        setState(() {
+                          _isLoading = false;
+                        });
                       })
                 ])));
   }
@@ -220,7 +227,7 @@ class _TranscriptPageState extends State<TranscriptPage> {
                 softWrap: true,
               )),
           dropDownField(
-              dropdownValue: acProfCtrl.grades[0],
+              dropdownValue: unit.grade.value,
               dropItems: acProfCtrl.grades,
               bgcolor: kPriPurple,
               function: (String? newValue) {
@@ -236,18 +243,27 @@ class _TranscriptPageState extends State<TranscriptPage> {
   Widget buildSingleSem({required Semester sem}) {
     return Obx(() => Container(
         width: 50,
-        height: 50,
-        margin: const EdgeInsets.symmetric(horizontal: 15),
-        padding: const EdgeInsets.symmetric(horizontal: 15),
+        height: 40,
+        margin: const EdgeInsets.only(right: 15),
+        padding: const EdgeInsets.all(5),
         decoration: BoxDecoration(
-            border: Border.all(width: 2.0, color: kPriMaroon),
+            borderRadius: BorderRadius.circular(15),
+            border: Border.all(
+                width: 2.0,
+                color: acProfCtrl.currentTranscript.semester.value == sem.title
+                    ? kPriPurple
+                    : kPriMaroon),
             color: sem.complete.value ? kPriMaroon : Colors.white),
         child: sem.complete.value
             ? const Icon(Icons.check_rounded, size: 18, color: Colors.white)
             : Text(sem.title,
-                style: const TextStyle(
-                    fontSize: 16,
-                    color: kPriMaroon,
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                    fontSize: 18,
+                    color:
+                        acProfCtrl.currentTranscript.semester.value == sem.title
+                            ? kPriPurple
+                            : kPriMaroon,
                     fontFamily: 'Nunito',
                     fontWeight: FontWeight.bold))));
   }
