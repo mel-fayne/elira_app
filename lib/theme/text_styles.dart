@@ -1,6 +1,19 @@
 import 'package:flutter/material.dart';
 import 'colors.dart';
 
+const kWhiteTitle = TextStyle(
+    color: Colors.white,
+    fontSize: 18,
+    fontWeight: FontWeight.w700,
+    fontFamily: 'Nunito');
+
+const kWhiteSubTitle = TextStyle(
+    color: Colors.white,
+    fontStyle: FontStyle.italic,
+    fontSize: 14,
+    fontWeight: FontWeight.w700,
+    fontFamily: 'Nunito');
+
 const kPageTitle = TextStyle(
     color: kPriDark,
     fontSize: 32,
@@ -52,5 +65,5 @@ const kMaroonTxt = TextStyle(
 const kPurpleTitle = TextStyle(
     color: kPriPurple,
     fontFamily: 'Nunito',
-    fontSize: 18,
+    fontSize: 20,
     fontWeight: FontWeight.w700);

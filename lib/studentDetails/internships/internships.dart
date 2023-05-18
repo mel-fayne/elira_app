@@ -22,8 +22,8 @@ class _WorkExpProfileState extends State<WorkExpProfile> {
   TextEditingController titlectrl = TextEditingController();
   TextEditingController locationctrl = TextEditingController();
   TextEditingController companyNamectrl = TextEditingController();
-  late DateTime _startDate;
-  late DateTime _endDate;
+  DateTime _startDate = DateTime.now();
+  DateTime _endDate = DateTime.now();
   bool _currentlyWorking = false;
   bool _isLoading = false;
 
@@ -110,7 +110,7 @@ class _WorkExpProfileState extends State<WorkExpProfile> {
             automaticallyImplyLeading: false,
             centerTitle: true),
         body: SingleChildScrollView(
-            padding: const EdgeInsets.symmetric(vertical: 25, horizontal: 30),
+            padding: const EdgeInsets.all(25),
             child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,

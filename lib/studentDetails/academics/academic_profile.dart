@@ -28,42 +28,23 @@ class _AcademicProfilePageState extends State<AcademicProfilePage> {
     return Scaffold(
         resizeToAvoidBottomInset: false,
         backgroundColor: kCreamBg,
-        appBar: AppBar(
-            bottom: PreferredSize(
-                preferredSize: const Size.fromHeight(1.0),
-                child: Container(
-                  color: kPriPurple,
-                  height: 1.0,
-                )),
-            elevation: 4,
-            toolbarHeight: 80,
-            title: const Text(
-              'Academic Profile',
-              style: TextStyle(
-                  fontFamily: 'Nunito',
-                  fontSize: 18,
-                  fontWeight: FontWeight.w700),
-            ),
-            automaticallyImplyLeading: false,
-            centerTitle: true),
+        appBar: studDtlsAppBar(
+            pageTitle: 'Academic Details',
+            quote:
+                "“If knowledge is a power, then learning is a superpower.” ~ Jim Kwik"),
         body: SingleChildScrollView(
             padding: const EdgeInsets.symmetric(vertical: 25, horizontal: 30),
             child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  const Padding(
-                      padding: EdgeInsets.only(bottom: 12),
-                      child: Text(
-                          "“If knowledge is a power, then learning is a superpower.” ~ Jim Kwik",
-                          textAlign: TextAlign.center,
-                          style: kPurpleTitle)),
-                  const Padding(
-                      padding: EdgeInsets.only(bottom: 47),
-                      child: Text(
-                          "Please fill in these details to retreive your school transcripts",
-                          textAlign: TextAlign.center,
-                          style: kBlackTxt)),
+                  studDtlsHeader(
+                      academicComplete: false,
+                      academicCurrent: true,
+                      technicalComplete: false,
+                      technicalCurrent: true,
+                      internshipComplete: false,
+                      internshipCurrent: false),
                   Column(
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
@@ -133,29 +114,23 @@ class _TranscriptPageState extends State<TranscriptPage> {
     return Scaffold(
         resizeToAvoidBottomInset: false,
         backgroundColor: kCreamBg,
-        appBar: AppBar(
-            bottom: PreferredSize(
-                preferredSize: const Size.fromHeight(1.0),
-                child: Container(
-                  color: kPriPurple,
-                  height: 1.0,
-                )),
-            elevation: 4,
-            toolbarHeight: 80,
-            title: const Text(
-              'Academic Profile',
-              style: TextStyle(
-                  fontFamily: 'Nunito',
-                  fontSize: 18,
-                  fontWeight: FontWeight.w700),
-            ),
-            centerTitle: true),
+        appBar: studDtlsAppBar(
+            pageTitle: 'Academic Details',
+            quote:
+                "“If knowledge is a power, then learning is a superpower.” ~ Jim Kwik"),
         body: SingleChildScrollView(
             padding: const EdgeInsets.symmetric(vertical: 25, horizontal: 30),
             child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
+                  studDtlsHeader(
+                      academicComplete: false,
+                      academicCurrent: true,
+                      technicalComplete: false,
+                      technicalCurrent: false,
+                      internshipComplete: false,
+                      internshipCurrent: false),
                   const Text('Your transcripts',
                       textAlign: TextAlign.center, style: kPurpleTitle),
                   Padding(

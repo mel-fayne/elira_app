@@ -1,7 +1,10 @@
 import 'package:elira_app/theme/colors.dart';
 import 'package:elira_app/theme/text_styles.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttericon/font_awesome5_icons.dart';
+import 'package:fluttericon/typicons_icons.dart';
 import 'package:get/get.dart';
+import 'package:fluttericon/entypo_icons.dart';
 
 void showSnackbar({required String title, required String subtitle, path}) {
   Get.snackbar(
@@ -162,53 +165,6 @@ Widget searchForm(
       ),
     ),
   );
-}
-
-Widget formInput(
-    {required label,
-    required require,
-    required controller,
-    type,
-    required final String? Function(String?) validator}) {
-  return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 10),
-      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        Padding(
-            padding: const EdgeInsets.only(bottom: 5),
-            child: RichText(
-                text: TextSpan(children: [
-              TextSpan(
-                  text: label,
-                  style: const TextStyle(
-                      fontSize: 12,
-                      fontFamily: 'Nunito',
-                      fontWeight: FontWeight.w500,
-                      color: Colors.white)),
-              TextSpan(
-                text: require ? ' *' : '',
-                style: const TextStyle(
-                    fontSize: 12,
-                    fontFamily: 'Nunito',
-                    fontWeight: FontWeight.w500,
-                    color: kPriRed),
-              ),
-            ]))),
-        TextFormField(
-          cursorColor: kPriPurple,
-          controller: controller,
-          keyboardType: type,
-          validator: validator,
-          style: const TextStyle(
-              fontSize: 16,
-              fontFamily: 'Nunito',
-              fontWeight: FontWeight.w400,
-              color: Colors.white),
-          decoration: const InputDecoration(
-            border:
-                OutlineInputBorder(borderSide: BorderSide(color: Colors.white)),
-          ),
-        )
-      ]));
 }
 
 Widget dropDownField(
@@ -413,4 +369,134 @@ Widget tabitem({label, path}) {
                   color: Colors.white),
             ))
       ]);
+}
+
+PreferredSizeWidget studDtlsAppBar(
+    {required String pageTitle, required String quote}) {
+  return AppBar(
+      bottom: PreferredSize(
+          preferredSize: const Size.fromHeight(1.0),
+          child: Container(
+            color: kLightPurple,
+            height: 1.0,
+          )),
+      elevation: 4,
+      toolbarHeight: 80,
+      title: Column(children: [
+        Text(pageTitle, style: kWhiteTitle),
+        Padding(
+            padding: const EdgeInsets.only(top: 5),
+            child: Text(quote, style: kWhiteSubTitle))
+      ]),
+      centerTitle: true);
+}
+
+Widget studDtlsHeader(
+    {required bool academicComplete,
+    required bool academicCurrent,
+    required bool technicalComplete,
+    required bool technicalCurrent,
+    required bool internshipComplete,
+    required bool internshipCurrent}) {
+  return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 20),
+      child: Column(children: [
+        Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+          Container(
+              width: 40,
+              height: 40,
+              margin: const EdgeInsets.only(right: 15),
+              padding: const EdgeInsets.all(5),
+              decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(50),
+                  border: Border.all(
+                      width: academicCurrent ? 2.5 : 1.0,
+                      color: academicCurrent ? kPriMaroon : kPriPurple),
+                  color: academicComplete ? kPriMaroon : Colors.white),
+              child: Icon(Entypo.graduation_cap,
+                  size: 18,
+                  color: academicComplete
+                      ? Colors.white
+                      : academicCurrent
+                          ? kPriMaroon
+                          : kPriPurple)),
+          Container(
+            width: 50,
+            height: 2.0,
+            decoration: BoxDecoration(
+                color: academicComplete ? kPriMaroon : kPriPurple),
+          ),
+          Container(
+              width: 40,
+              height: 40,
+              margin: const EdgeInsets.only(right: 15),
+              padding: const EdgeInsets.all(5),
+              decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(50),
+                  border: Border.all(
+                      width: technicalCurrent ? 2.5 : 1.0,
+                      color: technicalCurrent ? kPriMaroon : kPriPurple),
+                  color: technicalComplete ? kPriMaroon : Colors.white),
+              child: Icon(FontAwesome5.code,
+                  size: 18,
+                  color: technicalComplete
+                      ? Colors.white
+                      : technicalCurrent
+                          ? kPriMaroon
+                          : kPriPurple)),
+          Container(
+            width: 50,
+            height: 2.0,
+            decoration: BoxDecoration(
+                color: technicalComplete ? kPriMaroon : kPriPurple),
+          ),
+          Container(
+              width: 40,
+              height: 40,
+              margin: const EdgeInsets.only(right: 15),
+              padding: const EdgeInsets.all(5),
+              decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(50),
+                  border: Border.all(
+                      width: internshipCurrent ? 2.5 : 1.0,
+                      color: internshipCurrent ? kPriMaroon : kPriPurple),
+                  color: internshipComplete ? kPriMaroon : Colors.white),
+              child: Icon(FontAwesome5.code,
+                  size: 18,
+                  color: internshipComplete
+                      ? Colors.white
+                      : internshipCurrent
+                          ? kPriMaroon
+                          : kPriPurple)),
+          Container(
+            width: 50,
+            height: 2.0,
+            decoration: BoxDecoration(
+                color: internshipComplete ? kPriMaroon : kPriPurple),
+          ),
+        ]),
+        Container(
+            width: 50,
+            height: 2.0,
+            margin: const EdgeInsets.only(top: 10),
+            padding: const EdgeInsets.all(15),
+            decoration: const BoxDecoration(color: kLightPurple),
+            child: Row(children: [
+              Container(
+                  width: 50,
+                  height: 2.0,
+                  margin: const EdgeInsets.only(right: 15),
+                  padding: const EdgeInsets.all(5),
+                  decoration: const BoxDecoration(color: kLightPurple),
+                  child: const Icon(Icons.edit_rounded,
+                      size: 15, color: kPriPurple)),
+              Text(
+                  academicCurrent
+                      ? "What are your academic strengths? Fill in your transcript details and we'll let you know"
+                      : technicalCurrent
+                          ? "What's your tech stack? Let us find out and draw you closer to your dream career path"
+                          : "So you have experience? Just a step away to letting it contribute to your prediction",
+                  style: kBlackTxt)
+            ])),
+      ]));
 }
