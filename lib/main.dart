@@ -1,6 +1,6 @@
 import 'package:elira_app/auth/auth_controller.dart';
-import 'package:elira_app/navigator.dart';
-import 'package:elira_app/onboard.dart';
+import 'package:elira_app/core/navigator.dart';
+import 'package:elira_app/core/onboard.dart';
 import 'package:elira_app/theme/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';

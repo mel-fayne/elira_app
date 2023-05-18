@@ -1,4 +1,4 @@
-import 'package:elira_app/navigator.dart';
+import 'package:elira_app/core/navigator.dart';
 import 'package:elira_app/studentDetails/prediction_ctrl.dart';
 import 'package:elira_app/theme/colors.dart';
 import 'package:elira_app/theme/global_widgets.dart';
