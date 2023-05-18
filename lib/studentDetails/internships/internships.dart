@@ -1,8 +1,11 @@
+import 'dart:ffi';
+
 import 'package:elira_app/studentDetails/internships/internships_ctrl.dart';
 import 'package:elira_app/theme/auth_widgets.dart';
 import 'package:elira_app/theme/colors.dart';
 import 'package:elira_app/theme/global_widgets.dart';
 import 'package:elira_app/theme/text_styles.dart';
+import 'package:elira_app/utils/models.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -18,6 +21,98 @@ class WorkExpProfile extends StatefulWidget {
 }
 
 class _WorkExpProfileState extends State<WorkExpProfile> {
+  TextEditingController internshipsNoCtrl = TextEditingController();
+
+  final _internshipNoForm = GlobalKey<FormState>();
+  bool _isLoading = false;
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    internshipsNoCtrl.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+        resizeToAvoidBottomInset: false,
+        backgroundColor: kCreamBg,
+        appBar: studDtlsAppBar(
+            pageTitle: 'Internship Details',
+            quote:
+                "“Knowledge is of no value unless you put it to practice.” ~ Anton Chekhov"),
+        body: SingleChildScrollView(
+            padding: const EdgeInsets.symmetric(vertical: 25, horizontal: 30),
+            child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  studDtlsHeader(
+                      academicComplete: true,
+                      academicCurrent: true,
+                      technicalComplete: true,
+                      technicalCurrent: false,
+                      internshipComplete: false,
+                      internshipCurrent: true),
+                  Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Padding(
+                            padding: const EdgeInsets.only(top: 20, bottom: 10),
+                            child: Form(
+                                key: _internshipNoForm,
+                                child: Column(children: <Widget>[
+                                  formField(
+                                      label:
+                                          'How many internships would you like to fill? Enter 0 if none',
+                                      require: true,
+                                      controller: internshipsNoCtrl,
+                                      type: TextInputType.name,
+                                      validator: (value) {
+                                        if (value == null || value.isEmpty) {
+                                          return 'Please enter a number so as to move to predicting';
+                                        }
+                                        return null;
+                                      }),
+                                  primaryBtn(
+                                      label: 'Load Internship Forms',
+                                      function: () async {
+                                        setState(() {
+                                          _isLoading = true;
+                                        });
+                                        if (_internshipNoForm.currentState!
+                                            .validate()) {
+                                          workExpCtrl.internshipNo =
+                                              int.parse(internshipsNoCtrl.text);
+                                          await workExpCtrl.getWorkExpForms();
+                                        }
+                                        await Future.delayed(
+                                            const Duration(seconds: 2));
+                                        setState(() {
+                                          _isLoading = false;
+                                        });
+                                      })
+                                ])))
+                      ])
+                ])));
+  }
+}
+
+class WorkExpForm extends StatefulWidget {
+  static const routeName = "/WorkExpForm";
+  const WorkExpForm({Key? key}) : super(key: key);
+
+  @override
+  // ignore: library_private_types_in_public_api
+  _WorkExpFormState createState() => _WorkExpFormState();
+}
+
+class _WorkExpFormState extends State<WorkExpForm> {
   final GlobalKey<FormState> _workExpForm = GlobalKey<FormState>();
   TextEditingController titlectrl = TextEditingController();
   TextEditingController locationctrl = TextEditingController();
@@ -91,42 +186,30 @@ class _WorkExpProfileState extends State<WorkExpProfile> {
     return Scaffold(
         resizeToAvoidBottomInset: false,
         backgroundColor: kCreamBg,
-        appBar: AppBar(
-            bottom: PreferredSize(
-                preferredSize: const Size.fromHeight(1.0),
-                child: Container(
-                  color: kPriPurple,
-                  height: 1.0,
-                )),
-            elevation: 4,
-            toolbarHeight: 80,
-            title: const Text(
-              'Work Experience Profile',
-              style: TextStyle(
-                  fontFamily: 'Nunito',
-                  fontSize: 18,
-                  fontWeight: FontWeight.w700),
-            ),
-            automaticallyImplyLeading: false,
-            centerTitle: true),
+        appBar: studDtlsAppBar(
+            pageTitle: 'Academic Details',
+            quote:
+                "“If knowledge is a power, then learning is a superpower.” ~ Jim Kwik"),
         body: SingleChildScrollView(
-            padding: const EdgeInsets.all(25),
+            padding: const EdgeInsets.symmetric(vertical: 25, horizontal: 30),
             child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  const Padding(
-                      padding: EdgeInsets.only(bottom: 12),
-                      child: Text(
-                          "“Knowledge is of no value unless you put it to practice.” ~ Anton Chekhov",
-                          textAlign: TextAlign.center,
-                          style: kPurpleTitle)),
-                  const Padding(
-                      padding: EdgeInsets.only(bottom: 47),
-                      child: Text(
-                          "Please fill in these details to retreive your work experience profile",
-                          textAlign: TextAlign.center,
-                          style: kBlackTxt)),
+                  studDtlsHeader(
+                      academicComplete: false,
+                      academicCurrent: true,
+                      technicalComplete: false,
+                      technicalCurrent: false,
+                      internshipComplete: false,
+                      internshipCurrent: false),
+                  const Text('Your transcripts',
+                      textAlign: TextAlign.center, style: kPurpleTitle),
+                  Padding(
+                      padding: const EdgeInsets.only(top: 20, bottom: 10),
+                      child: Wrap(runSpacing: 5.0, children: [
+                        ...workExpCtrl.intShpBoxes.map(buildintShp).toList()
+                      ])),
                   Padding(
                       padding: const EdgeInsets.all(16.0),
                       child: Form(
@@ -250,5 +333,34 @@ class _WorkExpProfileState extends State<WorkExpProfile> {
                         : null,
                   ),
                 ])));
+  }
+
+  Widget buildintShp(NumberBox intShp) => buildSingleIntShp(intShp: intShp);
+
+  Widget buildSingleIntShp({required NumberBox intShp}) {
+    return Obx(() => Container(
+        width: 50,
+        height: 40,
+        margin: const EdgeInsets.only(right: 15),
+        padding: const EdgeInsets.all(5),
+        decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(15),
+            border: Border.all(
+                width: 2.0,
+                color: workExpCtrl.formCount.toString() == intShp.title
+                    ? kPriPurple
+                    : kPriMaroon),
+            color: intShp.complete.value ? kPriMaroon : Colors.white),
+        child: intShp.complete.value
+            ? const Icon(Icons.check_rounded, size: 18, color: Colors.white)
+            : Text(intShp.title,
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                    fontSize: 18,
+                    color: workExpCtrl.formCount.toString() == intShp.title
+                        ? kPriPurple
+                        : kPriMaroon,
+                    fontFamily: 'Nunito',
+                    fontWeight: FontWeight.bold))));
   }
 }

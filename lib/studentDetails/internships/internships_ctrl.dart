@@ -1,7 +1,12 @@
 import 'dart:convert';
 
+import 'package:elira_app/studentDetails/internships/internships.dart';
+import 'package:elira_app/studentDetails/prediction.dart';
 import 'package:elira_app/theme/global_widgets.dart';
+import 'package:elira_app/utils/functions.dart';
+import 'package:elira_app/utils/models.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttericon/font_awesome5_icons.dart';
 import 'package:http/http.dart' as http;
 import 'package:elira_app/utils/constants.dart';
 import 'package:get/get.dart';
@@ -28,6 +33,9 @@ class WorkExpCtrl extends GetxController {
   RxString empTypeDropdown = ''.obs;
   List<String> locTypeStrs = ['', 'On-Site', 'Online', 'Hybrid'];
   RxString locTypeDropdown = ''.obs;
+  int formCount = 0;
+  int internshipNo = 0;
+  List<NumberBox> intShpBoxes = [];
 
   @override
   void onInit() async {
@@ -38,7 +46,7 @@ class WorkExpCtrl extends GetxController {
 
   getWorkExpProfile() {}
 
-  createWorkExpProfile() async {
+  getWorkExpForms() async {
     var body = jsonEncode({'student_id': studentId});
     try {
       var res = await http.post(Uri.parse(wxpProfileUrl),
@@ -52,10 +60,41 @@ class WorkExpCtrl extends GetxController {
         wxprofileId = respBody['id'];
         var prefs = await SharedPreferences.getInstance();
         await prefs.setInt("wxprofileId", respBody['id']);
+
+        if (internshipNo == 0) {
+          showSnackbar(
+              path: FontAwesome5.hand_sparkles,
+              title: "High-five! You did it!",
+              subtitle:
+                  "Your student profile is complete. Your specialisation is ...");
+          await Future.delayed(const Duration(seconds: 2));
+          Get.off(() => const PredictionPage());
+        } else {
+          for (var i = 0; i < internshipNo; i++) {
+            NumberBox intShp = NumberBox();
+            intShp.title = i.toString();
+            intShpBoxes.add(intShp);
+          }
+          showSnackbar(
+              path: Icons.check_rounded,
+              title: "Internship Forms Loaded!",
+              subtitle:
+                  "Please fill in your details for your internship profile");
+          await Future.delayed(const Duration(seconds: 2));
+          Get.off(() => const WorkExpForm());
+        }
+      } else {
+        showSnackbar(
+            path: Icons.close_rounded,
+            title: "Seems there's a problem on our side!",
+            subtitle: "Please try again later");
       }
       return;
     } catch (error) {
-      debugPrint("Caught error : $error");
+      showSnackbar(
+          path: Icons.close_rounded,
+          title: "Failed To Create Internship Profile!",
+          subtitle: "Please check your internet connection or try again later");
     }
   }
 
@@ -90,12 +129,28 @@ class WorkExpCtrl extends GetxController {
       debugPrint("Got response ${res.statusCode}");
 
       if (res.statusCode == 200) {
-        showSnackbar(
-            path: Icons.check_rounded,
-            title: "Work Expereince Recorded!",
-            subtitle:
-                "You can add more experience or proceed to get your predictions");
-        await Future.delayed(const Duration(seconds: 2));
+        intShpBoxes
+            .where((element) => element.title == formCount.toString())
+            .first
+            .complete
+            .value = true;
+
+        formCount++;
+        if (formCount == internshipNo) {
+          showSnackbar(
+              path: FontAwesome5.hand_sparkles,
+              title: "High-five! You did it!",
+              subtitle:
+                  "Your student profile is complete. Your specialisation is ...");
+          await Future.delayed(const Duration(seconds: 2));
+          Get.off(() => const PredictionPage());
+        } else {
+          showSnackbar(
+              path: Icons.check_rounded,
+              title: "Internship Recorded!",
+              subtitle: "Onto the next!");
+          await Future.delayed(const Duration(seconds: 2));
+        }
       } else {
         showSnackbar(
             path: Icons.close_rounded,
@@ -106,7 +161,7 @@ class WorkExpCtrl extends GetxController {
     } catch (error) {
       showSnackbar(
           path: Icons.close_rounded,
-          title: "Failed To Record Work Experience!",
+          title: "Failed To Record Internship!",
           subtitle: "Please check your internet connection or try again later");
     }
   }
