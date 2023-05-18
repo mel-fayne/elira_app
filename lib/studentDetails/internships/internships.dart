@@ -1,5 +1,3 @@
-import 'dart:ffi';
-
 import 'package:elira_app/studentDetails/internships/internships_ctrl.dart';
 import 'package:elira_app/theme/auth_widgets.dart';
 import 'package:elira_app/theme/colors.dart';
@@ -8,6 +6,7 @@ import 'package:elira_app/theme/text_styles.dart';
 import 'package:elira_app/utils/models.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 
 final workExpCtrl = Get.put(WorkExpCtrl());
 
@@ -117,10 +116,12 @@ class _WorkExpFormState extends State<WorkExpForm> {
   TextEditingController titlectrl = TextEditingController();
   TextEditingController locationctrl = TextEditingController();
   TextEditingController companyNamectrl = TextEditingController();
+  TextEditingController startDateCtrl = TextEditingController();
+  TextEditingController endDateCtrl = TextEditingController();
   DateTime _startDate = DateTime.now();
   DateTime _endDate = DateTime.now();
-  bool _currentlyWorking = false;
   bool _isLoading = false;
+  DateFormat dateFormat = DateFormat('yyyy-MM-dd');
 
   @override
   void initState() {
@@ -135,7 +136,7 @@ class _WorkExpFormState extends State<WorkExpForm> {
       lastDate: DateTime.now(),
       initialDatePickerMode: DatePickerMode.year,
       initialEntryMode: DatePickerEntryMode.calendarOnly,
-      helpText: 'Select Start Date',
+      helpText: "Start Date",
       cancelText: 'Cancel',
       confirmText: 'Select',
       selectableDayPredicate: (DateTime date) {
@@ -146,6 +147,7 @@ class _WorkExpFormState extends State<WorkExpForm> {
     if (picked != null && picked != _startDate) {
       setState(() {
         _startDate = picked;
+        startDateCtrl.text = dateFormat.format(_startDate);
       });
     }
   }
@@ -158,7 +160,6 @@ class _WorkExpFormState extends State<WorkExpForm> {
       lastDate: DateTime.now(),
       initialDatePickerMode: DatePickerMode.year,
       initialEntryMode: DatePickerEntryMode.calendarOnly,
-      helpText: 'Select End Date',
       cancelText: 'Cancel',
       confirmText: 'Select',
       selectableDayPredicate: (DateTime date) {
@@ -169,6 +170,7 @@ class _WorkExpFormState extends State<WorkExpForm> {
     if (picked != null && picked != _endDate) {
       setState(() {
         _endDate = picked;
+        endDateCtrl.text = dateFormat.format(_endDate);
       });
     }
   }
@@ -178,6 +180,8 @@ class _WorkExpFormState extends State<WorkExpForm> {
     titlectrl.dispose();
     companyNamectrl.dispose();
     locationctrl.dispose();
+    startDateCtrl.dispose();
+    endDateCtrl.dispose();
     super.dispose();
   }
 
@@ -279,20 +283,46 @@ class _WorkExpFormState extends State<WorkExpForm> {
                                     children: [
                                       const SizedBox(),
                                       Checkbox(
-                                        value: _currentlyWorking,
+                                        value:
+                                            workExpCtrl.currentlyWorking.value,
                                         onChanged: (value) {
                                           setState(() {
-                                            _currentlyWorking = value!;
+                                            workExpCtrl.currentlyWorking.value =
+                                                value!;
                                           });
                                         },
                                       )
                                     ])),
+                            dateFormField(
+                                label: 'Start Date',
+                                require: true,
+                                controller: startDateCtrl,
+                                onTap: () {},
+                                validator: (value) {
+                                  if (value == null || value.isEmpty) {
+                                    return 'Please enter the start date';
+                                  }
+                                  return null;
+                                }),
+                            workExpCtrl.currentlyWorking.value
+                                ? Container()
+                                : Obx(() => dateFormField(
+                                    label: 'End Date',
+                                    require: false,
+                                    controller: endDateCtrl,
+                                    onTap: () {},
+                                    validator: (value) {
+                                      if (value == null || value.isEmpty) {
+                                        return 'Please enter the end date';
+                                      }
+                                      return null;
+                                    })),
                             primaryBtn(
-                                label: 'Select Experience Start Date',
+                                label: 'Select Internship Start Date',
                                 function: () => _selectStartDate(context)),
                             primaryBtn(
-                                label: 'Select Experience End Date',
-                                function: _currentlyWorking
+                                label: 'Select Internship End Date',
+                                function: workExpCtrl.currentlyWorking.value
                                     ? null
                                     : () => _selectEndDate(context)),
                             formDropDownField(
@@ -307,7 +337,7 @@ class _WorkExpFormState extends State<WorkExpForm> {
                                 }),
                           ]))),
                   primaryBtn(
-                    label: 'Add Work Experince',
+                    label: 'Add Internship',
                     isLoading: _isLoading,
                     function: workExpCtrl.empTypeDropdown.value == '' ||
                             workExpCtrl.indDropdown.value == '' ||
@@ -321,8 +351,8 @@ class _WorkExpFormState extends State<WorkExpForm> {
                               workExpData.add(titlectrl.text);
                               workExpData.add(companyNamectrl.text);
                               workExpData.add(locationctrl.text);
-                              workExpData.add(_startDate);
-                              workExpData.add(_endDate);
+                              workExpData.add(startDateCtrl.text);
+                              workExpData.add(endDateCtrl.text);
                               workExpCtrl.createWorkExp(workExpData);
                             }
                             await Future.delayed(const Duration(seconds: 2));

@@ -500,3 +500,59 @@ Widget studDtlsHeader(
             ])),
       ]));
 }
+
+Widget dateFormField(
+    {required label,
+    required require,
+    required controller,
+    required final Function() onTap,
+    required final String? Function(String?) validator}) {
+  return GestureDetector(
+      onTap: onTap,
+      child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 10),
+          child:
+              Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+            Padding(
+                padding: const EdgeInsets.only(bottom: 5),
+                child: RichText(
+                    text: TextSpan(children: [
+                  TextSpan(
+                      text: label,
+                      style: const TextStyle(
+                          fontSize: 12,
+                          fontFamily: 'Nunito',
+                          fontWeight: FontWeight.w500,
+                          color: kPriDark)),
+                  TextSpan(
+                    text: require ? ' *' : '',
+                    style: const TextStyle(
+                        fontSize: 12,
+                        fontFamily: 'Nunito',
+                        fontWeight: FontWeight.w500,
+                        color: kPriRed),
+                  ),
+                ]))),
+            SizedBox(
+              height: 50,
+              child: TextFormField(
+                cursorColor: kPriPurple,
+                controller: controller,
+                readOnly: true,
+                validator: validator,
+                style: const TextStyle(
+                    fontSize: 16,
+                    fontFamily: 'Nunito',
+                    fontWeight: FontWeight.w400,
+                    color: kPriDark),
+                decoration: const InputDecoration(
+                  fillColor: Colors.white,
+                  filled: true,
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(4.0)),
+                  ),
+                ),
+              ),
+            )
+          ])));
+}

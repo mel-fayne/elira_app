@@ -10,13 +10,11 @@ import 'package:fluttericon/font_awesome5_icons.dart';
 import 'package:http/http.dart' as http;
 import 'package:elira_app/utils/constants.dart';
 import 'package:get/get.dart';
-import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class WorkExpCtrl extends GetxController {
   int? studentId;
   int? wxprofileId;
-  DateFormat dateFormat = DateFormat('yyyy-MM-dd');
   List<String> industryStrs = [
     '',
     'Software Development',
@@ -36,6 +34,7 @@ class WorkExpCtrl extends GetxController {
   int formCount = 0;
   int internshipNo = 0;
   List<NumberBox> intShpBoxes = [];
+  RxBool currentlyWorking = false.obs;
 
   @override
   void onInit() async {
@@ -116,8 +115,8 @@ class WorkExpCtrl extends GetxController {
       'company_name': workExpData[1],
       'location': workExpData[2],
       'location_type': locTypeDropdown.value,
-      'start_date': dateFormat.format(workExpData[3]),
-      'end_date': dateFormat.format(workExpData[4]),
+      'start_date': workExpData[3],
+      'end_date': workExpData[4],
       'industry': indDropdown.value,
       'time_spent': timeSpent,
       'skills': []
