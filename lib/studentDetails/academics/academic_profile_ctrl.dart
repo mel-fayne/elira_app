@@ -5,7 +5,7 @@ import 'package:elira_app/studentDetails/github/tech_profile.dart';
 import 'package:elira_app/theme/global_widgets.dart';
 import 'package:elira_app/utils/constants.dart';
 import 'package:elira_app/utils/functions.dart';
-import 'package:elira_app/models/app_models.dart';
+import 'package:elira_app/utils/app_models.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:get/get.dart';

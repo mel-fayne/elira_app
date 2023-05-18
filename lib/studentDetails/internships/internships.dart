@@ -3,7 +3,7 @@ import 'package:elira_app/theme/auth_widgets.dart';
 import 'package:elira_app/theme/colors.dart';
 import 'package:elira_app/theme/global_widgets.dart';
 import 'package:elira_app/theme/text_styles.dart';
-import 'package:elira_app/models/app_models.dart';
+import 'package:elira_app/utils/app_models.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';

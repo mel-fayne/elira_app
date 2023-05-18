@@ -1,4 +1,4 @@
-import 'package:elira_app/models/student_models.dart';
+import 'package:elira_app/auth/student_models.dart';
 import 'package:elira_app/utils/functions.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';

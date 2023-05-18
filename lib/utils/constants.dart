@@ -1,4 +1,4 @@
-import 'package:elira_app/models/app_models.dart';
+import 'package:elira_app/utils/app_models.dart';
 
 const baseApiUrl = "https://melfayne.pythonanywhere.com";
 
