@@ -55,10 +55,8 @@ class LoginState extends State<Login> {
     return Scaffold(
         resizeToAvoidBottomInset: false,
         backgroundColor: kCreamBg,
-        body: Container(
-            height: MediaQuery.of(context).size.height,
-            width: double.infinity,
-            padding: const EdgeInsets.symmetric(horizontal: 30),
+        body: SingleChildScrollView(
+            padding: const EdgeInsets.symmetric(vertical: 25, horizontal: 30),
             child:
                 Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
               const Padding(

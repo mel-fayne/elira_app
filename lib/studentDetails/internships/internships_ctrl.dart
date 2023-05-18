@@ -4,7 +4,7 @@ import 'package:elira_app/studentDetails/internships/internships.dart';
 import 'package:elira_app/studentDetails/prediction.dart';
 import 'package:elira_app/theme/global_widgets.dart';
 import 'package:elira_app/utils/functions.dart';
-import 'package:elira_app/utils/models.dart';
+import 'package:elira_app/models/app_models.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttericon/font_awesome5_icons.dart';
 import 'package:http/http.dart' as http;

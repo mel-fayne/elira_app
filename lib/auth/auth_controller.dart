@@ -5,6 +5,7 @@ import 'package:elira_app/studentDetails/academics/academic_profile.dart';
 import 'package:elira_app/studentDetails/security_questions.dart';
 import 'package:elira_app/theme/global_widgets.dart';
 import 'package:elira_app/utils/constants.dart';
+import 'package:elira_app/utils/functions.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
