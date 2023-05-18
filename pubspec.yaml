@@ -44,6 +44,7 @@ dependencies:
   url_launcher: ^6.1.5
   percent_indicator: ^4.0.1
   video_player: ^2.6.1
+  fluttericon: ^2.0.0
 
 dev_dependencies:
   flutter_test:
@@ -82,6 +83,15 @@ flutter:
     - assets/images/favouriteFlavour.png
     - assets/images/firstPet.png
     - assets/images/firstPhone.png
+    - assets/images/ai.png
+    - assets/images/cs.png
+    - assets/images/db.png
+    - assets/images/gd.png
+    - assets/images/ho.png
+    - assets/images/is.png
+    - assets/images/na.png
+    - assets/images/sd.png
+    - assets/images/confetti.json
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
