@@ -4,6 +4,8 @@ import 'package:elira_app/studentDetails/academics/academic_profile.dart';
 import 'package:elira_app/studentDetails/github/tech_profile.dart';
 import 'package:elira_app/theme/global_widgets.dart';
 import 'package:elira_app/utils/constants.dart';
+import 'package:elira_app/utils/functions.dart';
+import 'package:elira_app/utils/models.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:get/get.dart';
@@ -28,7 +30,7 @@ class AcademicProfileCtrl extends GetxController {
   List<String> grades = ['', 'A', 'B', 'C', 'D', 'E'];
   List<Transcript> emptyTranscripts = [];
   Transcript currentTranscript = Transcript();
-  List<Semester> semBoxes = [];
+  List<NumberBox> semBoxes = [];
   int transcriptIdx = 0;
   AcademicProfile acProfile = AcademicProfile();
 
@@ -61,7 +63,7 @@ class AcademicProfileCtrl extends GetxController {
           if (units.isNotEmpty) {
             Transcript transcriptHolder = Transcript();
             transcriptHolder.semester.value = semester;
-            Semester sem = Semester();
+            NumberBox sem = NumberBox();
             sem.title = semester;
             semBoxes.add(sem);
 

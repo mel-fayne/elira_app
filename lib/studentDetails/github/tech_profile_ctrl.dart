@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:elira_app/studentDetails/internships/internships.dart';
 import 'package:elira_app/theme/global_widgets.dart';
+import 'package:elira_app/utils/functions.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:elira_app/utils/constants.dart';

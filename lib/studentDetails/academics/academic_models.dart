@@ -37,11 +37,6 @@ class Transcript {
   late RxList<StudentUnit> studentUnits = RxList<StudentUnit>();
 }
 
-class Semester {
-  late String title = '';
-  late RxBool complete = false.obs;
-}
-
 class CompleteUnit {
   final int id;
   final int acProfile;

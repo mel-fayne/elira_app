@@ -3,6 +3,7 @@ import 'package:elira_app/studentDetails/academics/academic_profile_ctrl.dart';
 import 'package:elira_app/theme/colors.dart';
 import 'package:elira_app/theme/global_widgets.dart';
 import 'package:elira_app/theme/text_styles.dart';
+import 'package:elira_app/utils/models.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -212,9 +213,9 @@ class _TranscriptPageState extends State<TranscriptPage> {
         ]));
   }
 
-  Widget buildSemBox(Semester sem) => buildSingleSem(sem: sem);
+  Widget buildSemBox(NumberBox sem) => buildSingleSem(sem: sem);
 
-  Widget buildSingleSem({required Semester sem}) {
+  Widget buildSingleSem({required NumberBox sem}) {
     return Obx(() => Container(
         width: 50,
         height: 40,

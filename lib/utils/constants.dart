@@ -1,5 +1,3 @@
-import 'package:shared_preferences/shared_preferences.dart';
-
 const baseApiUrl = "https://melfayne.pythonanywhere.com";
 
 // ---------------- Auth Urls ----------------
@@ -24,12 +22,13 @@ const wxpUrl = "$baseApiUrl/workexp";
 const ssProfileUrl = "$baseApiUrl/softskill_profile";
 const studentPredUrl = "$baseApiUrl/classifier/";
 
-get headers {
-  return {"Content-Type": "application/json"};
-}
-
-Future<int?> getStudentId() async {
-  var prefs = await SharedPreferences.getInstance();
-  var studentId = prefs.getInt("studentId");
-  return studentId;
-}
+const specialisations = [
+  'Software Development',
+  'A.I & Data',
+  'Design & Graphics',
+  'Networking',
+  'Hardware, IoT & Operating Systems',
+  'Cyber Security',
+  'Database Administration',
+  'Information Systems'
+];
