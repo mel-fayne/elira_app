@@ -1,17 +1,26 @@
+import 'dart:io';
+
 import 'package:elira_app/auth/auth_controller.dart';
 import 'package:elira_app/core/navigator.dart';
 import 'package:elira_app/core/onboard.dart';
 import 'package:elira_app/theme/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:get/get.dart';
 
 void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  if (Platform.isAndroid) {
+    await AndroidInAppWebViewController.setWebContentsDebuggingEnabled(true);
+  }
+
   SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
     statusBarColor: Colors.transparent,
   ));
-  WidgetsFlutterBinding.ensureInitialized();
+
   runApp(const MyApp());
+
   debugPrint('Hello there...');
 }
 
