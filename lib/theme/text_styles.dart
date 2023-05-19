@@ -15,8 +15,8 @@ const kWhiteSubTitle = TextStyle(
     fontFamily: 'Nunito');
 
 const kPageTitle = TextStyle(
-    color: kPriDark,
-    fontSize: 32,
+    color: kPriPurple,
+    fontSize: 28,
     fontWeight: FontWeight.w700,
     fontFamily: 'Nunito');
 

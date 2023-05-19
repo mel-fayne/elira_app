@@ -9,3 +9,9 @@ Future<int?> getStudentId() async {
   var studentId = prefs.getInt("studentId");
   return studentId;
 }
+
+Future<String?> getSpecialisation() async {
+  var prefs = await SharedPreferences.getInstance();
+  var specialisation = prefs.getString("specialisation");
+  return specialisation;
+}

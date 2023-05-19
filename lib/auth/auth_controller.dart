@@ -144,6 +144,7 @@ class AuthController extends GetxController {
     var prefs = await SharedPreferences.getInstance();
     await prefs.setString("profile", json.encode(profile));
     await prefs.setInt("studentId", profile['id']);
+    await prefs.setString("specialisation", profile['specialisation']);
   }
 
   Future<String?> getProfile() async {

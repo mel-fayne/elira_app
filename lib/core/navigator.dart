@@ -1,7 +1,7 @@
 import 'package:elira_app/screens/home.dart';
 import 'package:elira_app/screens/insights.dart';
 import 'package:elira_app/screens/myaccount.dart';
-import 'package:elira_app/screens/news.dart';
+import 'package:elira_app/screens/news/news.dart';
 import 'package:elira_app/theme/colors.dart';
 import 'package:flutter/material.dart';
 

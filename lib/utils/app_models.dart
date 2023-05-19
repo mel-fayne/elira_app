@@ -10,10 +10,12 @@ class SpecialisationConst {
   String name;
   String abbreviation;
   String imagePath;
+  List<String> newsTags;
 
   SpecialisationConst(
       {required this.id,
       required this.name,
       required this.abbreviation,
-      required this.imagePath});
+      required this.imagePath,
+      required this.newsTags});
 }
