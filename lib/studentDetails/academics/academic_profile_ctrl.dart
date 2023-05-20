@@ -1,5 +1,5 @@
 import 'dart:convert';
-import 'package:elira_app/studentDetails/academics/academic_models.dart';
+import 'package:elira_app/screens/insights/academics/academic_models.dart';
 import 'package:elira_app/studentDetails/academics/academic_profile.dart';
 import 'package:elira_app/studentDetails/github/tech_profile.dart';
 import 'package:elira_app/theme/global_widgets.dart';
@@ -32,7 +32,6 @@ class AcademicProfileCtrl extends GetxController {
   Transcript currentTranscript = Transcript();
   List<NumberBox> semBoxes = [];
   int transcriptIdx = 0;
-  AcademicProfile acProfile = AcademicProfile();
 
   @override
   void onInit() async {
@@ -135,10 +134,6 @@ class AcademicProfileCtrl extends GetxController {
             .value = true;
         transcriptIdx = transcriptIdx + 1;
         if (transcriptIdx == emptyTranscripts.length) {
-          // store academic profile POST as done
-          var prefs = await SharedPreferences.getInstance();
-          await prefs.setBool("acProfileDone", true);
-
           showSnackbar(
               path: Icons.check_rounded,
               title: "Academic Profile Complete!",

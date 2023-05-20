@@ -1,4 +1,4 @@
-import 'package:elira_app/studentDetails/academics/academic_models.dart';
+import 'package:elira_app/screens/insights/academics/academic_models.dart';
 import 'package:elira_app/studentDetails/academics/academic_profile_ctrl.dart';
 import 'package:elira_app/theme/colors.dart';
 import 'package:elira_app/theme/global_widgets.dart';

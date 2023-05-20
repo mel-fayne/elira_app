@@ -24,17 +24,6 @@ const wxpUrl = "$baseApiUrl/workexp";
 const ssProfileUrl = "$baseApiUrl/softskill_profile";
 const studentPredUrl = "$baseApiUrl/classifier/";
 
-// const specialisations = [
-//   'Software Development',
-//   'A.I & Data',
-//   'Design & Graphics',
-//   'Networking',
-//   'Hardware, IoT & Operating Systems',
-//   'Cyber Security',
-//   'Database Administration',
-//   'Information Systems'
-// ];
-
 var specObjects = <SpecialisationConst>[
   SpecialisationConst(
       id: 1,
