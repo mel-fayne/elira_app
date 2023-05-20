@@ -382,7 +382,7 @@ Widget studDtlsHeader(
               margin: const EdgeInsets.only(right: 15),
               padding: const EdgeInsets.all(5),
               decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(50),
+                  shape: BoxShape.circle,
                   border: Border.all(
                       width: academicCurrent ? 2.5 : 1.0,
                       color: academicCurrent ? kPriMaroon : kPriPurple),
@@ -406,7 +406,7 @@ Widget studDtlsHeader(
               margin: const EdgeInsets.only(right: 15),
               padding: const EdgeInsets.all(5),
               decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(50),
+                  shape: BoxShape.circle,
                   border: Border.all(
                       width: technicalCurrent ? 2.5 : 1.0,
                       color: technicalCurrent ? kPriMaroon : kPriPurple),
@@ -430,7 +430,7 @@ Widget studDtlsHeader(
               margin: const EdgeInsets.only(right: 15),
               padding: const EdgeInsets.all(5),
               decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(50),
+                  shape: BoxShape.circle,
                   border: Border.all(
                       width: internshipCurrent ? 2.5 : 1.0,
                       color: internshipCurrent ? kPriMaroon : kPriPurple),

@@ -1,4 +1,8 @@
+import 'package:elira_app/theme/colors.dart';
+import 'package:elira_app/theme/text_styles.dart';
 import 'package:get/get.dart';
+import 'package:fl_chart/fl_chart.dart';
+import 'package:flutter/material.dart';
 
 class AcademicProfile {
   final int id;
@@ -16,37 +20,41 @@ class AcademicProfile {
 }
 
 class AcademicGrouping {
-  final int code;
+  final String code;
   final String name;
   final double completeness;
   final double total;
   final List<StudentUnit> groupUnits;
+  bool isExpanded;
 
   AcademicGrouping.fromJson(Map<String, dynamic> json)
       : code = json['code'],
         name = getGroupName(json['code']),
         completeness = json['completeness'],
         total = json['total'],
+        isExpanded = false,
         groupUnits =
             json['units'].map((unit) => StudentUnit.fromJson(unit)).toList();
 }
 
+class CarouselSemesters {
+  final String title;
+  final double average;
+  final List<StudentSemester> yearSemesters;
+
+  CarouselSemesters(this.title, this.average, this.yearSemesters);
+}
+
 class StudentSemester {
-  final double semester;
+  final String semester;
   final String honours;
   final String status;
   final double average;
   final double difference;
   final List<StudentUnit> semUnits;
 
-  StudentSemester.fromJson(Map<String, dynamic> json)
-      : status = json['status'],
-        honours = json['honours'],
-        semester = 1.0,
-        average = json['average'],
-        difference = json['difference'],
-        semUnits =
-            json['units'].map((unit) => StudentUnit.fromJson(unit)).toList();
+  StudentSemester(this.semester, this.honours, this.status, this.average,
+      this.difference, this.semUnits);
 }
 
 class StudentUnit {
@@ -58,6 +66,7 @@ class StudentUnit {
   final String unitName;
   final String unitCodes;
   final String unitPerc;
+  final String credit;
 
   StudentUnit.fromJson(Map<String, dynamic> json)
       : id = json['id'],
@@ -67,7 +76,8 @@ class StudentUnit {
         mark = RxDouble(json['mark']),
         unitName = json['unit_name'],
         unitCodes = json['unit_codes'],
-        unitPerc = json['unit_perc'];
+        unitPerc = json['unit_perc'],
+        credit = getCredit(json['mark']);
 
   Map<String, dynamic> toJson() => {
         'id': id,
@@ -165,4 +175,162 @@ RxDouble gradeMark(String grade) {
     mark = 20.0;
   }
   return mark.obs;
+}
+
+String getCredit(double mark) {
+  String credit = '';
+  if (mark >= 40) {
+    credit = 'Pass';
+  } else {
+    credit = 'Fail';
+  }
+  return credit;
+}
+
+List<Color> gradientColors = [kLightPurple, kCreamBg];
+
+Widget bottomTitleWidgets(double value, TitleMeta meta) {
+  const style = TextStyle(
+    fontWeight: FontWeight.bold,
+    fontSize: 16,
+  );
+  Widget text;
+  switch (value.toInt()) {
+    case 1:
+      text = const Text('1.1', style: kBlackTxt);
+      break;
+    case 2:
+      text = const Text('1.2', style: kBlackTxt);
+      break;
+    case 3:
+      text = const Text('2.1', style: kBlackTxt);
+      break;
+    case 4:
+      text = const Text('2.2', style: kBlackTxt);
+      break;
+    case 5:
+      text = const Text('3.2', style: kBlackTxt);
+      break;
+    case 6:
+      text = const Text('3.1', style: kBlackTxt);
+      break;
+    case 7:
+      text = const Text('4.2', style: kBlackTxt);
+      break;
+    case 8:
+      text = const Text('4.1', style: kBlackTxt);
+      break;
+
+    default:
+      text = const Text('', style: style);
+      break;
+  }
+
+  return SideTitleWidget(
+    axisSide: meta.axisSide,
+    child: text,
+  );
+}
+
+Widget leftTitleWidgets(double value, TitleMeta meta) {
+  const style = TextStyle(
+    fontWeight: FontWeight.bold,
+    fontSize: 15,
+  );
+  String text;
+  switch (value.toInt()) {
+    case 1:
+      text = '0';
+      break;
+    case 2:
+      text = '20';
+      break;
+    case 3:
+      text = '40';
+      break;
+    case 4:
+      text = '60';
+      break;
+    case 5:
+      text = '80';
+      break;
+    case 6:
+      text = '100';
+      break;
+    default:
+      return Container();
+  }
+
+  return Text(text, style: style, textAlign: TextAlign.left);
+}
+
+LineChartData mainData(List<FlSpot> chartData) {
+  return LineChartData(
+    gridData: FlGridData(
+      show: true,
+      drawVerticalLine: true,
+      horizontalInterval: 1,
+      verticalInterval: 1,
+      getDrawingHorizontalLine: (value) {
+        return FlLine(
+          color: kPriPurple,
+          strokeWidth: 1,
+        );
+      },
+      getDrawingVerticalLine: (value) {
+        return FlLine(
+          color: kPriPurple,
+          strokeWidth: 1,
+        );
+      },
+    ),
+    titlesData: FlTitlesData(
+      show: true,
+      rightTitles: AxisTitles(
+        sideTitles: SideTitles(showTitles: false),
+      ),
+      topTitles: AxisTitles(
+        sideTitles: SideTitles(showTitles: false),
+      ),
+      bottomTitles: AxisTitles(
+        sideTitles: SideTitles(
+          showTitles: true,
+          reservedSize: 30,
+          interval: 1,
+          getTitlesWidget: bottomTitleWidgets,
+        ),
+      ),
+      leftTitles: AxisTitles(
+        sideTitles: SideTitles(
+          showTitles: true,
+          interval: 1,
+          getTitlesWidget: leftTitleWidgets,
+          reservedSize: 42,
+        ),
+      ),
+    ),
+    borderData: FlBorderData(
+      show: true,
+      border: Border.all(color: kPriDark),
+    ),
+    minX: 0,
+    maxX: 8,
+    minY: 0,
+    maxY: 100,
+    lineBarsData: [
+      LineChartBarData(
+        spots: chartData,
+        isCurved: true,
+        gradient: LinearGradient(
+          colors: gradientColors,
+        ),
+        barWidth: 5,
+        isStrokeCapRound: true,
+        dotData: FlDotData(
+          show: false,
+        ),
+        belowBarData: BarAreaData(show: true, gradient: kDarkGradient),
+      ),
+    ],
+  );
 }

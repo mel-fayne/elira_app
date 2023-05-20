@@ -24,7 +24,7 @@ const wxpUrl = "$baseApiUrl/workexp";
 const ssProfileUrl = "$baseApiUrl/softskill_profile";
 const studentPredUrl = "$baseApiUrl/classifier/";
 
-var specObjects = <SpecialisationConst>[
+List<SpecialisationConst> specObjects = <SpecialisationConst>[
   SpecialisationConst(
       id: 1,
       abbreviation: 'AI',

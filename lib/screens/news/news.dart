@@ -45,9 +45,10 @@ class _NewsPageState extends State<NewsPage> {
                     Get.to(const EventsPage());
                   },
                   child: Container(
-                    decoration: BoxDecoration(
-                        color: kPriDark,
-                        borderRadius: BorderRadius.circular(50)),
+                    decoration: const BoxDecoration(
+                      color: kPriDark,
+                      shape: BoxShape.circle,
+                    ),
                     child:
                         const Icon(Icons.event, color: Colors.white, size: 16),
                   )),
@@ -56,9 +57,10 @@ class _NewsPageState extends State<NewsPage> {
                     Get.to(const JobsPage());
                   },
                   child: Container(
-                    decoration: BoxDecoration(
-                        color: kPriDark,
-                        borderRadius: BorderRadius.circular(50)),
+                    decoration: const BoxDecoration(
+                      color: kPriDark,
+                      shape: BoxShape.circle,
+                    ),
                     child:
                         const Icon(Icons.work, color: Colors.white, size: 16),
                   ))
@@ -184,7 +186,8 @@ class _NewsPageState extends State<NewsPage> {
                               width: 5,
                               height: 5,
                               decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(50)))),
+                                shape: BoxShape.circle,
+                              ))),
                       Text(
                         newsPiece.days,
                         style: const TextStyle(

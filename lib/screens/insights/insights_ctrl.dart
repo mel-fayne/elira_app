@@ -54,6 +54,12 @@ class InsightsController extends GetxController {
           stdAcdGroups.add(AcademicGrouping.fromJson(details));
         });
 
+        // sort groupings and units
+        stdAcdGroups.sort((a, b) => b.total.compareTo(a.total));
+        for (var group in stdAcdGroups) {
+          group.groupUnits.sort((a, b) => b.mark.value.compareTo(a.mark.value));
+        }
+
         showSnackbar(
             path: Icons.close_rounded,
             title: "Seems there's a problem on our side!",

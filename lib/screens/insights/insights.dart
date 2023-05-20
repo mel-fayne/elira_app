@@ -1,6 +1,5 @@
 import 'package:elira_app/screens/insights/academics/academics.dart';
 import 'package:fluttericon/entypo_icons.dart';
-import 'package:fluttericon/font_awesome5_icons.dart';
 import 'package:percent_indicator/percent_indicator.dart';
 import 'package:elira_app/screens/insights/insights_ctrl.dart';
 import 'package:elira_app/theme/colors.dart';
@@ -132,8 +131,8 @@ Widget traitWidget(
       },
       child: Container(
           width: 150,
-          decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(50), color: Colors.white),
+          decoration:
+              const BoxDecoration(shape: BoxShape.circle, color: Colors.white),
           child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
