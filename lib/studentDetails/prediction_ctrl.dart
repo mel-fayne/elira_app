@@ -53,7 +53,7 @@ class PredictionCtrl extends GetxController {
     } catch (error) {
       showSnackbar(
           path: Icons.close_rounded,
-          title: "Failed To Create Internship Profile!",
+          title: "Failed To Load Prediction!",
           subtitle: "Please check your internet connection or try again later");
     }
   }
