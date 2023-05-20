@@ -111,8 +111,9 @@ class _NewsPageState extends State<NewsPage> {
                                             newsctrl.currentTag.value == tag,
                                         onSelected: (bool selected) {
                                           setState(() {
-                                            if (selected)
+                                            if (selected) {
                                               newsctrl.currentTag.value = tag;
+                                            }
                                             newsctrl.filterByTags();
                                           });
                                         },
