@@ -1,8 +1,8 @@
-import 'package:elira_app/screens/events/events.dart';
-import 'package:elira_app/screens/jobs/jobs.dart';
+import 'package:elira_app/screens/news/events/events.dart';
+import 'package:elira_app/screens/news/jobs/jobs.dart';
 import 'package:elira_app/screens/news/news_ctrl.dart';
 import 'package:elira_app/screens/news/news_models.dart';
-import 'package:elira_app/screens/web_view.dart';
+import 'package:elira_app/screens/news/web_view.dart';
 import 'package:elira_app/theme/colors.dart';
 import 'package:elira_app/theme/global_widgets.dart';
 import 'package:elira_app/theme/text_styles.dart';

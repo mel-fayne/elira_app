@@ -1,5 +1,5 @@
-import 'package:elira_app/screens/events/events_ctrl.dart';
-import 'package:elira_app/screens/web_view.dart';
+import 'package:elira_app/screens/news/events/events_ctrl.dart';
+import 'package:elira_app/screens/news/web_view.dart';
 import 'package:elira_app/theme/colors.dart';
 import 'package:elira_app/theme/global_widgets.dart';
 import 'package:elira_app/theme/text_styles.dart';

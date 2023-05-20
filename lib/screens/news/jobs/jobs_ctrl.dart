@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:elira_app/screens/jobs/job_models.dart';
+import 'package:elira_app/screens/news/jobs/job_models.dart';
 import 'package:elira_app/theme/global_widgets.dart';
 import 'package:elira_app/utils/constants.dart';
 import 'package:elira_app/utils/functions.dart';
