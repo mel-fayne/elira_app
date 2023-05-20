@@ -3,6 +3,8 @@ import 'package:elira_app/screens/insights/academics/academic_recommendations.da
 import 'package:elira_app/theme/colors.dart';
 import 'package:elira_app/theme/global_widgets.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttericon/font_awesome5_icons.dart';
+import 'package:fluttericon/font_awesome_icons.dart';
 import 'package:get/get.dart';
 
 class AcademicsPage extends StatefulWidget {
@@ -55,8 +57,8 @@ class _AcademicsPageState extends State<AcademicsPage> {
                     child: tabitem(
                         label: "Overview", path: Icons.collections_bookmark))),
                 Obx(() => Tab(
-                    child:
-                        tabitem(label: "Recommendations", path: Icons.stars)))
+                    child: tabitem(
+                        label: "Recommendations", path: FontAwesome.magic)))
               ],
             ),
           ),
