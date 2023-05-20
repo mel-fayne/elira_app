@@ -322,33 +322,6 @@ PreferredSizeWidget pageAppbar({required String pageTitle}) {
   );
 }
 
-Widget loadingWidget() {
-  return Dialog(
-      insetPadding: const EdgeInsets.only(bottom: 90, left: 26, right: 26),
-      child: Container(
-          padding: const EdgeInsets.only(bottom: 20),
-          decoration: const BoxDecoration(color: kPriPurple),
-          child: const Padding(
-              padding: EdgeInsets.symmetric(horizontal: 15),
-              child:
-                  Row(crossAxisAlignment: CrossAxisAlignment.center, children: [
-                CircularProgressIndicator(
-                  color: Colors.white,
-                  strokeWidth: 2.0,
-                ),
-                Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 10),
-                  child: Text(
-                    'Please Wait',
-                    style: TextStyle(
-                        fontFamily: 'Nunito',
-                        fontSize: 12,
-                        fontWeight: FontWeight.w700),
-                  ),
-                )
-              ]))));
-}
-
 Widget tabitem({label, path}) {
   return Row(
       crossAxisAlignment: CrossAxisAlignment.center,
@@ -556,6 +529,19 @@ Widget dateFormField(
               ),
             )
           ])));
+}
+
+Widget loadingWidget(String title) {
+  return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 70, vertical: 10),
+      child: Column(children: [
+        Text(
+          title,
+          textAlign: TextAlign.center,
+          style: kPurpleTxt,
+        ),
+        Lottie.asset('assets/images/loading.json', width: 250),
+      ]));
 }
 
 Widget noDataWidget(String title) {

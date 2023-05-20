@@ -15,6 +15,8 @@ class NewsCtrl extends GetxController {
   RxList<NewsPiece> otherNews = RxList<NewsPiece>();
   RxList<NewsPiece> filteredNews = RxList<NewsPiece>();
   RxString currentTag = ''.obs;
+  RxBool loadingData = false.obs;
+  RxBool showData = false.obs;
 
   @override
   void onInit() async {
@@ -25,6 +27,8 @@ class NewsCtrl extends GetxController {
   }
 
   getStudentNews() async {
+    filteredNews.clear();
+    loadingData.value = true;
     try {
       var res = await http.get(Uri.parse(filterNewsUrl + studentId.toString()),
           headers: headers);
@@ -45,6 +49,12 @@ class NewsCtrl extends GetxController {
             .newsTags;
         currentTag.value = newsTags[0];
         filteredNews.value = [...studentNews];
+        loadingData.value = false;
+        if (filteredNews.isNotEmpty) {
+          showData.value = true;
+        } else {
+          showData.value = false;
+        }
       } else {
         showSnackbar(
             path: Icons.close_rounded,
@@ -61,10 +71,18 @@ class NewsCtrl extends GetxController {
   }
 
   filterByTags() async {
+    filteredNews.clear();
+    loadingData.value = true;
     clearLists();
     filteredNews.value =
         otherNews.where((obj) => obj.tags.contains(currentTag.value)).toList();
     update();
+    loadingData.value = false;
+    if (filteredNews.isNotEmpty) {
+      showData.value = true;
+    } else {
+      showData.value = false;
+    }
   }
 
   clearLists() {

@@ -51,178 +51,200 @@ class _EventsPageState extends State<EventsPage> {
     return Scaffold(
         body: SingleChildScrollView(
             padding: const EdgeInsets.all(20),
-            child:
-                Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              Obx(() => Text(
-                    eventsCtrl.currentView.value,
-                    style: kPageTitle,
-                  )),
-              Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 15),
-                  child: Row(children: [
-                    const Icon(Icons.filter_alt_outlined,
-                        size: 25, color: Colors.white),
-                    const Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 10),
-                        child: Text(
-                          'Filter By',
-                          style: kPageSubTitle,
-                        )),
-                    dropDownField(
-                      bgcolor: kPriPurple,
-                      dropItems: ['Date', 'Format', 'Theme'],
-                      dropdownValue: eventsCtrl.filterField,
-                      function: (String? newValue) {
-                        setState(() {
-                          eventsCtrl.filterField = newValue!;
-                          showModalBottomSheet(
-                              context: context,
-                              builder: (context) {
-                                return StatefulBuilder(builder:
-                                    (BuildContext context,
-                                        StateSetter setSheetState) {
-                                  return eventsCtrl.filterField == 'Date'
-                                      ? dateFilterSheet(context, setSheetState)
-                                      : eventsCtrl.filterField == 'Theme'
-                                          ? themeFilterSheet(
-                                              context, setSheetState)
-                                          : formatFilterSheet(
-                                              context, setSheetState);
-                                });
-                              });
-                        });
-                      },
-                    )
-                  ])),
-              GestureDetector(
-                  onTap: () {
-                    eventsCtrl.resetFilters();
-                  },
-                  child: const Icon(
-                    Icons.refresh,
-                    color: kPriPurple,
-                    size: 25,
-                  )),
-              Obx(() => eventsCtrl.showData.value
-                  ? Column(
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      children: [
-                          Obx(
-                            () => ListView.builder(
-                                shrinkWrap: true,
-                                physics: const NeverScrollableScrollPhysics(),
-                                itemBuilder: (context, index) {
-                                  var events = eventsCtrl.filteredEvents;
-                                  return GestureDetector(
-                                      onTap: () {
-                                        Get.to(AppWebView(
-                                            url: events[index].link,
-                                            title: events[index].title));
-                                      },
-                                      child: ListTile(
-                                        leading: ShaderMask(
-                                            shaderCallback: (rect) =>
-                                                kDarkGradient
-                                                    .createShader(rect),
-                                            blendMode: BlendMode.darken,
-                                            child: Container(
-                                                padding:
-                                                    const EdgeInsets.all(10),
-                                                decoration: BoxDecoration(
-                                                    image: DecorationImage(
-                                                        image: AssetImage(
-                                                            events[index].img),
-                                                        fit: BoxFit.cover,
-                                                        colorFilter:
-                                                            const ColorFilter
-                                                                    .mode(
-                                                                Colors.black45,
-                                                                BlendMode
-                                                                    .darken))))),
-                                        title: Column(children: [
-                                          Text(
-                                            '${events[index].title} - ${events[index].organiser}',
-                                            style: kPurpleTxt,
-                                          ),
-                                          Padding(
-                                              padding:
-                                                  const EdgeInsets.symmetric(
-                                                      vertical: 3),
-                                              child: Text(
-                                                events[index].location,
-                                                style: kLightTxt,
-                                              )),
-                                          Text(
-                                            events[index].themeString,
-                                            style: kDarkTxt,
-                                          )
-                                        ]),
-                                        trailing: Column(children: [
-                                          events[index].formats.isNotEmpty
-                                              ? Container(
-                                                  height: 15,
-                                                  decoration:
-                                                      const BoxDecoration(
-                                                          color: kLightPurple),
-                                                  padding: const EdgeInsets
-                                                          .symmetric(
-                                                      vertical: 5,
-                                                      horizontal: 10),
-                                                  child: Row(children: [
+            child: Obx(() => eventsCtrl.loadingData.value
+                ? loadingWidget('Loading Events ...')
+                : Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                        Obx(() => Text(
+                              eventsCtrl.currentView.value,
+                              style: kPageTitle,
+                            )),
+                        Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 15),
+                            child: Row(children: [
+                              const Icon(Icons.filter_alt_outlined,
+                                  size: 25, color: Colors.white),
+                              const Padding(
+                                  padding: EdgeInsets.symmetric(horizontal: 10),
+                                  child: Text(
+                                    'Filter By',
+                                    style: kPageSubTitle,
+                                  )),
+                              dropDownField(
+                                bgcolor: kPriPurple,
+                                dropItems: ['Date', 'Format', 'Theme'],
+                                dropdownValue: eventsCtrl.filterField,
+                                function: (String? newValue) {
+                                  setState(() {
+                                    eventsCtrl.filterField = newValue!;
+                                    showModalBottomSheet(
+                                        context: context,
+                                        builder: (context) {
+                                          return StatefulBuilder(builder:
+                                              (BuildContext context,
+                                                  StateSetter setSheetState) {
+                                            return eventsCtrl.filterField ==
+                                                    'Date'
+                                                ? dateFilterSheet(
+                                                    context, setSheetState)
+                                                : eventsCtrl.filterField ==
+                                                        'Theme'
+                                                    ? themeFilterSheet(
+                                                        context, setSheetState)
+                                                    : formatFilterSheet(
+                                                        context, setSheetState);
+                                          });
+                                        });
+                                  });
+                                },
+                              )
+                            ])),
+                        GestureDetector(
+                            onTap: () {
+                              eventsCtrl.resetFilters();
+                            },
+                            child: const Icon(
+                              Icons.refresh,
+                              color: kPriPurple,
+                              size: 25,
+                            )),
+                        Obx(() => eventsCtrl.showData.value
+                            ? Column(
+                                crossAxisAlignment: CrossAxisAlignment.end,
+                                children: [
+                                    Obx(
+                                      () => ListView.builder(
+                                          shrinkWrap: true,
+                                          physics:
+                                              const NeverScrollableScrollPhysics(),
+                                          itemBuilder: (context, index) {
+                                            var events =
+                                                eventsCtrl.filteredEvents;
+                                            return GestureDetector(
+                                                onTap: () {
+                                                  Get.to(AppWebView(
+                                                      url: events[index].link,
+                                                      title:
+                                                          events[index].title));
+                                                },
+                                                child: ListTile(
+                                                  leading: ShaderMask(
+                                                      shaderCallback: (rect) =>
+                                                          kDarkGradient
+                                                              .createShader(
+                                                                  rect),
+                                                      blendMode:
+                                                          BlendMode.darken,
+                                                      child: Container(
+                                                          padding:
+                                                              const EdgeInsets.all(
+                                                                  10),
+                                                          decoration: BoxDecoration(
+                                                              image: DecorationImage(
+                                                                  image: AssetImage(
+                                                                      events[index]
+                                                                          .img),
+                                                                  fit: BoxFit
+                                                                      .cover,
+                                                                  colorFilter:
+                                                                      const ColorFilter.mode(Colors.black45, BlendMode.darken))))),
+                                                  title: Column(children: [
+                                                    Text(
+                                                      '${events[index].title} - ${events[index].organiser}',
+                                                      style: kPurpleTxt,
+                                                    ),
                                                     Padding(
                                                         padding:
                                                             const EdgeInsets
-                                                                .only(right: 5),
-                                                        child: Icon(
-                                                            events[index]
-                                                                    .formats
-                                                                    .contains(
-                                                                        'Bootcamp')
-                                                                ? FontAwesome5
-                                                                    .campground
-                                                                : events[index]
-                                                                        .formats
-                                                                        .contains(
-                                                                            'Hackathon')
-                                                                    ? FontAwesome5
-                                                                        .trophy
-                                                                    : Icons
-                                                                        .people,
-                                                            size: 10,
-                                                            color: kPriPurple)),
+                                                                    .symmetric(
+                                                                vertical: 3),
+                                                        child: Text(
+                                                          events[index]
+                                                              .location,
+                                                          style: kLightTxt,
+                                                        )),
                                                     Text(
-                                                        events[index]
-                                                            .formats
-                                                            .toString(),
-                                                        style: kPurpleTxt)
+                                                      events[index].themeString,
+                                                      style: kDarkTxt,
+                                                    )
                                                   ]),
-                                                )
-                                              : const SizedBox(),
-                                          Container(
-                                              height: 40,
-                                              decoration: const BoxDecoration(
-                                                  color: kLightPurple),
-                                              padding: const EdgeInsets.all(5),
-                                              child: Column(
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment
-                                                          .spaceBetween,
-                                                  children: [
-                                                    Text(events[index].day,
-                                                        style: kPurpleTxt),
-                                                    Text(events[index].month,
-                                                        style: kPurpleTxt)
-                                                  ]))
-                                        ]),
-                                      ));
-                                },
-                                itemCount: eventsCtrl.filteredEvents.length),
-                          ),
-                        ])
-                  : noDataWidget(
-                      '''No events found matching your filter at the moment
+                                                  trailing: Column(children: [
+                                                    events[index]
+                                                            .formats
+                                                            .isNotEmpty
+                                                        ? Container(
+                                                            height: 15,
+                                                            decoration:
+                                                                const BoxDecoration(
+                                                                    color:
+                                                                        kLightPurple),
+                                                            padding:
+                                                                const EdgeInsets
+                                                                        .symmetric(
+                                                                    vertical: 5,
+                                                                    horizontal:
+                                                                        10),
+                                                            child: Row(
+                                                                children: [
+                                                                  Padding(
+                                                                      padding: const EdgeInsets
+                                                                              .only(
+                                                                          right:
+                                                                              5),
+                                                                      child: Icon(
+                                                                          events[index].formats.contains('Bootcamp')
+                                                                              ? FontAwesome5.campground
+                                                                              : events[index].formats.contains('Hackathon')
+                                                                                  ? FontAwesome5.trophy
+                                                                                  : Icons.people,
+                                                                          size: 10,
+                                                                          color: kPriPurple)),
+                                                                  Text(
+                                                                      events[index]
+                                                                          .formats
+                                                                          .toString(),
+                                                                      style:
+                                                                          kPurpleTxt)
+                                                                ]),
+                                                          )
+                                                        : const SizedBox(),
+                                                    Container(
+                                                        height: 40,
+                                                        decoration:
+                                                            const BoxDecoration(
+                                                                color:
+                                                                    kLightPurple),
+                                                        padding:
+                                                            const EdgeInsets
+                                                                .all(5),
+                                                        child: Column(
+                                                            mainAxisAlignment:
+                                                                MainAxisAlignment
+                                                                    .spaceBetween,
+                                                            children: [
+                                                              Text(
+                                                                  events[index]
+                                                                      .day,
+                                                                  style:
+                                                                      kPurpleTxt),
+                                                              Text(
+                                                                  events[index]
+                                                                      .month,
+                                                                  style:
+                                                                      kPurpleTxt)
+                                                            ]))
+                                                  ]),
+                                                ));
+                                          },
+                                          itemCount:
+                                              eventsCtrl.filteredEvents.length),
+                                    ),
+                                  ])
+                            : noDataWidget(
+                                '''No events found matching your filter at the moment
                                     Check again tomorrow'''))
-            ])),
+                      ]))),
         floatingActionButton: _showBackToTopBtn
             ? FloatingActionButton(
                 elevation: 2.0,

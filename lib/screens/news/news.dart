@@ -4,6 +4,7 @@ import 'package:elira_app/screens/news/news_ctrl.dart';
 import 'package:elira_app/screens/news/news_models.dart';
 import 'package:elira_app/screens/web_view.dart';
 import 'package:elira_app/theme/colors.dart';
+import 'package:elira_app/theme/global_widgets.dart';
 import 'package:elira_app/theme/text_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -22,7 +23,7 @@ class NewsPage extends StatefulWidget {
 }
 
 class _NewsPageState extends State<NewsPage> {
-  DateFormat dateFormat = DateFormat('E dd MMM');
+  DateFormat dateFormat = DateFormat('E, dd MMM');
   String today = '';
 
   @override
@@ -64,62 +65,75 @@ class _NewsPageState extends State<NewsPage> {
             ]),
         body: SingleChildScrollView(
             padding: const EdgeInsets.all(20),
-            child:
-                Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              const Text(
-                'Daily Rundown',
-                style: kPageTitle,
-              ),
-              Padding(
-                padding: const EdgeInsets.only(top: 10, bottom: 25),
-                child: Text(
-                  today,
-                  style: kPurpleTxt,
-                ),
-              ),
-              const Text(
-                'Filter News by Topic',
-                style: kBlackTxt,
-              ),
-              Padding(
-                  padding: const EdgeInsets.only(top: 10, bottom: 25),
-                  child: SingleChildScrollView(
-                      scrollDirection: Axis.horizontal,
-                      child: Wrap(
-                        spacing: 8.0,
-                        children: List<Widget>.generate(
-                          newsctrl.newsTags.length,
-                          (int index) {
-                            final tag = newsctrl.newsTags[index];
-                            return FilterChip(
-                              disabledColor: kLightPurple,
-                              selectedColor: kPriPurple,
-                              label: Text(
-                                tag,
-                                style: TextStyle(
-                                    color: newsctrl.currentTag.value == tag
-                                        ? Colors.white
-                                        : kPriDark),
-                              ),
-                              selected: newsctrl.currentTag.value == tag,
-                              onSelected: (bool selected) {
-                                setState(() {
-                                  if (selected) newsctrl.currentTag.value = tag;
-                                  newsctrl.filterByTags();
-                                });
-                              },
-                            );
-                          },
-                        ).toList(),
-                      ))),
-              Obx(() => StaggeredGrid.count(
-                      crossAxisCount: 2,
-                      crossAxisSpacing: 7,
-                      mainAxisSpacing: 12,
-                      children: [
-                        ...newsctrl.filteredNews.map(buildNewsPiece).toList()
-                      ]))
-            ])));
+            child: Obx(() => jobsCtrl.loadingData.value
+                ? loadingWidget('Loading News ...')
+                : Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                        const Text(
+                          'Daily Rundown',
+                          style: kPageTitle,
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(top: 10, bottom: 25),
+                          child: Text(
+                            today,
+                            style: kPurpleTxt,
+                          ),
+                        ),
+                        const Text(
+                          'Filter News by Topic',
+                          style: kBlackTxt,
+                        ),
+                        Padding(
+                            padding: const EdgeInsets.only(top: 10, bottom: 25),
+                            child: SingleChildScrollView(
+                                scrollDirection: Axis.horizontal,
+                                child: Wrap(
+                                  spacing: 8.0,
+                                  children: List<Widget>.generate(
+                                    newsctrl.newsTags.length,
+                                    (int index) {
+                                      final tag = newsctrl.newsTags[index];
+                                      return FilterChip(
+                                        disabledColor: kLightPurple,
+                                        selectedColor: kPriPurple,
+                                        label: Text(
+                                          tag,
+                                          style: TextStyle(
+                                              color:
+                                                  newsctrl.currentTag.value ==
+                                                          tag
+                                                      ? Colors.white
+                                                      : kPriDark),
+                                        ),
+                                        selected:
+                                            newsctrl.currentTag.value == tag,
+                                        onSelected: (bool selected) {
+                                          setState(() {
+                                            if (selected)
+                                              newsctrl.currentTag.value = tag;
+                                            newsctrl.filterByTags();
+                                          });
+                                        },
+                                      );
+                                    },
+                                  ).toList(),
+                                ))),
+                        Obx(() => newsctrl.showData.value
+                            ? Obx(() => StaggeredGrid.count(
+                                    crossAxisCount: 2,
+                                    crossAxisSpacing: 7,
+                                    mainAxisSpacing: 12,
+                                    children: [
+                                      ...newsctrl.filteredNews
+                                          .map(buildNewsPiece)
+                                          .toList()
+                                    ]))
+                            : noDataWidget(
+                                '''No news found matching your filter at the moment
+                                    Check again tomorrow'''))
+                      ]))));
   }
 
   Widget buildNewsPiece(NewsPiece newsPiece) =>

@@ -18,17 +18,18 @@ class EventsController extends GetxController {
   RxList<TechEvent> weekEvents = RxList<TechEvent>();
   RxList<TechEvent> laterEvents = RxList<TechEvent>();
   RxList<TechEvent> filteredEvents = RxList<TechEvent>();
-
-  RxBool showData = true.obs;
+  RxBool loadingData = false.obs;
+  RxBool showData = false.obs;
 
   @override
-  void onInit() {
+  void onInit() async {
     super.onInit();
-    loadNews();
+    await loadEvents();
   }
 
-  loadNews() async {
+  loadEvents() async {
     filteredEvents.clear();
+    loadingData.value = true;
     try {
       var res =
           await http.get(Uri.parse('${filterEventsUrl}7'), headers: headers);
@@ -45,6 +46,13 @@ class EventsController extends GetxController {
         }
         filteredEvents.value = [...weekEvents];
         currentView.value = 'This Week';
+        update();
+        loadingData.value = false;
+        if (filteredEvents.isNotEmpty) {
+          showData.value = true;
+        } else {
+          showData.value = false;
+        }
       } else {
         showSnackbar(
             path: Icons.close_rounded,
@@ -61,6 +69,8 @@ class EventsController extends GetxController {
   }
 
   filterByDate() {
+    loadingData.value = true;
+    showData.value = false;
     filteredEvents.clear();
     DateFormat eventDateFormat = DateFormat("EEE, dd MMM");
     var filterDate = DateTime.now();
@@ -102,9 +112,23 @@ class EventsController extends GetxController {
       }
     }
     update();
+    loadingData.value = false;
+    if (filteredEvents.isNotEmpty) {
+      showData.value = true;
+    } else {
+      showData.value = false;
+    }
+    loadingData.value = false;
+    if (filteredEvents.isNotEmpty) {
+      showData.value = true;
+    } else {
+      showData.value = false;
+    }
   }
 
   filterByTheme() {
+    loadingData.value = true;
+    showData.value = false;
     filteredEvents.clear();
     for (var item in laterEvents) {
       if (item.themes.contains(filterTheme.value)) {
@@ -113,9 +137,17 @@ class EventsController extends GetxController {
     }
     currentView.value = 'Events - $filterTheme';
     update();
+    loadingData.value = false;
+    if (filteredEvents.isNotEmpty) {
+      showData.value = true;
+    } else {
+      showData.value = false;
+    }
   }
 
   filterByFormat() {
+    loadingData.value = true;
+    showData.value = false;
     filteredEvents.clear();
     for (var item in laterEvents) {
       if (item.formats.contains(filterFormat.value)) {
@@ -124,9 +156,17 @@ class EventsController extends GetxController {
     }
     currentView.value = 'Events - $filterFormat';
     update();
+    loadingData.value = false;
+    if (filteredEvents.isNotEmpty) {
+      showData.value = true;
+    } else {
+      showData.value = false;
+    }
   }
 
   resetFilters() {
+    loadingData.value = true;
+    showData.value = false;
     filteredEvents.clear();
     filterField = 'Date';
     filteredEvents.value = [...weekEvents];
@@ -135,5 +175,11 @@ class EventsController extends GetxController {
     filterPeriod.value = '';
     filterTheme.value = '';
     update();
+    loadingData.value = false;
+    if (filteredEvents.isNotEmpty) {
+      showData.value = true;
+    } else {
+      showData.value = false;
+    }
   }
 }
