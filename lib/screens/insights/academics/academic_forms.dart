@@ -1,5 +1,7 @@
+// ignore_for_file: no_logic_in_create_state
+
+import 'package:elira_app/screens/insights/academics/academic_ctrl.dart';
 import 'package:elira_app/screens/insights/academics/academic_models.dart';
-import 'package:elira_app/studentDetails/academics/academic_profile_ctrl.dart';
 import 'package:elira_app/theme/colors.dart';
 import 'package:elira_app/theme/global_widgets.dart';
 import 'package:elira_app/theme/text_styles.dart';
@@ -7,18 +9,19 @@ import 'package:elira_app/utils/app_models.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-final acProfCtrl = Get.put(AcademicProfileCtrl());
+final acProfCtrl = Get.put(AcademicController());
 
-class AcademicProfilePage extends StatefulWidget {
+class AcademicProfileForm extends StatefulWidget {
   static const routeName = "/AcademicProfile";
-  const AcademicProfilePage({Key? key}) : super(key: key);
+
+  const AcademicProfileForm({Key? key}) : super(key: key);
 
   @override
   // ignore: library_private_types_in_public_api
-  _AcademicProfilePageState createState() => _AcademicProfilePageState();
+  _AcademicProfileFormState createState() => _AcademicProfileFormState();
 }
 
-class _AcademicProfilePageState extends State<AcademicProfilePage> {
+class _AcademicProfileFormState extends State<AcademicProfileForm> {
   @override
   void initState() {
     super.initState();
@@ -82,7 +85,7 @@ class _AcademicProfilePageState extends State<AcademicProfilePage> {
                                     acProfCtrl.semDropdown.value == ''
                                 ? null
                                 : () async {
-                                    await acProfCtrl.getTranscripts();
+                                    await acProfCtrl.createAcademicProfile();
                                   })
                       ])
                 ])));
@@ -100,6 +103,7 @@ class TranscriptPage extends StatefulWidget {
 
 class _TranscriptPageState extends State<TranscriptPage> {
   bool _isLoading = false;
+
   @override
   void initState() {
     super.initState();
@@ -159,16 +163,15 @@ class _TranscriptPageState extends State<TranscriptPage> {
                     color: kPriPurple,
                   ),
                   acProfCtrl.currentTranscript.studentUnits.isNotEmpty
-                      ? Obx(
-                          () => ListView(
-                              shrinkWrap: true,
-                              physics: const NeverScrollableScrollPhysics(),
-                              children: [
-                                ...acProfCtrl.currentTranscript.studentUnits
-                                    .map(buildUnitRow)
-                                    .toList()
-                              ]),
-                        )
+                      ? Obx(() => ListView.builder(
+                          shrinkWrap: true,
+                          physics: const NeverScrollableScrollPhysics(),
+                          itemBuilder: (context, index) {
+                            var units =
+                                acProfCtrl.currentTranscript.studentUnits;
+                            return buildSingleUnit(
+                                setState: setState, unit: units[index]);
+                          }))
                       : Container(),
                   primaryBtn(
                       label: 'Upload Transcript',
@@ -184,33 +187,6 @@ class _TranscriptPageState extends State<TranscriptPage> {
                         });
                       })
                 ])));
-  }
-
-  Widget buildUnitRow(StudentUnit unit) => buildSingleUnit(unit: unit);
-
-  Widget buildSingleUnit({required StudentUnit unit}) {
-    return Padding(
-        padding: const EdgeInsets.symmetric(vertical: 10),
-        child: Row(children: [
-          Container(
-              width: 225,
-              margin: const EdgeInsets.only(right: 25),
-              padding: const EdgeInsets.symmetric(horizontal: 15),
-              child: Text(
-                unit.unitName,
-                style: kBlackTxt,
-                softWrap: true,
-              )),
-          dropDownField(
-              dropdownValue: unit.grade.value,
-              dropItems: acProfCtrl.grades,
-              bgcolor: kPriPurple,
-              function: (String? newValue) {
-                setState(() {
-                  unit.grade.value = newValue!;
-                });
-              })
-        ]));
   }
 
   Widget buildSemBox(NumberBox sem) => buildSingleSem(sem: sem);
@@ -242,4 +218,87 @@ class _TranscriptPageState extends State<TranscriptPage> {
                     fontFamily: 'Nunito',
                     fontWeight: FontWeight.bold))));
   }
+}
+
+class AddTranscriptForm extends StatefulWidget {
+  final bool isEdit;
+  const AddTranscriptForm({Key? key, required this.isEdit}) : super(key: key);
+
+  @override
+  // ignore: library_private_types_in_public_api
+  _AddTranscriptFormState createState() => _AddTranscriptFormState(isEdit);
+}
+
+class _AddTranscriptFormState extends State<AddTranscriptForm> {
+  bool isEdit;
+  bool _isLoading = false;
+
+  _AddTranscriptFormState(this.isEdit);
+
+  // ignore: non_constant_identifier_names
+  final _AddTranscriptFormForm = GlobalKey<FormState>();
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return formPopupScaffold(
+      formKey: _AddTranscriptFormForm,
+      children: [
+        popupHeader(label: isEdit ? 'Edit Transcript' : 'Add Transcript'),
+        acProfCtrl.currentTranscript.studentUnits.isNotEmpty
+            ? Obx(() => ListView.builder(
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                itemBuilder: (context, index) {
+                  var units = acProfCtrl.currentTranscript.studentUnits;
+                  return buildSingleUnit(
+                      setState: setState, unit: units[index]);
+                }))
+            : Container(),
+        primaryBtn(
+            label: isEdit ? 'Edit Transcript' : 'Upload Transcript',
+            isLoading: _isLoading,
+            function: () async {
+              setState(() {
+                _isLoading = true;
+              });
+              acProfCtrl.updateAcademicProfile(false);
+              await Future.delayed(const Duration(seconds: 5));
+              setState(() {
+                _isLoading = false;
+              });
+            })
+      ],
+    );
+  }
+}
+
+Widget buildSingleUnit(
+    {required StudentUnit unit, required StateSetter setState}) {
+  return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 10),
+      child: Row(children: [
+        Container(
+            width: 225,
+            margin: const EdgeInsets.only(right: 25),
+            padding: const EdgeInsets.symmetric(horizontal: 15),
+            child: Text(
+              unit.unitName,
+              style: kWhiteTxt,
+              softWrap: true,
+            )),
+        dropDownField(
+            dropdownValue: unit.grade.value,
+            dropItems: acProfCtrl.grades,
+            bgcolor: kCreamBg,
+            function: (String? newValue) {
+              setState(() {
+                unit.grade.value = newValue!;
+              });
+            })
+      ]));
 }

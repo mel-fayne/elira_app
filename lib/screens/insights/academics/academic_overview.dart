@@ -79,7 +79,11 @@ class _AcademicOverviewState extends State<AcademicOverview> {
             child: Text('Semester Summary', style: kPageSubTitle)),
         Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
           const SizedBox(),
-          primaryBtn(label: 'Add Transcript', function: () {})
+          primaryBtn(
+              label: 'Add Transcript',
+              function: () {
+                acProfCtrl.getNewTranscript();
+              })
         ]),
         Container(
             decoration: BoxDecoration(
@@ -336,7 +340,10 @@ final List<Widget> semSLiders = acProfCtrl.carSems
                                     style: kBlackTxt,
                                   ),
                                   GestureDetector(
-                                      onTap: () {},
+                                      onTap: () {
+                                        acProfCtrl.setEditTranscript(
+                                            item.title, semesters[index]);
+                                      },
                                       child: Container(
                                           width: 25,
                                           height: 25,

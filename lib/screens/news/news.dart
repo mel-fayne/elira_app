@@ -185,7 +185,7 @@ class _NewsPageState extends State<NewsPage> {
                           child: Container(
                               width: 5,
                               height: 5,
-                              decoration: BoxDecoration(
+                              decoration: const BoxDecoration(
                                 shape: BoxShape.circle,
                               ))),
                       Text(

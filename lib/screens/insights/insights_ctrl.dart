@@ -59,7 +59,7 @@ class InsightsController extends GetxController {
         for (var group in stdAcdGroups) {
           group.groupUnits.sort((a, b) => b.mark.value.compareTo(a.mark.value));
         }
-
+      } else {
         showSnackbar(
             path: Icons.close_rounded,
             title: "Seems there's a problem on our side!",
@@ -81,7 +81,7 @@ class InsightsController extends GetxController {
   //     debugPrint("Got response ${res.statusCode}");
   //     if (res.statusCode == 200) {
   //       var respBody = json.decode(res.body);
-
+// } else {
   //       showSnackbar(
   //           path: Icons.close_rounded,
   //           title: "Seems there's a problem on our side!",
@@ -103,7 +103,7 @@ class InsightsController extends GetxController {
   //     debugPrint("Got response ${res.statusCode}");
   //     if (res.statusCode == 200) {
   //       var respBody = json.decode(res.body);
-
+// } else {
   //       showSnackbar(
   //           path: Icons.close_rounded,
   //           title: "Seems there's a problem on our side!",
@@ -125,7 +125,7 @@ class InsightsController extends GetxController {
   //     debugPrint("Got response ${res.statusCode}");
   //     if (res.statusCode == 200) {
   //       var respBody = json.decode(res.body);
-
+// } else {
   //       showSnackbar(
   //           path: Icons.close_rounded,
   //           title: "Seems there's a problem on our side!",

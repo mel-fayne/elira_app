@@ -92,7 +92,7 @@ class StudentUnit {
 }
 
 class Transcript {
-  late RxString semester = '.'.obs;
+  late RxString semester = ''.obs;
   late RxList<StudentUnit> studentUnits = RxList<StudentUnit>();
 }
 

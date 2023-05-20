@@ -18,6 +18,7 @@ const filterEventsUrl = "$baseApiUrl/filter_events/";
 
 const academicProfileUrl = "$baseApiUrl/academic_profile";
 const studentUnitUrl = "$baseApiUrl/student_units/";
+const newTranscriptUrl = "$baseApiUrl/student_transcript/";
 const techProfileUrl = "$baseApiUrl/tech_profile";
 const wxpProfileUrl = "$baseApiUrl/wx_profile";
 const wxpUrl = "$baseApiUrl/workexp";
