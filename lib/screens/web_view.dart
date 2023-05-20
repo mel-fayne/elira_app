@@ -3,23 +3,23 @@ import 'package:elira_app/theme/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-class SingleNewsPiece extends StatefulWidget {
+class AppWebView extends StatefulWidget {
   final String url;
   final String title;
 
-  const SingleNewsPiece({Key? key, required this.url, required this.title})
+  const AppWebView({Key? key, required this.url, required this.title})
       : super(key: key);
 
   @override
   // ignore: no_logic_in_create_state
-  State<SingleNewsPiece> createState() => _SingleNewsPieceState(url, title);
+  State<AppWebView> createState() => _AppWebViewState(url, title);
 }
 
-class _SingleNewsPieceState extends State<SingleNewsPiece> {
+class _AppWebViewState extends State<AppWebView> {
   String url = '';
   String title = '';
 
-  _SingleNewsPieceState(this.url, this.title);
+  _AppWebViewState(this.url, this.title);
 
   InAppWebViewController? webViewController;
 

@@ -1,6 +1,8 @@
+import 'package:elira_app/screens/events/events.dart';
+import 'package:elira_app/screens/jobs/jobs.dart';
 import 'package:elira_app/screens/news/news_ctrl.dart';
 import 'package:elira_app/screens/news/news_models.dart';
-import 'package:elira_app/screens/news/single_news.dart';
+import 'package:elira_app/screens/web_view.dart';
 import 'package:elira_app/theme/colors.dart';
 import 'package:elira_app/theme/text_styles.dart';
 import 'package:flutter/material.dart';
@@ -32,15 +34,47 @@ class _NewsPageState extends State<NewsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+        appBar: AppBar(
+            elevation: 0,
+            backgroundColor: Colors.transparent,
+            automaticallyImplyLeading: false,
+            actions: [
+              GestureDetector(
+                  onTap: () {
+                    Get.to(const EventsPage());
+                  },
+                  child: Container(
+                    decoration: BoxDecoration(
+                        color: kPriDark,
+                        borderRadius: BorderRadius.circular(50)),
+                    child:
+                        const Icon(Icons.event, color: Colors.white, size: 16),
+                  )),
+              GestureDetector(
+                  onTap: () {
+                    Get.to(const JobsPage());
+                  },
+                  child: Container(
+                    decoration: BoxDecoration(
+                        color: kPriDark,
+                        borderRadius: BorderRadius.circular(50)),
+                    child:
+                        const Icon(Icons.work, color: Colors.white, size: 16),
+                  ))
+            ]),
         body: SingleChildScrollView(
             padding: const EdgeInsets.all(20),
             child:
                 Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+              const Text(
+                'Daily Rundown',
+                style: kPageTitle,
+              ),
               Padding(
                 padding: const EdgeInsets.only(top: 10, bottom: 25),
                 child: Text(
-                  "$today Rundown",
-                  style: kPageTitle,
+                  today,
+                  style: kPurpleTxt,
                 ),
               ),
               const Text(
@@ -94,14 +128,10 @@ class _NewsPageState extends State<NewsPage> {
   Widget buildSingleNewsPiece({required NewsPiece newsPiece}) {
     return GestureDetector(
         onTap: () {
-          Get.to(SingleNewsPiece(url: newsPiece.link, title: newsPiece.title));
+          Get.to(AppWebView(url: newsPiece.link, title: newsPiece.title));
         },
         child: ShaderMask(
-            shaderCallback: (rect) => const LinearGradient(
-                  begin: Alignment.bottomCenter,
-                  end: Alignment.center,
-                  colors: [kPriDark, Colors.transparent],
-                ).createShader(rect),
+            shaderCallback: (rect) => kDarkGradient.createShader(rect),
             blendMode: BlendMode.darken,
             child: Container(
               padding: const EdgeInsets.all(10),

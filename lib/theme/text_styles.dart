@@ -15,7 +15,7 @@ const kWhiteSubTitle = TextStyle(
     fontFamily: 'Nunito');
 
 const kPageTitle = TextStyle(
-    color: kPriPurple,
+    color: kPriDark,
     fontSize: 28,
     fontWeight: FontWeight.w700,
     fontFamily: 'Nunito');
@@ -28,8 +28,20 @@ const kPageSubTitle = TextStyle(
 
 const kBlackTxt = TextStyle(
     color: kPriDark,
-    fontSize: 14,
-    fontWeight: FontWeight.w600,
+    fontSize: 12,
+    fontWeight: FontWeight.w400,
+    fontFamily: 'Nunito');
+
+const kLightTxt = TextStyle(
+    color: kPriDark,
+    fontSize: 12,
+    fontWeight: FontWeight.w300,
+    fontFamily: 'Nunito');
+
+const kDarkTxt = TextStyle(
+    color: kPriDark,
+    fontSize: 12,
+    fontWeight: FontWeight.w700,
     fontFamily: 'Nunito');
 
 const kLightPurTxt = TextStyle(

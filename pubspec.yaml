@@ -73,10 +73,6 @@ flutter:
   # To add assets to your application, add an assets section, like this:
   assets:
     - assets/images/elira-light-logo.png
-    - assets/images/calculate.json
-    - assets/images/loading.json
-    - assets/images/success.json
-    - assets/images/fail.json
     - assets/images/Graduation-cuate.png
     - assets/images/Graduation.mp4
     - assets/images/childhoodNickname.png
@@ -94,6 +90,7 @@ flutter:
     - assets/images/na.png
     - assets/images/sd.png
     - assets/images/confetti.json
+    - assets/images/no_data.json
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware

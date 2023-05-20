@@ -2,9 +2,9 @@ import 'package:elira_app/theme/colors.dart';
 import 'package:elira_app/theme/text_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttericon/font_awesome5_icons.dart';
-import 'package:fluttericon/typicons_icons.dart';
 import 'package:get/get.dart';
 import 'package:fluttericon/entypo_icons.dart';
+import 'package:lottie/lottie.dart';
 
 void showSnackbar({required String title, required String subtitle, path}) {
   Get.snackbar(
@@ -21,10 +21,11 @@ Widget primaryBtn(
     {required String label,
     isLoading = false,
     bgColor = kPriDark,
+    width = 300,
     required void Function()? function}) {
   return Container(
     height: 70,
-    width: 300,
+    width: width,
     padding: const EdgeInsets.symmetric(vertical: 10),
     alignment: Alignment.center,
     child: ElevatedButton(
@@ -555,4 +556,17 @@ Widget dateFormField(
               ),
             )
           ])));
+}
+
+Widget noDataWidget(String title) {
+  return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 70, vertical: 10),
+      child: Column(children: [
+        Text(
+          title,
+          textAlign: TextAlign.center,
+          style: kPurpleTxt,
+        ),
+        Lottie.asset('assets/images/no_data.json', width: 250),
+      ]));
 }

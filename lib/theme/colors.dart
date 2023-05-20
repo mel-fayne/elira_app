@@ -9,3 +9,9 @@ const kPriRed = Color(0xFFDC3345);
 const kPriMaroon = Color(0xFFAA367C);
 const kLightPurple = Color(0xFFBDAEDB);
 const kLightGrey = Color(0xFF141418);
+
+const kDarkGradient = LinearGradient(
+  begin: Alignment.bottomCenter,
+  end: Alignment.center,
+  colors: [kPriDark, Colors.transparent],
+);
