@@ -1,8 +1,8 @@
-import 'package:elira_app/screens/insights/academics/academic_forms.dart';
+import 'package:elira_app/screens/insights/academics/views/academic_forms.dart';
+import 'package:elira_app/screens/insights/github/views/technical_forms.dart';
 import 'package:elira_app/screens/insights/insights_ctrl.dart';
 import 'package:elira_app/screens/insights/insights_models.dart';
 import 'package:elira_app/screens/insights/academics/academic_models.dart';
-import 'package:elira_app/studentDetails/github/tech_profile.dart';
 import 'package:elira_app/utils/app_models.dart';
 import 'package:elira_app/utils/functions.dart';
 import 'package:fl_chart/fl_chart.dart';
@@ -192,12 +192,11 @@ class AcademicController extends GetxController {
         var holder = CompleteUnit.fromStudentUnit(unit);
         units.add(holder.toJson());
       }
-      double current_sem = double.parse(semDropdown.value);
+      double currentSem = double.parse(semDropdown.value);
       if (!fromSetup) {
-        current_sem = getNextSem(insightsCtrl.stdAcdProf.currentSem.toString());
+        currentSem = getNextSem(insightsCtrl.stdAcdProf.currentSem.toString());
       }
-      var body =
-          jsonEncode({'current_sem': current_sem, 'studentUnits': units});
+      var body = jsonEncode({'current_sem': currentSem, 'studentUnits': units});
       var res = await http.patch(
           Uri.parse(studentUnitUrl + acProfileId.toString()),
           body: body,
@@ -223,7 +222,7 @@ class AcademicController extends GetxController {
                 subtitle:
                     "Let's add your technical details next and get to predicting");
             await Future.delayed(const Duration(seconds: 2));
-            Get.off(const TechProfilePage());
+            Get.off(const TechProfileForm());
           } else {
             currentTranscript = emptyTranscripts[transcriptIdx];
             showSnackbar(
@@ -234,12 +233,14 @@ class AcademicController extends GetxController {
           }
           update();
         } else {
+          getSemUnitsData();
+          insightsCtrl.getStudentInsights();
           showSnackbar(
               path: FontAwesome5.hand_sparkles,
               title: "Transcript Added!",
               subtitle:
                   "Congratulations on finishing ${insightsCtrl.stdAcdProf.currentSem.toString()}");
-          await Future.delayed(const Duration(seconds: 2));
+          await Future.delayed(const Duration(seconds: 7));
           Get.back();
         }
       } else {

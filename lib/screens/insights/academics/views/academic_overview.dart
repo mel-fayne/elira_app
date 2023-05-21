@@ -128,11 +128,12 @@ class _AcademicOverviewState extends State<AcademicOverview> {
         const Padding(
             padding: EdgeInsets.only(top: 20, bottom: 10),
             child: Text('Average Trend', style: kPageSubTitle)),
-        Container(
-            decoration: BoxDecoration(
-                color: kLightPurple, borderRadius: BorderRadius.circular(15)),
-            padding: const EdgeInsets.all(15),
-            margin: const EdgeInsets.only(bottom: 10),
+        Card(
+            elevation: 4,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(7),
+            ),
+            color: kLightPurple,
             child: AspectRatio(
               aspectRatio: 1.70,
               child: Padding(

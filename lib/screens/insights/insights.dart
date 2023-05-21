@@ -1,5 +1,7 @@
-import 'package:elira_app/screens/insights/academics/academics.dart';
+import 'package:elira_app/screens/insights/academics/views//academics.dart';
+import 'package:elira_app/screens/insights/github/views/technicals.dart';
 import 'package:fluttericon/entypo_icons.dart';
+import 'package:fluttericon/font_awesome5_icons.dart';
 import 'package:percent_indicator/percent_indicator.dart';
 import 'package:elira_app/screens/insights/insights_ctrl.dart';
 import 'package:elira_app/theme/colors.dart';
@@ -110,12 +112,17 @@ class _InsightsPageState extends State<InsightsPage> {
                                             stat: insightsCtrl
                                                 .stdAcdProf.currentAvg
                                                 .toString(),
-                                            page: const AcademicsPage())
+                                            page: const AcademicsPage()),
+                                        traitWidget(
+                                            iconPath: FontAwesome5.code,
+                                            title: 'Technicals',
+                                            stat: insightsCtrl
+                                                .stdTchProf.topLanguage,
+                                            page: const TechnicalsPage())
                                       ]))
                             ])
-                      : noDataWidget(
-                          '''No news found matching your filter at the moment
-                                    Check again tomorrow''')))
+                      : noDataWidget('''Computing Insights Failed! 
+                          Please check your connection or try again later''')))
             ])));
   }
 }

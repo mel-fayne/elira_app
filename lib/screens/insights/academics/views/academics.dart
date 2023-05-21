@@ -1,9 +1,8 @@
-import 'package:elira_app/screens/insights/academics/academic_overview.dart';
-import 'package:elira_app/screens/insights/academics/academic_recommendations.dart';
+import 'package:elira_app/screens/insights/academics/views/academic_overview.dart';
+import 'package:elira_app/screens/insights/academics/views/academic_recommendations.dart';
 import 'package:elira_app/theme/colors.dart';
 import 'package:elira_app/theme/global_widgets.dart';
 import 'package:flutter/material.dart';
-import 'package:fluttericon/font_awesome5_icons.dart';
 import 'package:fluttericon/font_awesome_icons.dart';
 import 'package:get/get.dart';
 
