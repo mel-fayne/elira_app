@@ -195,6 +195,7 @@ class InsightsController extends GetxController {
               .map((skill) => StudentUnit.fromJson(skill))
               .toList();
         });
+        stdSsProf.skills.sort((a, b) => b.score.compareTo(a.score));
       } else {
         showSnackbar(
             path: Icons.close_rounded,

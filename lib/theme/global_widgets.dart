@@ -54,23 +54,6 @@ Widget primaryBtn(
   );
 }
 
-Widget smallBtn({required String label, required VoidCallback function}) {
-  return MaterialButton(
-    minWidth: 100,
-    height: 40,
-    onPressed: function,
-    color: kPriDark,
-    elevation: 0,
-    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
-    child: Text(label,
-        style: const TextStyle(
-            color: Colors.white,
-            fontFamily: 'Nunito',
-            fontSize: 14,
-            fontWeight: FontWeight.w500)),
-  );
-}
-
 Widget popupHeader({label}) {
   return Padding(
       padding: const EdgeInsets.only(top: 18, bottom: 7),
@@ -291,35 +274,6 @@ Widget formPopupScaffold({
                       child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: children))))));
-}
-
-PreferredSizeWidget pageAppbar({required String pageTitle}) {
-  return AppBar(
-    bottom: PreferredSize(
-      preferredSize: const Size.fromHeight(1.0),
-      child: Container(
-        color: kPriDark,
-        height: 1.0,
-      ),
-    ),
-    elevation: 4,
-    toolbarHeight: 80,
-    leading: Padding(
-      padding: const EdgeInsets.only(left: 13),
-      child: IconButton(
-        icon: const Icon(Icons.keyboard_arrow_left),
-        onPressed: () {
-          Get.back();
-        },
-      ),
-    ),
-    title: Text(
-      pageTitle,
-      style: const TextStyle(
-          fontFamily: 'Nunito', fontSize: 18, fontWeight: FontWeight.w700),
-    ),
-    centerTitle: true,
-  );
 }
 
 Widget tabitem({label, path}) {
