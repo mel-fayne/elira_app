@@ -9,6 +9,8 @@ import 'package:elira_app/theme/global_widgets.dart';
 import 'package:elira_app/theme/text_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:elira_app/core/navigator.dart';
+import 'package:lottie/lottie.dart';
 
 final insightsCtrl = Get.put(InsightsController());
 
@@ -66,32 +68,37 @@ class _InsightsPageState extends State<InsightsPage> {
                                 decoration: BoxDecoration(
                                     color: kPriPurple,
                                     borderRadius: BorderRadius.circular(15)),
-                                child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.center,
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Padding(
-                                          padding:
-                                              const EdgeInsets.only(bottom: 7),
-                                          child: Text(
-                                            insightsCtrl.studentSpec.name,
-                                            style: kLightPurTxt,
-                                          )),
-                                      CircularPercentIndicator(
-                                        radius: 120.0,
-                                        lineWidth: 13.0,
-                                        animation: true,
-                                        percent: 0.7,
-                                        center: Text(
-                                          '${insightsCtrl.studentSpec.score}%',
-                                          style: kWhiteTitle,
-                                        ),
-                                        circularStrokeCap:
-                                            CircularStrokeCap.round,
-                                        progressColor: kLightPurple,
-                                      ),
-                                    ]),
+                                child: GestureDetector(
+                                    onTap: () {
+                                      Get.to(const PredictionPage());
+                                    },
+                                    child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.center,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: [
+                                          Padding(
+                                              padding: const EdgeInsets.only(
+                                                  bottom: 7),
+                                              child: Text(
+                                                insightsCtrl.studentSpec.name,
+                                                style: kLightPurTxt,
+                                              )),
+                                          CircularPercentIndicator(
+                                            radius: 120.0,
+                                            lineWidth: 13.0,
+                                            animation: true,
+                                            percent: 0.7,
+                                            center: Text(
+                                              '${insightsCtrl.studentSpec.score}%',
+                                              style: kWhiteTitle,
+                                            ),
+                                            circularStrokeCap:
+                                                CircularStrokeCap.round,
+                                            progressColor: kLightPurple,
+                                          ),
+                                        ])),
                               ),
                               const Text(
                                 'Profile Summary',
@@ -130,6 +137,126 @@ class _InsightsPageState extends State<InsightsPage> {
                       : noDataWidget('''Computing Insights Failed! 
                           Please check your connection or try again later''')))
             ])));
+  }
+}
+
+class PredictionPage extends StatefulWidget {
+  static const routeName = "/PredictionPage";
+  const PredictionPage({Key? key}) : super(key: key);
+
+  @override
+  // ignore: library_private_types_in_public_api
+  _PredictionPageState createState() => _PredictionPageState();
+}
+
+class _PredictionPageState extends State<PredictionPage> {
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+        resizeToAvoidBottomInset: false,
+        backgroundColor: kCreamBg,
+        body: SingleChildScrollView(
+            padding: const EdgeInsets.symmetric(vertical: 25, horizontal: 30),
+            child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  const Text('Your Specialisation',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                          color: kPriDark,
+                          fontSize: 16,
+                          fontWeight: FontWeight.w500)),
+                  Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 10),
+                      child: Text(insightsCtrl.studentSpec.name,
+                          textAlign: TextAlign.center,
+                          style: const TextStyle(
+                              color: kPriPurple,
+                              fontSize: 22,
+                              fontWeight: FontWeight.w700))),
+                  RichText(
+                    textAlign: TextAlign.center,
+                    text: TextSpan(
+                      text: '${insightsCtrl.studentSpec.score.toString()}%',
+                      style: const TextStyle(
+                          fontSize: 14,
+                          fontFamily: 'Nunito',
+                          fontWeight: FontWeight.w700,
+                          color: kPriMaroon),
+                      children: const <TextSpan>[
+                        TextSpan(
+                            text: ' match',
+                            style: TextStyle(
+                                fontSize: 12,
+                                fontFamily: 'Nunito',
+                                fontWeight: FontWeight.w500,
+                                color: kPriDark)),
+                      ],
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 15),
+                    child: Stack(children: [
+                      Lottie.asset(
+                        'assets/images/confetti.json',
+                        width: 270,
+                        height: 270,
+                      ),
+                      Image.asset(insightsCtrl.studentSpec.imagePath,
+                          width: 200, height: 200, fit: BoxFit.fill),
+                    ]),
+                  ),
+                  Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Container(),
+                        primaryBtn(
+                            label: 'Explore Insights',
+                            function: () {
+                              Get.off(const NavigatorHandler(1));
+                            })
+                      ]),
+                  Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 15),
+                      child: ListView.builder(
+                          itemCount: insightsCtrl.allSpecs.length,
+                          itemBuilder: (context, index) {
+                            var spec = insightsCtrl.allSpecs[index];
+                            return Card(
+                                color: kPriPurple,
+                                elevation: 4.0,
+                                child: ListTile(
+                                    leading: Container(
+                                        width: 50,
+                                        height: 50,
+                                        decoration: BoxDecoration(
+                                          color: kLightPurple,
+                                          borderRadius:
+                                              BorderRadius.circular(50),
+                                        ),
+                                        child: Text(spec.name,
+                                            style: const TextStyle(
+                                                color: kPriPurple,
+                                                fontSize: 16,
+                                                fontWeight: FontWeight.w500))),
+                                    title: Text(spec.name,
+                                        style: const TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.w700)),
+                                    trailing: Text(spec.score.toString(),
+                                        style: const TextStyle(
+                                            color: kLightPurple,
+                                            fontSize: 14,
+                                            fontWeight: FontWeight.w500))));
+                          }))
+                ])));
   }
 }
 

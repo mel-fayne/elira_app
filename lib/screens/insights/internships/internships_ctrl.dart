@@ -1,9 +1,9 @@
 import 'dart:convert';
 
+import 'package:elira_app/screens/insights/insights.dart';
 import 'package:elira_app/screens/insights/insights_ctrl.dart';
 import 'package:elira_app/screens/insights/internships/internships_models.dart';
 import 'package:elira_app/screens/insights/internships/views/internship_forms.dart';
-import 'package:elira_app/studentDetails/prediction.dart';
 import 'package:elira_app/theme/colors.dart';
 import 'package:elira_app/theme/global_widgets.dart';
 import 'package:elira_app/utils/functions.dart';
@@ -208,6 +208,7 @@ class WorkExpController extends GetxController {
           if (isEdit) {
             snackTitle = "Internship Updated!";
           }
+          await insightsCtrl.getStudentInsights();
           showSnackbar(
               path: Icons.check_rounded,
               title: snackTitle,
@@ -223,6 +224,7 @@ class WorkExpController extends GetxController {
 
           formCount++;
           if (formCount == internshipNo) {
+            await insightsCtrl.getStudentInsights();
             showSnackbar(
                 path: FontAwesome5.hand_sparkles,
                 title: "High-five! You did it!",

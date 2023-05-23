@@ -1,5 +1,4 @@
 import 'package:elira_app/screens/news/events/events.dart';
-import 'package:elira_app/screens/news/jobs/jobs.dart';
 import 'package:elira_app/screens/news/news_ctrl.dart';
 import 'package:elira_app/screens/news/news_models.dart';
 import 'package:elira_app/screens/news/web_view.dart';
@@ -51,23 +50,11 @@ class _NewsPageState extends State<NewsPage> {
                     ),
                     child:
                         const Icon(Icons.event, color: Colors.white, size: 16),
-                  )),
-              GestureDetector(
-                  onTap: () {
-                    Get.to(const JobsPage());
-                  },
-                  child: Container(
-                    decoration: const BoxDecoration(
-                      color: kPriDark,
-                      shape: BoxShape.circle,
-                    ),
-                    child:
-                        const Icon(Icons.work, color: Colors.white, size: 16),
                   ))
             ]),
         body: SingleChildScrollView(
             padding: const EdgeInsets.all(20),
-            child: Obx(() => jobsCtrl.loadingData.value
+            child: Obx(() => newsctrl.loadingData.value
                 ? loadingWidget('Loading News ...')
                 : Column(
                     crossAxisAlignment: CrossAxisAlignment.start,

@@ -1,11 +1,10 @@
-import 'package:elira_app/screens/news/jobs/job_models.dart';
-import 'package:elira_app/screens/news/jobs/jobs_ctrl.dart';
+import 'package:elira_app/screens/insights/internships/jobs/job_models.dart';
+import 'package:elira_app/screens/insights/internships/jobs/jobs_ctrl.dart';
 import 'package:elira_app/screens/news/web_view.dart';
 import 'package:elira_app/theme/colors.dart';
 import 'package:elira_app/theme/global_widgets.dart';
 import 'package:elira_app/theme/text_styles.dart';
 import 'package:flutter/material.dart';
-import 'package:fluttericon/font_awesome5_icons.dart';
 import 'package:get/get.dart';
 
 final jobsCtrl = Get.put(JobsController());

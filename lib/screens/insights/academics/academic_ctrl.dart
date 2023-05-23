@@ -182,9 +182,6 @@ class AcademicController extends GetxController {
   }
 
   updateAcademicProfile(bool fromSetup) async {
-    var prefs = await SharedPreferences.getInstance();
-    var acProfileId = prefs.getInt("acProfileId");
-
     try {
       // upload current semester's transcript
       var units = [];
@@ -198,7 +195,7 @@ class AcademicController extends GetxController {
       }
       var body = jsonEncode({'current_sem': currentSem, 'studentUnits': units});
       var res = await http.patch(
-          Uri.parse(studentUnitUrl + acProfileId.toString()),
+          Uri.parse(studentUnitUrl + studentId.toString()),
           body: body,
           headers: headers);
 
@@ -233,8 +230,8 @@ class AcademicController extends GetxController {
           }
           update();
         } else {
-          getSemUnitsData();
-          insightsCtrl.getStudentInsights();
+          await getSemUnitsData();
+          await insightsCtrl.getStudentInsights();
           showSnackbar(
               path: FontAwesome5.hand_sparkles,
               title: "Transcript Added!",

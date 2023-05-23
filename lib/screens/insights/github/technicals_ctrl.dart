@@ -98,6 +98,7 @@ class TechnicalsController extends GetxController {
       debugPrint(res.body);
 
       if (res.statusCode == 200) {
+        await insightsCtrl.getStudentInsights();
         showSnackbar(
             path: Icons.check_rounded,
             title: "Technical Profile Updated!",
@@ -110,6 +111,7 @@ class TechnicalsController extends GetxController {
             title: "Seems there's a problem on our side!",
             subtitle: "Please try again later");
       }
+      update();
       return;
     } catch (error) {
       showSnackbar(

@@ -35,8 +35,8 @@ class InsightsController extends GetxController {
     await getAcademicProfile();
     await getTechnicalProfile();
     await getInternshipProfile();
+    await getStudentPredictions();
     // await getSoftSkillProfile();
-    // await getStudentPredictions();
 
     loadingData.value = false;
     showData.value = true;
@@ -139,28 +139,6 @@ class InsightsController extends GetxController {
     }
   }
 
-  // getSoftSkillProfile() async {
-  //   try {
-  //     var res = await http.get(Uri.parse(ssProfileUrl + studentId.toString()),
-  //         headers: headers);
-  //     debugPrint("Got response ${res.statusCode}");
-  //     if (res.statusCode == 200) {
-  //       var respBody = json.decode(res.body);
-// } else {
-  //       showSnackbar(
-  //           path: Icons.close_rounded,
-  //           title: "Seems there's a problem on our side!",
-  //           subtitle: "Please try again later");
-  //     }
-  //     return;
-  //   } catch (error) {
-  //     showSnackbar(
-  //         path: Icons.close_rounded,
-  //         title: "Failed To Load Soft Skills Profile!",
-  //         subtitle: "Please check your internet connection or try again later");
-  //   }
-  // }
-
   getStudentPredictions() async {
     loadingData.value = true;
     try {
@@ -201,4 +179,26 @@ class InsightsController extends GetxController {
           subtitle: "Please check your internet connection or try again later");
     }
   }
+
+  // getSoftSkillProfile() async {
+  //   try {
+  //     var res = await http.get(Uri.parse(ssProfileUrl + studentId.toString()),
+  //         headers: headers);
+  //     debugPrint("Got response ${res.statusCode}");
+  //     if (res.statusCode == 200) {
+  //       var respBody = json.decode(res.body);
+// } else {
+  //       showSnackbar(
+  //           path: Icons.close_rounded,
+  //           title: "Seems there's a problem on our side!",
+  //           subtitle: "Please try again later");
+  //     }
+  //     return;
+  //   } catch (error) {
+  //     showSnackbar(
+  //         path: Icons.close_rounded,
+  //         title: "Failed To Load Soft Skills Profile!",
+  //         subtitle: "Please check your internet connection or try again later");
+  //   }
+  // }
 }

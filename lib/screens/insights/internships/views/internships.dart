@@ -1,5 +1,5 @@
 import 'package:elira_app/screens/insights/internships/views/internship_overview.dart';
-import 'package:elira_app/screens/news/jobs/jobs.dart';
+import 'package:elira_app/screens/insights/internships/jobs/jobs.dart';
 import 'package:elira_app/theme/colors.dart';
 import 'package:elira_app/theme/global_widgets.dart';
 import 'package:flutter/material.dart';
