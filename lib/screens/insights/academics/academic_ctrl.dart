@@ -259,7 +259,7 @@ class AcademicController extends GetxController {
     try {
       var res = await http.get(
           Uri.parse(
-              '$newTranscriptUrl$studentId/${insightsCtrl.stdAcdProf.currentSem.toString()}'),
+              '$newTranscriptUrl${studentId.toString()}/${insightsCtrl.stdAcdProf.currentSem.toString()}'),
           headers: headers);
       debugPrint("Got response ${res.statusCode}");
       if (res.statusCode == 200) {

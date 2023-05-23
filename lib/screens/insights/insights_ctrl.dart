@@ -2,6 +2,7 @@ import 'package:elira_app/screens/insights/github/technical_models.dart';
 import 'package:elira_app/screens/insights/insights_models.dart';
 import 'package:elira_app/screens/insights/academics/academic_models.dart';
 import 'package:elira_app/screens/insights/internships/internships_models.dart';
+import 'package:elira_app/screens/insights/softskills/softskills_models.dart';
 import 'package:elira_app/utils/functions.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -21,6 +22,7 @@ class InsightsController extends GetxController {
   RxList<AcademicGrouping> stdAcdGroups = RxList<AcademicGrouping>();
   late TechnicalProfile stdTchProf;
   late WorkExpProfile stdWxProf;
+  late SoftSkillProfile stdSsProf;
 
   @override
   void onInit() async {
@@ -36,7 +38,7 @@ class InsightsController extends GetxController {
     await getTechnicalProfile();
     await getInternshipProfile();
     await getStudentPredictions();
-    // await getSoftSkillProfile();
+    await getSoftSkillProfile();
 
     loadingData.value = false;
     showData.value = true;
@@ -180,25 +182,53 @@ class InsightsController extends GetxController {
     }
   }
 
-  // getSoftSkillProfile() async {
-  //   try {
-  //     var res = await http.get(Uri.parse(ssProfileUrl + studentId.toString()),
-  //         headers: headers);
-  //     debugPrint("Got response ${res.statusCode}");
-  //     if (res.statusCode == 200) {
-  //       var respBody = json.decode(res.body);
-// } else {
-  //       showSnackbar(
-  //           path: Icons.close_rounded,
-  //           title: "Seems there's a problem on our side!",
-  //           subtitle: "Please try again later");
-  //     }
-  //     return;
-  //   } catch (error) {
-  //     showSnackbar(
-  //         path: Icons.close_rounded,
-  //         title: "Failed To Load Soft Skills Profile!",
-  //         subtitle: "Please check your internet connection or try again later");
-  //   }
-  // }
+  getSoftSkillProfile() async {
+    try {
+      var res = await http.get(Uri.parse(ssProfileUrl + studentId.toString()),
+          headers: headers);
+      debugPrint("Got response ${res.statusCode}");
+      if (res.statusCode == 200) {
+        var respBody = json.decode(res.body);
+        stdSsProf = SoftSkillProfile.fromJson(respBody['ss_profile']);
+        respBody['skills'].forEach((grouping, details) {
+          stdSsProf.skills = respBody['skills']
+              .map((skill) => StudentUnit.fromJson(skill))
+              .toList();
+        });
+      } else {
+        showSnackbar(
+            path: Icons.close_rounded,
+            title: "Seems there's a problem on our side!",
+            subtitle: "Please try again later");
+      }
+      return;
+    } catch (error) {
+      showSnackbar(
+          path: Icons.close_rounded,
+          title: "Failed To Load Soft Skills Profile!",
+          subtitle: "Please check your internet connection or try again later");
+    }
+  }
+
+  createSoftSkillProfie() async {
+    var body = jsonEncode({'student_id': studentId});
+    try {
+      var res = await http.post(Uri.parse(ssProfileUrl),
+          body: body, headers: headers);
+      debugPrint("Got response ${res.statusCode}");
+
+      if (res.statusCode != 200) {
+        showSnackbar(
+            path: Icons.close_rounded,
+            title: "Seems there's a problem on our side!",
+            subtitle: "Please try again later");
+      }
+      return;
+    } catch (error) {
+      showSnackbar(
+          path: Icons.close_rounded,
+          title: "Failed To Create Soft Skills Profile!",
+          subtitle: "Please check your internet connection or try again later");
+    }
+  }
 }

@@ -225,6 +225,7 @@ class WorkExpController extends GetxController {
           formCount++;
           if (formCount == internshipNo) {
             await insightsCtrl.getStudentInsights();
+            await insightsCtrl.createSoftSkillProfie();
             showSnackbar(
                 path: FontAwesome5.hand_sparkles,
                 title: "High-five! You did it!",

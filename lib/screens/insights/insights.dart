@@ -130,7 +130,13 @@ class _InsightsPageState extends State<InsightsPage> {
                                             iconPath: Icons.work,
                                             title: 'Internships',
                                             stat:
-                                                '${insightsCtrl.stdWxProf.timeSpent} months',
+                                                '${insightsCtrl.stdWxProf.timeSpent.toString()} months',
+                                            page: const TechnicalsPage()),
+                                        traitWidget(
+                                            iconPath: Icons.handshake,
+                                            title: 'Soft Skills',
+                                            stat:
+                                                '${insightsCtrl.stdSsProf.avgScore.toString()} months',
                                             page: const TechnicalsPage())
                                       ]))
                             ])

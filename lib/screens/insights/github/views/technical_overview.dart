@@ -50,8 +50,7 @@ class _TechnicalOverviewState extends State<TechnicalOverview> {
               const Padding(
                   padding: EdgeInsets.only(bottom: 10),
                   child: Text('Top Language', style: kWhiteTxt)),
-              Text(insightsCtrl.stdAcdProf.currentAvg.toString(),
-                  style: kLightPurTxt)
+              Text(insightsCtrl.stdTchProf.topLanguage, style: kLightPurTxt)
             ]),
             Container(
                 width: 150,
@@ -61,13 +60,8 @@ class _TechnicalOverviewState extends State<TechnicalOverview> {
                     borderRadius: BorderRadius.circular(20)),
                 padding:
                     const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
-                child: Column(children: [
-                  const Padding(
-                      padding: EdgeInsets.only(bottom: 10),
-                      child:
-                          Icon(FontAwesome5.code, size: 30, color: kPriPurple)),
-                  Text(insightsCtrl.stdTchProf.topLanguage, style: kPurpleTitle)
-                ])),
+                child:
+                    const Icon(FontAwesome5.code, size: 30, color: kPriPurple)),
           ]),
         ),
         const Padding(

@@ -91,8 +91,10 @@ class TechnicalsController extends GetxController {
   editGithubLink() async {
     var body = jsonEncode({'git_username': gitnamectrl.text});
     try {
-      var res = await http.patch(Uri.parse('$techProfileUrl/$studentId'),
-          body: body, headers: headers);
+      var res = await http.patch(
+          Uri.parse('$techProfileUrl/${studentId.toString()}'),
+          body: body,
+          headers: headers);
 
       debugPrint("Got response ${res.statusCode}");
       debugPrint(res.body);
