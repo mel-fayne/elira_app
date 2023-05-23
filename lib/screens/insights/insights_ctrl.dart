@@ -1,6 +1,7 @@
 import 'package:elira_app/screens/insights/github/technical_models.dart';
 import 'package:elira_app/screens/insights/insights_models.dart';
 import 'package:elira_app/screens/insights/academics/academic_models.dart';
+import 'package:elira_app/screens/insights/internships/internships_models.dart';
 import 'package:elira_app/utils/functions.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -19,6 +20,7 @@ class InsightsController extends GetxController {
   late AcademicProfile stdAcdProf;
   RxList<AcademicGrouping> stdAcdGroups = RxList<AcademicGrouping>();
   late TechnicalProfile stdTchProf;
+  late WorkExpProfile stdWxProf;
 
   @override
   void onInit() async {
@@ -32,7 +34,7 @@ class InsightsController extends GetxController {
 
     await getAcademicProfile();
     await getTechnicalProfile();
-    // await getInternshipProfile();
+    await getInternshipProfile();
     // await getSoftSkillProfile();
     // await getStudentPredictions();
 
@@ -103,27 +105,39 @@ class InsightsController extends GetxController {
     }
   }
 
-  // getInternshipProfile() async {
-  //   try {
-  //     var res = await http.get(Uri.parse(wxpProfileUrl + studentId.toString()),
-  //         headers: headers);
-  //     debugPrint("Got response ${res.statusCode}");
-  //     if (res.statusCode == 200) {
-  //       var respBody = json.decode(res.body);
-// } else {
-  //       showSnackbar(
-  //           path: Icons.close_rounded,
-  //           title: "Seems there's a problem on our side!",
-  //           subtitle: "Please try again later");
-  //     }
-  //     return;
-  //   } catch (error) {
-  //     showSnackbar(
-  //         path: Icons.close_rounded,
-  //         title: "Failed To Load Internships Profile!",
-  //         subtitle: "Please check your internet connection or try again later");
-  //   }
-  // }
+  getInternshipProfile() async {
+    try {
+      var res = await http.get(Uri.parse(wxpProfileUrl + studentId.toString()),
+          headers: headers);
+      debugPrint("Got response ${res.statusCode}");
+      if (res.statusCode == 200) {
+        var respBody = json.decode(res.body);
+        stdWxProf = WorkExpProfile.fromJson(respBody['wx_profile']);
+        stdWxProf.internships = respBody['experiences']
+            .map((wkExp) => WorkExperience.fromJson(wkExp))
+            .toList();
+        List<InternshipIndustry> indList = [];
+        respBody['expPieChart'].forEach((ind, time) {
+          InternshipIndustry indHolder = InternshipIndustry();
+          indHolder.name = ind;
+          indHolder.name = time;
+          indList.add(indHolder);
+        });
+        stdWxProf.indPieChart = indList;
+      } else {
+        showSnackbar(
+            path: Icons.close_rounded,
+            title: "Seems there's a problem on our side!",
+            subtitle: "Please try again later");
+      }
+      return;
+    } catch (error) {
+      showSnackbar(
+          path: Icons.close_rounded,
+          title: "Failed To Load Internships Profile!",
+          subtitle: "Please check your internet connection or try again later");
+    }
+  }
 
   // getSoftSkillProfile() async {
   //   try {

@@ -92,7 +92,7 @@ class _AcademicOverviewState extends State<AcademicOverview> {
             margin: const EdgeInsets.only(bottom: 10),
             child: Column(children: [
               CarouselSlider(
-                items: semSLiders,
+                items: semSliders,
                 carouselController: _sliderCtrl,
                 options: CarouselOptions(
                     aspectRatio: 2.0,
@@ -291,7 +291,7 @@ class _AcademicOverviewState extends State<AcademicOverview> {
   }
 }
 
-final List<Widget> semSLiders = acProfCtrl.carSems
+final List<Widget> semSliders = acProfCtrl.carSems
     .map((item) => Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisAlignment: MainAxisAlignment.center,

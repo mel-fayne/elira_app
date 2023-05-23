@@ -2,7 +2,7 @@ import 'dart:convert';
 
 import 'package:elira_app/screens/insights/github/technical_models.dart';
 import 'package:elira_app/screens/insights/insights_ctrl.dart';
-import 'package:elira_app/studentDetails/internships/internships.dart';
+import 'package:elira_app/screens/insights/internships/views/internship_forms.dart';
 import 'package:elira_app/theme/colors.dart';
 import 'package:elira_app/theme/global_widgets.dart';
 import 'package:elira_app/utils/functions.dart';

@@ -118,6 +118,12 @@ class _InsightsPageState extends State<InsightsPage> {
                                             title: 'Technicals',
                                             stat: insightsCtrl
                                                 .stdTchProf.topLanguage,
+                                            page: const TechnicalsPage()),
+                                        traitWidget(
+                                            iconPath: Icons.work,
+                                            title: 'Internships',
+                                            stat:
+                                                '${insightsCtrl.stdWxProf.timeSpent} months',
                                             page: const TechnicalsPage())
                                       ]))
                             ])

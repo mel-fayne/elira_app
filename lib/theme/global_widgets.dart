@@ -478,7 +478,7 @@ Widget studDtlsHeader(
 Widget dateFormField(
     {required label,
     required require,
-    required controller,
+    required RxString dateValue,
     required final Function() onTap,
     required final String? Function(String?) validator}) {
   return GestureDetector(
@@ -509,24 +509,24 @@ Widget dateFormField(
                 ]))),
             SizedBox(
               height: 50,
-              child: TextFormField(
-                cursorColor: kPriPurple,
-                controller: controller,
-                readOnly: true,
-                validator: validator,
-                style: const TextStyle(
-                    fontSize: 16,
-                    fontFamily: 'Nunito',
-                    fontWeight: FontWeight.w400,
-                    color: kPriDark),
-                decoration: const InputDecoration(
-                  fillColor: Colors.white,
-                  filled: true,
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.all(Radius.circular(4.0)),
-                  ),
-                ),
-              ),
+              child: Obx(() => TextFormField(
+                    initialValue: dateValue.value,
+                    cursorColor: kPriPurple,
+                    readOnly: true,
+                    validator: validator,
+                    style: const TextStyle(
+                        fontSize: 16,
+                        fontFamily: 'Nunito',
+                        fontWeight: FontWeight.w400,
+                        color: kPriDark),
+                    decoration: const InputDecoration(
+                      fillColor: Colors.white,
+                      filled: true,
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(4.0)),
+                      ),
+                    ),
+                  )),
             )
           ])));
 }
