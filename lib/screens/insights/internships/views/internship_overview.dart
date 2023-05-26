@@ -28,6 +28,7 @@ class _InternshipsOverviewState extends State<InternshipsOverview> {
   @override
   void initState() {
     super.initState();
+    workExpCtrl.getIndustryChart();
   }
 
   @override

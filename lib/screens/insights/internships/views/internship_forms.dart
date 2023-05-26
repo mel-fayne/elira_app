@@ -42,8 +42,8 @@ class _WorkExpProfileState extends State<WorkExpProfile> {
         backgroundColor: kCreamBg,
         appBar: studDtlsAppBar(
             pageTitle: 'Internship Details',
-            quote:
-                "“Knowledge is of no value unless you put it to practice.” ~ Anton Chekhov"),
+            quote: '''“Knowledge is of no value unless you put it to practice.”
+~ Anton Chekhov'''),
         body: SingleChildScrollView(
             padding: const EdgeInsets.symmetric(vertical: 25, horizontal: 30),
             child: Column(
@@ -89,11 +89,6 @@ class _WorkExpProfileState extends State<WorkExpProfile> {
                                               int.parse(internshipsNoCtrl.text);
                                           await workExpCtrl.getWorkExpForms();
                                         }
-                                        await Future.delayed(
-                                            const Duration(seconds: 2));
-                                        setState(() {
-                                          _isLoading = false;
-                                        });
                                       })
                                 ])))
                       ])
@@ -158,8 +153,22 @@ class _WorkExpFormState extends State<WorkExpForm> {
                       fromSetup: true,
                       isEdit: false,
                       isLoading: _isLoading,
-                      setStateFunction: updateState,
-                      context: context)
+                      context: context),
+                  primaryBtn(
+                    label: 'Add Internship',
+                    isLoading: _isLoading,
+                    function: workExpCtrl.empTypeDropdown.value == '' ||
+                            workExpCtrl.indDropdown.value == '' ||
+                            workExpCtrl.locTypeDropdown.value == ''
+                        ? () async {
+                            setState(() {
+                              _isLoading = !_isLoading;
+                            });
+                            workExpCtrl.addWorkExp(
+                                fromSetup: true, isEdit: false);
+                          }
+                        : null,
+                  )
                 ])));
   }
 
@@ -181,7 +190,7 @@ class _WorkExpFormState extends State<WorkExpForm> {
             color: intShp.complete.value ? kPriMaroon : Colors.white),
         child: intShp.complete.value
             ? const Icon(Icons.check_rounded, size: 18, color: Colors.white)
-            : Text(intShp.title,
+            : Text((int.parse(intShp.title) + 1).toString(),
                 textAlign: TextAlign.center,
                 style: TextStyle(
                     fontSize: 18,
@@ -216,13 +225,9 @@ class AddWorkExpFormState extends State<AddWorkExpForm> {
   @override
   void initState() {
     super.initState();
-    if (isEdit) {}
-  }
-
-  void updateState() {
-    setState(() {
-      _isLoading = !_isLoading;
-    });
+    if (isEdit) {
+      btnLabel = 'Edit Internship';
+    }
   }
 
   @override
@@ -236,8 +241,21 @@ class AddWorkExpFormState extends State<AddWorkExpForm> {
             fromSetup: false,
             isEdit: isEdit,
             isLoading: _isLoading,
-            setStateFunction: updateState,
-            context: context)
+            context: context),
+        primaryBtn(
+          label: btnLabel,
+          isLoading: _isLoading,
+          function: workExpCtrl.empTypeDropdown.value == '' ||
+                  workExpCtrl.indDropdown.value == '' ||
+                  workExpCtrl.locTypeDropdown.value == ''
+              ? () async {
+                  setState(() {
+                    _isLoading = !_isLoading;
+                  });
+                  workExpCtrl.addWorkExp(fromSetup: false, isEdit: isEdit);
+                }
+              : null,
+        )
       ],
     );
   }
@@ -248,7 +266,6 @@ Widget workExpForm(
     required bool fromSetup,
     required String btnLabel,
     required BuildContext context,
-    required VoidCallback setStateFunction,
     required bool isEdit}) {
   return Column(children: [
     formField(
@@ -298,22 +315,10 @@ Widget workExpForm(
         function: (String? newValue) {
           workExpCtrl.locTypeDropdown.value = newValue!;
         })),
-    Padding(
-        padding: const EdgeInsets.symmetric(vertical: 10),
-        child:
-            Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-          const SizedBox(),
-          Obx(() => Checkbox(
-                value: workExpCtrl.currentlyWorking.value,
-                onChanged: (value) {
-                  workExpCtrl.currentlyWorking.value = value!;
-                },
-              ))
-        ])),
     dateFormField(
         label: 'Start Date',
         require: true,
-        dateValue: workExpCtrl.startDateStr,
+        controller: workExpCtrl.startDatectrl,
         onTap: () {
           workExpCtrl.selectStartDate(context);
         },
@@ -323,12 +328,27 @@ Widget workExpForm(
           }
           return null;
         }),
-    workExpCtrl.currentlyWorking.value
+    Padding(
+        padding: const EdgeInsets.symmetric(vertical: 3),
+        child: Row(mainAxisAlignment: MainAxisAlignment.end, children: [
+          const SizedBox(),
+          const Text('Currently Working Here:', style: kBlackTxt),
+          Obx(() => Checkbox(
+                side: const BorderSide(color: kPriPurple),
+                checkColor: Colors.white,
+                activeColor: kPriMaroon,
+                value: workExpCtrl.currentlyWorking.value,
+                onChanged: (value) {
+                  workExpCtrl.currentlyWorking.value = value!;
+                },
+              ))
+        ])),
+    Obx(() => workExpCtrl.currentlyWorking.value
         ? Container()
         : dateFormField(
+            require: true,
             label: 'End Date',
-            require: false,
-            dateValue: workExpCtrl.endDateStr,
+            controller: workExpCtrl.endDatectrl,
             onTap: () {
               workExpCtrl.selectStartDate(context);
             },
@@ -337,7 +357,7 @@ Widget workExpForm(
                 return 'Please enter the end date';
               }
               return null;
-            }),
+            })),
     Obx(() => formDropDownField(
         label: 'Industry the internship was/is based in',
         dropdownValue: workExpCtrl.indDropdown.value,
@@ -345,19 +365,5 @@ Widget workExpForm(
         function: (String? newValue) {
           workExpCtrl.indDropdown.value = newValue!;
         })),
-    primaryBtn(
-      label: btnLabel,
-      isLoading: isLoading,
-      function: workExpCtrl.empTypeDropdown.value == '' ||
-              workExpCtrl.indDropdown.value == '' ||
-              workExpCtrl.locTypeDropdown.value == ''
-          ? () async {
-              setStateFunction;
-              workExpCtrl.addWorkExp(fromSetup: fromSetup, isEdit: isEdit);
-              await Future.delayed(const Duration(seconds: 2));
-              setStateFunction;
-            }
-          : null,
-    )
   ]);
 }

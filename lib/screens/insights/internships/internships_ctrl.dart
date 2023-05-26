@@ -41,10 +41,10 @@ class WorkExpController extends GetxController {
   TextEditingController titlectrl = TextEditingController();
   TextEditingController locationctrl = TextEditingController();
   TextEditingController companyNamectrl = TextEditingController();
+  TextEditingController startDatectrl = TextEditingController();
+  TextEditingController endDatectrl = TextEditingController();
   DateTime startDate = DateTime.now();
   DateTime endDate = DateTime.now();
-  RxString startDateStr = ''.obs;
-  RxString endDateStr = ''.obs;
   DateFormat dateFormat = DateFormat('yyyy-MM-dd');
   IndustryChartData indChart = IndustryChartData();
 
@@ -57,7 +57,6 @@ class WorkExpController extends GetxController {
   void onInit() async {
     super.onInit();
     studentId = await getStudentId();
-    getLanguageChart();
   }
 
   @override
@@ -68,7 +67,7 @@ class WorkExpController extends GetxController {
     super.dispose();
   }
 
-  getLanguageChart() {
+  getIndustryChart() {
     List<InternshipIndustry> inds = [];
     inds = insightsCtrl.stdWxProf.indPieChart;
     for (int i = 0; i < inds.length; i++) {
@@ -146,7 +145,8 @@ class WorkExpController extends GetxController {
     );
 
     if (picked != null && picked != startDate) {
-      startDateStr.value = dateFormat.format(startDate);
+      startDate = picked;
+      startDatectrl.text = dateFormat.format(picked);
     }
     update();
   }
@@ -154,8 +154,8 @@ class WorkExpController extends GetxController {
   Future<void> selectEndDate(BuildContext context) async {
     final DateTime? picked = await showDatePicker(
       context: context,
-      initialDate: endDate,
-      firstDate: DateTime(2000),
+      initialDate: startDate,
+      firstDate: startDate,
       lastDate: DateTime.now(),
       initialDatePickerMode: DatePickerMode.year,
       initialEntryMode: DatePickerEntryMode.calendarOnly,
@@ -167,7 +167,7 @@ class WorkExpController extends GetxController {
     );
 
     if (picked != null && picked != endDate) {
-      endDateStr.value = dateFormat.format(endDate);
+      endDatectrl.text = dateFormat.format(picked);
     }
     update();
   }
@@ -185,22 +185,23 @@ class WorkExpController extends GetxController {
       'company_name': companyNamectrl.text,
       'location': locationctrl.text,
       'location_type': locTypeDropdown.value,
-      'start_date': startDateStr,
-      'industry': indDropdown.value,
+      'start_date': startDatectrl.text,
+      'industry': getApiInd(indDropdown.value),
       'time_spent': timeSpent,
       'skills': []
     };
     if (!currentlyWorking.value) {
-      workExp['end_date'] = endDateStr;
+      workExp['end_date'] = endDatectrl.text;
     }
 
     var body = jsonEncode({"student_id": studentId, "workExp": workExp});
 
     try {
-      var res = await http.post(Uri.parse(academicProfileUrl),
+      var res = await http.post(Uri.parse(wxpProfileUrl),
           body: body, headers: headers);
 
       debugPrint("Got response ${res.statusCode}");
+      debugPrint(res.body);
 
       if (res.statusCode == 200) {
         if (!fromSetup) {
@@ -264,8 +265,6 @@ class WorkExpController extends GetxController {
     currentlyWorking = false.obs;
     startDate = DateTime.now();
     endDate = DateTime.now();
-    startDateStr = ''.obs;
-    endDateStr = ''.obs;
     Get.to(const AddWorkExpForm(isEdit: true));
   }
 
@@ -276,16 +275,38 @@ class WorkExpController extends GetxController {
     locTypeDropdown.value = workExp.locationType;
     empTypeDropdown.value = workExp.employmentType;
     indDropdown.value = workExp.industry;
-    startDateStr.value = workExp.startDate;
+    startDatectrl.text = workExp.startDate;
     startDate = dateFormat.parse(workExp.startDate);
     if (workExp.endDate == null) {
       currentlyWorking.value = true;
       endDate = DateTime.now();
-      endDateStr = ''.obs;
+      endDatectrl.text = '';
     } else {
       endDate = dateFormat.parse(workExp.endDate);
-      endDateStr.value = workExp.endDate;
+      endDatectrl.text = workExp.endDate;
     }
     Get.to(const AddWorkExpForm(isEdit: true));
+  }
+
+  String getApiInd(String name) {
+    String name = '';
+    if (name == 'Software Development') {
+      name = 'sd_industry';
+    } else if (name == 'A.I & Data') {
+      name = 'ai_industry';
+    } else if (name == 'Design & Graphics') {
+      name = 'gd_industry';
+    } else if (name == 'Networking') {
+      name = 'na_industry';
+    } else if (name == 'Hardware, IoT & Operating Systems') {
+      name = 'ho_industry';
+    } else if (name == 'Cyber Security') {
+      name = 'cs_industry';
+    } else if (name == 'Database Administration') {
+      name = 'da_industry';
+    } else {
+      name = 'is_industry';
+    }
+    return name;
   }
 }
