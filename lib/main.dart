@@ -3,6 +3,14 @@ import 'dart:io';
 import 'package:elira_app/auth/auth_controller.dart';
 import 'package:elira_app/core/navigator.dart';
 import 'package:elira_app/core/onboard.dart';
+import 'package:elira_app/screens/insights/academics/academic_ctrl.dart';
+import 'package:elira_app/screens/insights/github/technicals_ctrl.dart';
+import 'package:elira_app/screens/insights/insights_ctrl.dart';
+import 'package:elira_app/screens/insights/internships/internships_ctrl.dart';
+import 'package:elira_app/screens/insights/internships/jobs/jobs_ctrl.dart';
+import 'package:elira_app/screens/insights/softskills/softskills_ctrl.dart';
+import 'package:elira_app/screens/news/events/events_ctrl.dart';
+import 'package:elira_app/screens/news/news_ctrl.dart';
 import 'package:elira_app/theme/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -28,6 +36,14 @@ class InitialBinding implements Bindings {
   @override
   void dependencies() {
     Get.lazyPut(() => AuthController(), fenix: true);
+    Get.lazyPut(() => InsightsController(), fenix: true);
+    Get.lazyPut(() => AcademicController(), fenix: true);
+    Get.lazyPut(() => TechnicalsController(), fenix: true);
+    Get.lazyPut(() => WorkExpController(), fenix: true);
+    Get.lazyPut(() => SoftSkillsController(), fenix: true);
+    Get.lazyPut(() => NewsController(), fenix: true);
+    Get.lazyPut(() => JobsController(), fenix: true);
+    Get.lazyPut(() => EventsController(), fenix: true);
   }
 }
 
