@@ -19,7 +19,7 @@ void showSnackbar({required String title, required String subtitle, path}) {
 
 Widget primaryBtn(
     {required String label,
-    isLoading = false,
+    required RxBool isLoading,
     bgColor = kPriDark,
     width = 300.0,
     required void Function()? function}) {
@@ -36,7 +36,7 @@ Widget primaryBtn(
         disabledBackgroundColor: kPriGrey,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
       ),
-      child: (isLoading)
+      child: Obx(() => isLoading.value
           ? const SizedBox(
               width: 16,
               height: 16,
@@ -49,7 +49,7 @@ Widget primaryBtn(
                   color: Colors.white,
                   fontFamily: 'Nunito',
                   fontSize: 15,
-                  fontWeight: FontWeight.w500)),
+                  fontWeight: FontWeight.w500))),
     ),
   );
 }

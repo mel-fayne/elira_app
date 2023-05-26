@@ -7,7 +7,7 @@ import 'package:elira_app/theme/text_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-final jobsCtrl = Get.put(JobsController());
+final jobsCtrl = Get.find<JobsController>();
 
 class JobsPage extends StatefulWidget {
   const JobsPage({Key? key}) : super(key: key);
@@ -20,6 +20,7 @@ class JobsPage extends StatefulWidget {
 class _JobsPageState extends State<JobsPage> {
   final ScrollController _scrollctrl = ScrollController();
   bool _showBackToTopBtn = false;
+  final RxBool isLoading = false.obs;
 
   @override
   void initState() {
@@ -168,6 +169,7 @@ class _JobsPageState extends State<JobsPage> {
                                                 primaryBtn(
                                                     width: 100,
                                                     label: 'View More',
+                                                    isLoading: isLoading,
                                                     function: () {
                                                       Get.to(AppWebView(
                                                           url: job.link,

@@ -10,7 +10,7 @@ import 'package:fluttericon/entypo_icons.dart';
 import 'package:fluttericon/font_awesome5_icons.dart';
 import 'package:get/get.dart';
 
-final techProfCtrl = Get.put(TechnicalsController());
+final techProfCtrl = Get.find<TechnicalsController>();
 final insightsCtrl = Get.find<InsightsController>();
 
 class TechnicalOverview extends StatefulWidget {
@@ -72,6 +72,7 @@ class _TechnicalOverviewState extends State<TechnicalOverview> {
           const SizedBox(),
           primaryBtn(
               label: 'Edit Link',
+              isLoading: techProfCtrl.gitLoading,
               function: () {
                 techProfCtrl.editGithubLink();
               })

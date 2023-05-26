@@ -13,6 +13,12 @@ import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class AuthController extends GetxController {
+  RxBool signUpLoading = false.obs;
+  RxBool signInLoading = false.obs;
+  RxBool forgotPassLoading = false.obs;
+  RxBool updateStdLoading = false.obs;
+  RxBool logoutLoading = false.obs;
+
   signUp(List userdata) async {
     var body = jsonEncode({
       'first_name': userdata[0],
@@ -24,6 +30,9 @@ class AuthController extends GetxController {
     try {
       var res =
           await http.post(Uri.parse(signUpUrl), body: body, headers: headers);
+
+      debugPrint(res.body);
+
       var respBody = json.decode(res.body);
       if (res.statusCode == 200) {
         setlastLogin(DateFormat("EEE, dd/MM/yy, HH:mm").format(DateTime.now()));
@@ -48,6 +57,8 @@ class AuthController extends GetxController {
           title: "Failed Sign Up!",
           subtitle: "Please check your internet connection or try again later");
     }
+    signUpLoading.value = false;
+    update();
   }
 
   signIn(List userdata) async {
@@ -86,6 +97,9 @@ class AuthController extends GetxController {
           title: "Failed Sign In!",
           subtitle: "Please check your internet connection or try again later");
     }
+
+    signInLoading.value = true;
+    update();
   }
 
   updateStudent(
@@ -120,6 +134,8 @@ class AuthController extends GetxController {
           title: "Details not updated!",
           subtitle: "Please check your internet connection or try again later");
     }
+    updateStdLoading.value = false;
+    update();
   }
 
   void setlastLogin(String lastLogin) async {
@@ -158,6 +174,8 @@ class AuthController extends GetxController {
     prefs.clear();
     await Future.delayed(const Duration(seconds: 2));
     Get.offAll(const OnBoard());
+    logoutLoading.value = false;
+    update();
     return true;
   }
 }

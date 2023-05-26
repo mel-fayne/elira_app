@@ -7,7 +7,7 @@ import 'package:elira_app/theme/global_widgets.dart';
 import 'package:http/http.dart' as http;
 import 'package:elira_app/utils/constants.dart';
 
-class NewsCtrl extends GetxController {
+class NewsController extends GetxController {
   String? studentSpec;
   int? studentId;
   List<String> newsTags = [];

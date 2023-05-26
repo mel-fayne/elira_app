@@ -7,7 +7,8 @@ import 'package:flutter/material.dart';
 import 'package:fluttericon/font_awesome5_icons.dart';
 import 'package:get/get.dart';
 
-final eventsCtrl = Get.put(EventsController());
+final eventsCtrl = Get.find<EventsController>();
+final RxBool isLoading = false.obs;
 
 class EventsPage extends StatefulWidget {
   const EventsPage({Key? key}) : super(key: key);
@@ -296,6 +297,7 @@ Widget formatFilterSheet(BuildContext context, StateSetter setState) {
                 primaryBtn(
                     width: 70,
                     label: 'Filter',
+                    isLoading: isLoading,
                     function: () {
                       eventsCtrl.filterByFormat();
                       Get.back();
@@ -347,6 +349,7 @@ Widget dateFilterSheet(BuildContext context, StateSetter setState) {
                 primaryBtn(
                     width: 70,
                     label: 'Filter',
+                    isLoading: isLoading,
                     function: () {
                       eventsCtrl.filterByDate();
                       Get.back();
@@ -385,6 +388,7 @@ Widget themeFilterSheet(BuildContext context, StateSetter setState) {
                 const Text('Choose an Event Theme', style: kBlackTxt),
                 primaryBtn(
                     width: 70,
+                    isLoading: isLoading,
                     label: 'Filter',
                     function: () {
                       eventsCtrl.filterByTheme();

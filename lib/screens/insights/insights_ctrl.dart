@@ -15,6 +15,7 @@ class InsightsController extends GetxController {
   int? studentId;
   StudentSpec studentSpec = StudentSpec();
   List<StudentSpec> allSpecs = [];
+
   RxBool loadingData = false.obs;
   RxBool showData = false.obs;
 

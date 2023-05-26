@@ -40,7 +40,9 @@ class _HomePageState extends State<HomePage> {
               ),
               primaryBtn(
                   label: 'Log Out',
+                  isLoading: authCtrl.logoutLoading,
                   function: () {
+                    authCtrl.logoutLoading.value = true;
                     authCtrl.logout();
                   })
             ])));

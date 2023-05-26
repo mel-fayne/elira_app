@@ -9,7 +9,7 @@ import 'package:elira_app/utils/app_models.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-final acProfCtrl = Get.put(AcademicController());
+final acProfCtrl = Get.find<AcademicController>();
 
 class AcademicProfileForm extends StatefulWidget {
   static const routeName = "/AcademicProfile";
@@ -81,6 +81,7 @@ class _AcademicProfileFormState extends State<AcademicProfileForm> {
                             )),
                         primaryBtn(
                             label: 'Load Transcripts',
+                            isLoading: acProfCtrl.createAcLoading,
                             function: acProfCtrl.schoolDropdown.value == '' ||
                                     acProfCtrl.semDropdown.value == ''
                                 ? null
@@ -102,8 +103,6 @@ class TranscriptPage extends StatefulWidget {
 }
 
 class _TranscriptPageState extends State<TranscriptPage> {
-  bool _isLoading = false;
-
   @override
   void initState() {
     super.initState();
@@ -183,11 +182,8 @@ class _TranscriptPageState extends State<TranscriptPage> {
                           : Container()),
                   primaryBtn(
                       label: 'Upload Transcript',
-                      isLoading: _isLoading,
+                      isLoading: acProfCtrl.updateAcLoading,
                       function: () async {
-                        setState(() {
-                          _isLoading = true;
-                        });
                         acProfCtrl.updateAcademicProfile(true);
                       })
                 ])));
@@ -235,7 +231,6 @@ class AddTranscriptForm extends StatefulWidget {
 
 class _AddTranscriptFormState extends State<AddTranscriptForm> {
   bool isEdit;
-  bool _isLoading = false;
 
   _AddTranscriptFormState(this.isEdit);
 
@@ -265,11 +260,8 @@ class _AddTranscriptFormState extends State<AddTranscriptForm> {
             : Container(),
         primaryBtn(
             label: isEdit ? 'Edit Transcript' : 'Upload Transcript',
-            isLoading: _isLoading,
+            isLoading: acProfCtrl.updateAcLoading,
             function: () async {
-              setState(() {
-                _isLoading = true;
-              });
               acProfCtrl.updateAcademicProfile(false);
               await Future.delayed(const Duration(seconds: 5));
             })

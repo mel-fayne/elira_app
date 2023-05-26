@@ -37,8 +37,7 @@ class SecurityQuestions extends StatefulWidget {
 }
 
 class _SecurityQuestionsState extends State<SecurityQuestions> {
-  final authCtrl = Get.put(AuthController());
-  final bool _isLoading = false;
+  final authCtrl = Get.find<AuthController>();
 
   @override
   Widget build(BuildContext context) {
@@ -132,9 +131,10 @@ class _SecurityQuestionsState extends State<SecurityQuestions> {
                   ),
                   Obx(() => primaryBtn(
                       label: 'Secure My Account',
-                      isLoading: _isLoading,
+                      isLoading: authCtrl.updateStdLoading,
                       function: selectedQuestions.length >= 3
                           ? () {
+                              authCtrl.updateStdLoading.value = true;
                               var studentBody = jsonEncode({
                                 "first_pet": firstpet.value,
                                 "childhood_street": childstreet.value,
@@ -215,6 +215,7 @@ class QuestionForm extends StatefulWidget {
 class QuestionFormState extends State<QuestionForm> {
   late QuestionCircle queCircle;
   QuestionFormState(this.queCircle);
+  final RxBool _isLoading = false.obs;
 
   final _questionForm = GlobalKey<FormState>();
 
@@ -253,6 +254,7 @@ class QuestionFormState extends State<QuestionForm> {
         queCircle.answer.value != ''
             ? primaryBtn(
                 label: 'Remove Answer',
+                isLoading: _isLoading,
                 bgColor: kPriRed,
                 function: () async {
                   if (_questionForm.currentState!.validate()) {
@@ -266,6 +268,7 @@ class QuestionFormState extends State<QuestionForm> {
                 })
             : primaryBtn(
                 label: 'Submit Answer',
+                isLoading: _isLoading,
                 function: () async {
                   if (_questionForm.currentState!.validate()) {
                     queCircle.answer.value = answerctrl.text;

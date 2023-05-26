@@ -10,7 +10,7 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 
-final newsctrl = Get.put(NewsCtrl());
+final newsctrl = Get.find<NewsController>();
 
 class NewsPage extends StatefulWidget {
   static const routeName = "/news";

@@ -47,6 +47,10 @@ class AcademicController extends GetxController {
   List<CarouselSemesters> carSems = [];
   List<FlSpot> avgSpots = [];
 
+  RxBool createAcLoading = false.obs;
+  RxBool updateAcLoading = false.obs;
+  RxBool newTransLoading = false.obs;
+
   @override
   void onInit() async {
     super.onInit();
@@ -123,6 +127,7 @@ class AcademicController extends GetxController {
   }
 
   createAcademicProfile() async {
+    createAcLoading.value = true;
     var body = jsonEncode({
       'student_id': studentId,
       'school': schoolDropdown.value,
@@ -177,9 +182,12 @@ class AcademicController extends GetxController {
           title: "Failed To Load Transcripts!",
           subtitle: "Please check your internet connection or try again later");
     }
+    createAcLoading.value = false;
+    update();
   }
 
   updateAcademicProfile(bool fromSetup) async {
+    updateAcLoading.value = true;
     try {
       // upload current semester's transcript
       var units = [];
@@ -251,9 +259,12 @@ class AcademicController extends GetxController {
           title: "Transcripts not uploaded!",
           subtitle: "Please check your internet connection or try again later");
     }
+    updateAcLoading.value = false;
+    update();
   }
 
   getNewTranscript() async {
+    newTransLoading.value = true;
     try {
       var res = await http.get(
           Uri.parse(
@@ -288,6 +299,8 @@ class AcademicController extends GetxController {
           title: "Failed To Load Academic Profile!",
           subtitle: "Please check your internet connection or try again later");
     }
+    newTransLoading.value = false;
+    update();
   }
 
   setEditTranscript(String year, StudentSemester sem) async {

@@ -10,7 +10,7 @@ import 'package:flutter/material.dart';
 import 'package:fluttericon/font_awesome5_icons.dart';
 import 'package:get/get.dart';
 
-final workExpCtrl = Get.put(WorkExpController());
+final workExpCtrl = Get.find<WorkExpController>();
 final insightsCtrl = Get.find<InsightsController>();
 
 class InternshipsOverview extends StatefulWidget {
@@ -24,6 +24,7 @@ class InternshipsOverview extends StatefulWidget {
 class _InternshipsOverviewState extends State<InternshipsOverview> {
   int _currentSlide = 0;
   final CarouselController _sliderCtrl = CarouselController();
+  final RxBool isLoading = false.obs;
 
   @override
   void initState() {
@@ -106,6 +107,7 @@ class _InternshipsOverviewState extends State<InternshipsOverview> {
                 child: Text('Past Internships', style: kPageSubTitle)),
             primaryBtn(
                 label: 'Add Internship',
+                isLoading: isLoading,
                 function: () {
                   workExpCtrl.addInternship();
                 })

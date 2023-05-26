@@ -10,7 +10,7 @@ import 'package:flutter/material.dart';
 import 'package:fluttericon/entypo_icons.dart';
 import 'package:get/get.dart';
 
-final acProfCtrl = Get.put(AcademicController());
+final acProfCtrl = Get.find<AcademicController>();
 final insightsCtrl = Get.find<InsightsController>();
 
 class AcademicOverview extends StatefulWidget {
@@ -82,6 +82,7 @@ class _AcademicOverviewState extends State<AcademicOverview> {
           const SizedBox(),
           primaryBtn(
               label: 'Add Transcript',
+              isLoading: acProfCtrl.newTransLoading,
               function: () {
                 acProfCtrl.getNewTranscript();
               })

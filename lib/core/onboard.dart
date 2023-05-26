@@ -16,6 +16,8 @@ class OnBoard extends StatefulWidget {
 }
 
 class _OnBoardState extends State<OnBoard> {
+  final RxBool _isLoading = false.obs;
+
   late VideoPlayerController _controller;
 
   @override
@@ -78,13 +80,13 @@ class _OnBoardState extends State<OnBoard> {
                     ),
                   ),
                   primaryBtn(
-                      isLoading: false,
+                      isLoading: _isLoading,
                       label: 'Sign In',
                       function: () {
                         Get.to(const Login());
                       }),
                   primaryBtn(
-                      isLoading: false,
+                      isLoading: _isLoading,
                       label: 'Get Started',
                       function: () {
                         Get.to(const SignUp());

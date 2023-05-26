@@ -16,6 +16,8 @@ final insightsCtrl = Get.find<InsightsController>();
 
 class TechnicalsController extends GetxController {
   int? studentId;
+  RxBool gitLoading = false.obs;
+  RxBool createProf = false.obs;
   TextEditingController gitnamectrl = TextEditingController();
   final gitNameForm = GlobalKey<FormState>();
   LanguageChartData langChart = LanguageChartData();
@@ -56,6 +58,7 @@ class TechnicalsController extends GetxController {
   }
 
   createTechProfile() async {
+    createProf.value = true;
     var body =
         jsonEncode({'student_id': studentId, 'git_username': gitnamectrl.text});
     try {
@@ -85,9 +88,12 @@ class TechnicalsController extends GetxController {
           title: "Failed to upload your technical profile!",
           subtitle: "Please check your internet connection or try again later");
     }
+    createProf.value = false;
+    update();
   }
 
   editGithubLink() async {
+    gitLoading.value = true;
     var body = jsonEncode({'git_username': gitnamectrl.text});
     try {
       var res = await http.patch(
@@ -120,5 +126,7 @@ class TechnicalsController extends GetxController {
           title: "Failed to upload your technical profile!",
           subtitle: "Please check your internet connection or try again later");
     }
+    gitLoading.value = false;
+    update();
   }
 }

@@ -52,6 +52,8 @@ class WorkExpController extends GetxController {
   int internshipNo = 0;
   List<NumberBox> intShpBoxes = [];
   RxBool currentlyWorking = false.obs;
+  RxBool addExpLoading = false.obs;
+  RxBool getExpLoading = false.obs;
 
   @override
   void onInit() async {
@@ -83,6 +85,7 @@ class WorkExpController extends GetxController {
   }
 
   getWorkExpForms() async {
+    getExpLoading.value = true;
     var body = jsonEncode({'student_id': studentId});
     try {
       var res = await http.post(Uri.parse(wxpProfileUrl),
@@ -126,6 +129,8 @@ class WorkExpController extends GetxController {
           title: "Failed To Create Internship Profile!",
           subtitle: "Please check your internet connection or try again later");
     }
+    getExpLoading.value = false;
+    update();
   }
 
   Future<void> selectStartDate(BuildContext context) async {
@@ -173,6 +178,7 @@ class WorkExpController extends GetxController {
   }
 
   addWorkExp({required bool fromSetup, required bool isEdit}) async {
+    addExpLoading.value = true;
     // calculate time spent
     var lastDate = DateTime.now();
     if (!currentlyWorking.value) {
@@ -255,6 +261,8 @@ class WorkExpController extends GetxController {
           title: "Failed To Record Internship!",
           subtitle: "Please check your internet connection or try again later");
     }
+    addExpLoading.value = false;
+    update();
   }
 
   addInternship() {
@@ -277,14 +285,10 @@ class WorkExpController extends GetxController {
     indDropdown.value = workExp.industry;
     startDatectrl.text = workExp.startDate;
     startDate = dateFormat.parse(workExp.startDate);
-    if (workExp.endDate == null) {
-      currentlyWorking.value = true;
-      endDate = DateTime.now();
-      endDatectrl.text = '';
-    } else {
-      endDate = dateFormat.parse(workExp.endDate);
-      endDatectrl.text = workExp.endDate;
-    }
+
+    endDate = dateFormat.parse(workExp.endDate);
+    endDatectrl.text = workExp.endDate;
+
     Get.to(const AddWorkExpForm(isEdit: true));
   }
 

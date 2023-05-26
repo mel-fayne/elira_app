@@ -8,7 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:percent_indicator/percent_indicator.dart';
 
-final ssProfCtrl = Get.put(SoftSkillsController());
+final ssProfCtrl = Get.find<SoftSkillsController>();
 final insightsCtrl = Get.find<InsightsController>();
 
 class SoftSkillsPage extends StatefulWidget {

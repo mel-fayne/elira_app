@@ -12,7 +12,7 @@ import 'package:get/get.dart';
 import 'package:elira_app/core/navigator.dart';
 import 'package:lottie/lottie.dart';
 
-final insightsCtrl = Get.put(InsightsController());
+final insightsCtrl = Get.find<InsightsController>();
 
 class InsightsPage extends StatefulWidget {
   static const routeName = "/Insights";
@@ -24,6 +24,8 @@ class InsightsPage extends StatefulWidget {
 }
 
 class _InsightsPageState extends State<InsightsPage> {
+  final RxBool isLoading = false.obs;
+
   @override
   void initState() {
     super.initState();
@@ -57,6 +59,7 @@ class _InsightsPageState extends State<InsightsPage> {
                                     const SizedBox(),
                                     primaryBtn(
                                         label: 'Compute Prediction',
+                                        isLoading: isLoading,
                                         function: () {
                                           insightsCtrl.getStudentPredictions();
                                         })
@@ -156,6 +159,8 @@ class PredictionPage extends StatefulWidget {
 }
 
 class _PredictionPageState extends State<PredictionPage> {
+  final RxBool isLoading = false.obs;
+
   @override
   void initState() {
     super.initState();
@@ -224,6 +229,7 @@ class _PredictionPageState extends State<PredictionPage> {
                         Container(),
                         primaryBtn(
                             label: 'Explore Insights',
+                            isLoading: isLoading,
                             function: () {
                               Get.off(const NavigatorHandler(1));
                             })

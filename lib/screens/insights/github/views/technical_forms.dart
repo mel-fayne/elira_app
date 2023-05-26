@@ -5,7 +5,7 @@ import 'package:elira_app/theme/global_widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-final techProfCtrl = Get.put(TechnicalsController());
+final techProfCtrl = Get.find<TechnicalsController>();
 
 class TechProfileForm extends StatefulWidget {
   static const routeName = "/TechProfileForm";
@@ -60,19 +60,13 @@ class _TechProfileFormState extends State<TechProfileForm> {
                                 _isLoading, 'Create Technical Profile')),
                         primaryBtn(
                           label: 'Create Profile',
-                          isLoading: _isLoading,
+                          isLoading: techProfCtrl.createProf,
                           function: () async {
-                            setState(() {
-                              _isLoading = !_isLoading;
-                            });
                             if (techProfCtrl.gitNameForm.currentState!
                                 .validate()) {
                               techProfCtrl.getGithubDetails(true);
                             } else {
-                              await Future.delayed(const Duration(seconds: 5));
-                              setState(() {
-                                _isLoading = !_isLoading;
-                              });
+                              techProfCtrl.createProf.value = false;
                             }
                           },
                         )
@@ -113,18 +107,12 @@ class _EditGithubFormState extends State<EditGithubForm> {
         gitForm(_isLoading, 'Edit Link'),
         primaryBtn(
           label: 'Edit Link',
-          isLoading: _isLoading,
+          isLoading: techProfCtrl.gitLoading,
           function: () async {
-            setState(() {
-              _isLoading = !_isLoading;
-            });
             if (techProfCtrl.gitNameForm.currentState!.validate()) {
               techProfCtrl.getGithubDetails(false);
             } else {
-              await Future.delayed(const Duration(seconds: 5));
-              setState(() {
-                _isLoading = !_isLoading;
-              });
+              techProfCtrl.gitLoading.value = false;
             }
           },
         )

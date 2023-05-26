@@ -6,6 +6,8 @@ import 'package:elira_app/theme/global_widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+final authCtrl = Get.find<AuthController>();
+
 class SignUp extends StatefulWidget {
   static const routeName = "/signup";
 
@@ -22,11 +24,8 @@ class _SignUpState extends State<SignUp> {
   TextEditingController passctrl = TextEditingController();
   TextEditingController confirmpassctrl = TextEditingController();
   TextEditingController lastnamectrl = TextEditingController();
-
-  final authCtrl = Get.put(AuthController());
   final _signupFormKey = GlobalKey<FormState>();
   final _isHidden = false.obs;
-  bool _isLoading = false;
 
   @override
   void initState() {
@@ -157,17 +156,13 @@ class _SignUpState extends State<SignUp> {
               ),
               primaryBtn(
                 label: 'Sign Up',
-                isLoading: _isLoading,
+                isLoading: authCtrl.signUpLoading,
                 function: () async {
-                  setState(() {
-                    _isLoading = !_isLoading;
-                  });
+                  authCtrl.signUpLoading.value = true;
                   if (_signupFormKey.currentState!.validate()) {
                     authSignUp();
                   } else {
-                    setState(() {
-                      _isLoading = !_isLoading;
-                    });
+                    authCtrl.signUpLoading.value = false;
                   }
                 },
               ),

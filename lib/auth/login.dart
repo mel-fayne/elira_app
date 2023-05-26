@@ -7,6 +7,8 @@ import 'package:elira_app/theme/global_widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+final authCtrl = Get.find<AuthController>();
+
 class Login extends StatefulWidget {
   static const routeName = "/login";
 
@@ -20,11 +22,8 @@ class Login extends StatefulWidget {
 
 class LoginState extends State<Login> {
   final _isHidden = false.obs;
-  bool _isLoading = false;
   late TextEditingController emailctrl, passctrl;
   final GlobalKey<FormState> _loginFormKey = GlobalKey<FormState>();
-
-  final authCtrl = Get.find<AuthController>();
 
   @override
   void initState() {
@@ -136,18 +135,14 @@ class LoginState extends State<Login> {
                 ),
                 primaryBtn(
                   label: 'Login',
-                  isLoading: _isLoading,
+                  isLoading: authCtrl.signInLoading,
                   function: () async {
-                    setState(() {
-                      _isLoading = true;
-                    });
+                    authCtrl.signUpLoading.value = true;
                     if (_loginFormKey.currentState!.validate()) {
                       authSignIn();
+                    } else {
+                      authCtrl.signInLoading.value = false;
                     }
-                    await Future.delayed(const Duration(seconds: 7));
-                    setState(() {
-                      _isLoading = false;
-                    });
                   },
                 ),
                 textSpan(

@@ -3,7 +3,7 @@ import 'package:elira_app/theme/text_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-final techProfCtrl = Get.put(TechnicalsController());
+final techProfCtrl = Get.find<TechnicalsController>();
 
 class TechnicalRecommendations extends StatefulWidget {
   const TechnicalRecommendations({Key? key}) : super(key: key);

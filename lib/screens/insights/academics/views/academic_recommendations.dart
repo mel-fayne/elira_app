@@ -3,7 +3,7 @@ import 'package:elira_app/theme/text_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-final acProfCtrl = Get.put(AcademicController());
+final acProfCtrl = Get.find<AcademicController>();
 
 class AcademicRecommendations extends StatefulWidget {
   const AcademicRecommendations({Key? key}) : super(key: key);

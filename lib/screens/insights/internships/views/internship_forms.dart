@@ -7,7 +7,7 @@ import 'package:elira_app/utils/app_models.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-final workExpCtrl = Get.put(WorkExpController());
+final workExpCtrl = Get.find<WorkExpController>();
 
 class WorkExpProfile extends StatefulWidget {
   static const routeName = "/WorkExpProfile";
@@ -22,8 +22,6 @@ class _WorkExpProfileState extends State<WorkExpProfile> {
   TextEditingController internshipsNoCtrl = TextEditingController();
 
   final _internshipNoForm = GlobalKey<FormState>();
-  bool _isLoading = false;
-
   @override
   void initState() {
     super.initState();
@@ -79,10 +77,8 @@ class _WorkExpProfileState extends State<WorkExpProfile> {
                                       }),
                                   primaryBtn(
                                       label: 'Load Internship Forms',
+                                      isLoading: workExpCtrl.getExpLoading,
                                       function: () async {
-                                        setState(() {
-                                          _isLoading = true;
-                                        });
                                         if (_internshipNoForm.currentState!
                                             .validate()) {
                                           workExpCtrl.internshipNo =
@@ -156,14 +152,11 @@ class _WorkExpFormState extends State<WorkExpForm> {
                       context: context),
                   primaryBtn(
                     label: 'Add Internship',
-                    isLoading: _isLoading,
+                    isLoading: workExpCtrl.addExpLoading,
                     function: workExpCtrl.empTypeDropdown.value == '' ||
                             workExpCtrl.indDropdown.value == '' ||
                             workExpCtrl.locTypeDropdown.value == ''
                         ? () async {
-                            setState(() {
-                              _isLoading = !_isLoading;
-                            });
                             workExpCtrl.addWorkExp(
                                 fromSetup: true, isEdit: false);
                           }
@@ -244,7 +237,7 @@ class AddWorkExpFormState extends State<AddWorkExpForm> {
             context: context),
         primaryBtn(
           label: btnLabel,
-          isLoading: _isLoading,
+          isLoading: workExpCtrl.addExpLoading,
           function: workExpCtrl.empTypeDropdown.value == '' ||
                   workExpCtrl.indDropdown.value == '' ||
                   workExpCtrl.locTypeDropdown.value == ''

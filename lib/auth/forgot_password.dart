@@ -1,8 +1,11 @@
+import 'package:elira_app/auth/auth_controller.dart';
 import 'package:elira_app/theme/auth_widgets.dart';
 import 'package:elira_app/theme/colors.dart';
 import 'package:elira_app/theme/global_widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+
+final authCtrl = Get.find<AuthController>();
 
 class ForgotPassword extends StatefulWidget {
   static const routeName = "/ForgotPassword";
@@ -16,7 +19,6 @@ class ForgotPassword extends StatefulWidget {
 }
 
 class ForgotPasswordState extends State<ForgotPassword> {
-  bool _isLoading = false;
   late TextEditingController emailctrl;
   final GlobalKey<FormState> forgotpassFormKey = GlobalKey<FormState>();
 
@@ -32,13 +34,7 @@ class ForgotPasswordState extends State<ForgotPassword> {
     super.dispose();
   }
 
-  void sendRecovery() {
-    final isValid = forgotpassFormKey.currentState!.validate();
-    if (!isValid) {
-      return;
-    }
-    forgotpassFormKey.currentState!.save();
-  }
+  void sendRecovery() {}
 
   @override
   Widget build(BuildContext context) {
@@ -103,16 +99,14 @@ class ForgotPasswordState extends State<ForgotPassword> {
                 ),
                 primaryBtn(
                   label: 'Confirm Email',
-                  isLoading: _isLoading,
+                  isLoading: authCtrl.forgotPassLoading,
                   function: () async {
-                    setState(() {
-                      _isLoading = true;
-                    });
-                    sendRecovery();
-                    await Future.delayed(const Duration(seconds: 2));
-                    setState(() {
-                      _isLoading = false;
-                    });
+                    authCtrl.forgotPassLoading.value = true;
+                    if (forgotpassFormKey.currentState!.validate()) {
+                      sendRecovery();
+                    } else {
+                      authCtrl.forgotPassLoading.value = false;
+                    }
                   },
                 ),
               ],
