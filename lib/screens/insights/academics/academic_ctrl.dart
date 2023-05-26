@@ -13,7 +13,6 @@ import 'dart:convert';
 import 'package:elira_app/theme/global_widgets.dart';
 import 'package:http/http.dart' as http;
 import 'package:elira_app/utils/constants.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 final insightsCtrl = Get.find<InsightsController>();
 
@@ -52,7 +51,6 @@ class AcademicController extends GetxController {
   void onInit() async {
     super.onInit();
     studentId = await getStudentId();
-    await getSemUnitsData();
   }
 
   getSemUnitsData() async {

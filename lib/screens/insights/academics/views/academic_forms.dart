@@ -34,8 +34,8 @@ class _AcademicProfileFormState extends State<AcademicProfileForm> {
         backgroundColor: kCreamBg,
         appBar: studDtlsAppBar(
             pageTitle: 'Academic Details',
-            quote:
-                "“If knowledge is a power, then learning is a superpower.” ~ Jim Kwik"),
+            quote: '''“If knowledge is power, learning is a superpower.” 
+                    ~ Jim Kwik'''),
         body: SingleChildScrollView(
             padding: const EdgeInsets.symmetric(vertical: 25, horizontal: 30),
             child: Column(
@@ -46,7 +46,7 @@ class _AcademicProfileFormState extends State<AcademicProfileForm> {
                       academicComplete: false,
                       academicCurrent: true,
                       technicalComplete: false,
-                      technicalCurrent: true,
+                      technicalCurrent: false,
                       internshipComplete: false,
                       internshipCurrent: false),
                   Column(
@@ -121,8 +121,8 @@ class _TranscriptPageState extends State<TranscriptPage> {
         backgroundColor: kCreamBg,
         appBar: studDtlsAppBar(
             pageTitle: 'Academic Details',
-            quote:
-                "“If knowledge is a power, then learning is a superpower.” ~ Jim Kwik"),
+            quote: '''“If knowledge is power, learning is a superpower.” 
+                    ~ Jim Kwik'''),
         body: SingleChildScrollView(
             padding: const EdgeInsets.symmetric(vertical: 25, horizontal: 30),
             child: Column(
@@ -162,17 +162,25 @@ class _TranscriptPageState extends State<TranscriptPage> {
                   const Divider(
                     color: kPriPurple,
                   ),
-                  acProfCtrl.currentTranscript.studentUnits.isNotEmpty
-                      ? Obx(() => ListView.builder(
-                          shrinkWrap: true,
-                          physics: const NeverScrollableScrollPhysics(),
-                          itemBuilder: (context, index) {
-                            var units =
-                                acProfCtrl.currentTranscript.studentUnits;
-                            return buildSingleUnit(
-                                setState: setState, unit: units[index]);
-                          }))
-                      : Container(),
+                  Container(
+                      decoration: BoxDecoration(
+                          color: kPriPurple,
+                          borderRadius: BorderRadius.circular(15)),
+                      child: acProfCtrl
+                              .currentTranscript.studentUnits.isNotEmpty
+                          ? ListView.builder(
+                              shrinkWrap: true,
+                              physics: const NeverScrollableScrollPhysics(),
+                              itemBuilder: (context, index) {
+                                var units =
+                                    acProfCtrl.currentTranscript.studentUnits;
+                                return buildSingleUnit(
+                                    setState: setState, unit: units[index]);
+                              },
+                              itemCount: acProfCtrl
+                                  .currentTranscript.studentUnits.length,
+                            )
+                          : Container()),
                   primaryBtn(
                       label: 'Upload Transcript',
                       isLoading: _isLoading,
@@ -181,10 +189,6 @@ class _TranscriptPageState extends State<TranscriptPage> {
                           _isLoading = true;
                         });
                         acProfCtrl.updateAcademicProfile(true);
-                        await Future.delayed(const Duration(seconds: 5));
-                        setState(() {
-                          _isLoading = false;
-                        });
                       })
                 ])));
   }
@@ -198,13 +202,13 @@ class _TranscriptPageState extends State<TranscriptPage> {
         margin: const EdgeInsets.only(right: 15),
         padding: const EdgeInsets.all(5),
         decoration: BoxDecoration(
+            color: sem.complete.value ? kPriMaroon : Colors.white,
             borderRadius: BorderRadius.circular(15),
             border: Border.all(
-                width: 2.0,
-                color: acProfCtrl.currentTranscript.semester.value == sem.title
-                    ? kPriPurple
-                    : kPriMaroon),
-            color: sem.complete.value ? kPriMaroon : Colors.white),
+                width: acProfCtrl.currentTranscript.semester.value == sem.title
+                    ? 2.0
+                    : 0.0,
+                color: kPriPurple)),
         child: sem.complete.value
             ? const Icon(Icons.check_rounded, size: 18, color: Colors.white)
             : Text(sem.title,
@@ -213,8 +217,8 @@ class _TranscriptPageState extends State<TranscriptPage> {
                     fontSize: 18,
                     color:
                         acProfCtrl.currentTranscript.semester.value == sem.title
-                            ? kPriPurple
-                            : kPriMaroon,
+                            ? kPriMaroon
+                            : kPriPurple,
                     fontFamily: 'Nunito',
                     fontWeight: FontWeight.bold))));
   }
@@ -268,9 +272,6 @@ class _AddTranscriptFormState extends State<AddTranscriptForm> {
               });
               acProfCtrl.updateAcademicProfile(false);
               await Future.delayed(const Duration(seconds: 5));
-              setState(() {
-                _isLoading = false;
-              });
             })
       ],
     );
@@ -294,7 +295,7 @@ Widget buildSingleUnit(
         dropDownField(
             dropdownValue: unit.grade.value,
             dropItems: acProfCtrl.grades,
-            bgcolor: kCreamBg,
+            bgcolor: kLightPurple,
             function: (String? newValue) {
               setState(() {
                 unit.grade.value = newValue!;

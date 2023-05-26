@@ -17,20 +17,11 @@ class TechProfileForm extends StatefulWidget {
 }
 
 class _TechProfileFormState extends State<TechProfileForm> {
-  TextEditingController gitnamectrl = TextEditingController();
-
-  final _gitNameForm = GlobalKey<FormState>();
   bool _isLoading = false;
 
   @override
   void initState() {
     super.initState();
-  }
-
-  @override
-  void dispose() {
-    gitnamectrl.dispose();
-    super.dispose();
   }
 
   void updateState() {
@@ -65,8 +56,26 @@ class _TechProfileFormState extends State<TechProfileForm> {
                       children: [
                         Padding(
                             padding: const EdgeInsets.only(top: 20, bottom: 10),
-                            child: gitForm(_isLoading,
-                                'Create Technical Profile', updateState, true))
+                            child: gitForm(
+                                _isLoading, 'Create Technical Profile')),
+                        primaryBtn(
+                          label: 'Create Profile',
+                          isLoading: _isLoading,
+                          function: () async {
+                            setState(() {
+                              _isLoading = !_isLoading;
+                            });
+                            if (techProfCtrl.gitNameForm.currentState!
+                                .validate()) {
+                              techProfCtrl.getGithubDetails(true);
+                            } else {
+                              await Future.delayed(const Duration(seconds: 5));
+                              setState(() {
+                                _isLoading = !_isLoading;
+                              });
+                            }
+                          },
+                        )
                       ])
                 ])));
   }
@@ -82,19 +91,11 @@ class EditGithubForm extends StatefulWidget {
 
 class _EditGithubFormState extends State<EditGithubForm> {
   bool _isLoading = false;
-  TextEditingController gitnamectrl = TextEditingController();
-
   final _gitNameForm = GlobalKey<FormState>();
 
   @override
   void initState() {
     super.initState();
-  }
-
-  @override
-  void dispose() {
-    gitnamectrl.dispose();
-    super.dispose();
   }
 
   void updateState() {
@@ -109,14 +110,30 @@ class _EditGithubFormState extends State<EditGithubForm> {
       formKey: _gitNameForm,
       children: [
         popupHeader(label: 'Edit Github Link'),
-        gitForm(_isLoading, 'Edit Link', updateState, false)
+        gitForm(_isLoading, 'Edit Link'),
+        primaryBtn(
+          label: 'Edit Link',
+          isLoading: _isLoading,
+          function: () async {
+            setState(() {
+              _isLoading = !_isLoading;
+            });
+            if (techProfCtrl.gitNameForm.currentState!.validate()) {
+              techProfCtrl.getGithubDetails(false);
+            } else {
+              await Future.delayed(const Duration(seconds: 5));
+              setState(() {
+                _isLoading = !_isLoading;
+              });
+            }
+          },
+        )
       ],
     );
   }
 }
 
-Widget gitForm(bool isLoading, String btnLabel, VoidCallback setStateFunction,
-    bool fromSetup) {
+Widget gitForm(bool isLoading, String btnLabel) {
   return Form(
       key: techProfCtrl.gitNameForm,
       child: Column(children: <Widget>[
@@ -131,17 +148,5 @@ Widget gitForm(bool isLoading, String btnLabel, VoidCallback setStateFunction,
               }
               return null;
             }),
-        primaryBtn(
-          label: btnLabel,
-          isLoading: isLoading,
-          function: () async {
-            setStateFunction;
-            if (techProfCtrl.gitNameForm.currentState!.validate()) {
-              techProfCtrl.getGithubDetails(fromSetup);
-            }
-            await Future.delayed(const Duration(seconds: 5));
-            setStateFunction;
-          },
-        )
       ]));
 }

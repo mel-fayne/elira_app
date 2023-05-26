@@ -21,7 +21,7 @@ Widget primaryBtn(
     {required String label,
     isLoading = false,
     bgColor = kPriDark,
-    width = 300,
+    width = 300.0,
     required void Function()? function}) {
   return Container(
     height: 70,
@@ -302,6 +302,7 @@ Widget tabitem({label, path}) {
 PreferredSizeWidget studDtlsAppBar(
     {required String pageTitle, required String quote}) {
   return AppBar(
+      automaticallyImplyLeading: false,
       bottom: PreferredSize(
           preferredSize: const Size.fromHeight(1.0),
           child: Container(
@@ -309,12 +310,15 @@ PreferredSizeWidget studDtlsAppBar(
             height: 1.0,
           )),
       elevation: 4,
-      toolbarHeight: 80,
+      toolbarHeight: 100,
       title: Column(children: [
         Text(pageTitle, style: kWhiteTitle),
         Padding(
             padding: const EdgeInsets.only(top: 5),
-            child: Text(quote, style: kWhiteSubTitle))
+            child: Text(quote,
+                textAlign: TextAlign.center,
+                style: kWhiteSubTitle,
+                softWrap: true))
       ]),
       centerTitle: true);
 }
@@ -327,13 +331,12 @@ Widget studDtlsHeader(
     required bool internshipComplete,
     required bool internshipCurrent}) {
   return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 20),
+      padding: const EdgeInsets.symmetric(vertical: 5),
       child: Column(children: [
         Row(mainAxisAlignment: MainAxisAlignment.center, children: [
           Container(
               width: 40,
               height: 40,
-              margin: const EdgeInsets.only(right: 15),
               padding: const EdgeInsets.all(5),
               decoration: BoxDecoration(
                   shape: BoxShape.circle,
@@ -357,7 +360,6 @@ Widget studDtlsHeader(
           Container(
               width: 40,
               height: 40,
-              margin: const EdgeInsets.only(right: 15),
               padding: const EdgeInsets.all(5),
               decoration: BoxDecoration(
                   shape: BoxShape.circle,
@@ -381,7 +383,6 @@ Widget studDtlsHeader(
           Container(
               width: 40,
               height: 40,
-              margin: const EdgeInsets.only(right: 15),
               padding: const EdgeInsets.all(5),
               decoration: BoxDecoration(
                   shape: BoxShape.circle,
@@ -389,7 +390,7 @@ Widget studDtlsHeader(
                       width: internshipCurrent ? 2.5 : 1.0,
                       color: internshipCurrent ? kPriMaroon : kPriPurple),
                   color: internshipComplete ? kPriMaroon : Colors.white),
-              child: Icon(FontAwesome5.code,
+              child: Icon(Icons.work,
                   size: 18,
                   color: internshipComplete
                       ? Colors.white
@@ -402,87 +403,82 @@ Widget studDtlsHeader(
             decoration: BoxDecoration(
                 color: internshipComplete ? kPriMaroon : kPriPurple),
           ),
+          Container(
+              width: 40,
+              height: 40,
+              padding: const EdgeInsets.all(5),
+              decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  border: Border.all(width: 1.0, color: kPriPurple),
+                  color: Colors.white),
+              child: Icon(Icons.check_rounded,
+                  size: 20,
+                  weight: 20.0,
+                  color: internshipComplete
+                      ? Colors.white
+                      : internshipCurrent
+                          ? kPriMaroon
+                          : kPriPurple))
         ]),
-        Container(
-            width: 50,
-            height: 2.0,
-            margin: const EdgeInsets.only(top: 10),
-            padding: const EdgeInsets.all(15),
-            decoration: const BoxDecoration(color: kLightPurple),
-            child: Row(children: [
-              Container(
-                  width: 50,
-                  height: 2.0,
-                  margin: const EdgeInsets.only(right: 15),
-                  padding: const EdgeInsets.all(5),
-                  decoration: const BoxDecoration(color: kLightPurple),
-                  child: const Icon(Icons.edit_rounded,
-                      size: 15, color: kPriPurple)),
-              Text(
-                  academicCurrent
-                      ? "What are your academic strengths? Fill in your transcript details and we'll let you know"
-                      : technicalCurrent
-                          ? "What's your tech stack? Let us find out and draw you closer to your dream career path"
-                          : "So you have experience? Just a step away to letting it contribute to your prediction",
-                  style: kBlackTxt)
-            ])),
       ]));
 }
 
 Widget dateFormField(
     {required label,
     required require,
-    required RxString dateValue,
+    required TextEditingController controller,
     required final Function() onTap,
     required final String? Function(String?) validator}) {
-  return GestureDetector(
-      onTap: onTap,
-      child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 10),
-          child:
-              Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            Padding(
-                padding: const EdgeInsets.only(bottom: 5),
-                child: RichText(
-                    text: TextSpan(children: [
-                  TextSpan(
-                      text: label,
-                      style: const TextStyle(
-                          fontSize: 12,
-                          fontFamily: 'Nunito',
-                          fontWeight: FontWeight.w500,
-                          color: kPriDark)),
-                  TextSpan(
-                    text: require ? ' *' : '',
-                    style: const TextStyle(
-                        fontSize: 12,
-                        fontFamily: 'Nunito',
-                        fontWeight: FontWeight.w500,
-                        color: kPriRed),
+  return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 10),
+      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+        Padding(
+            padding: const EdgeInsets.only(bottom: 5),
+            child: RichText(
+                text: TextSpan(children: [
+              TextSpan(
+                  text: label,
+                  style: const TextStyle(
+                      fontSize: 12,
+                      fontFamily: 'Nunito',
+                      fontWeight: FontWeight.w500,
+                      color: kPriDark)),
+              TextSpan(
+                text: require ? ' *' : '',
+                style: const TextStyle(
+                    fontSize: 12,
+                    fontFamily: 'Nunito',
+                    fontWeight: FontWeight.w500,
+                    color: kPriRed),
+              ),
+            ]))),
+        SizedBox(
+            height: 50,
+            child: TextFormField(
+              controller: controller,
+              cursorColor: kPriPurple,
+              readOnly: true,
+              validator: validator,
+              style: const TextStyle(
+                  fontSize: 16,
+                  fontFamily: 'Nunito',
+                  fontWeight: FontWeight.w400,
+                  color: kPriDark),
+              decoration: InputDecoration(
+                  fillColor: Colors.white,
+                  filled: true,
+                  border: const OutlineInputBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(4.0)),
                   ),
-                ]))),
-            SizedBox(
-              height: 50,
-              child: Obx(() => TextFormField(
-                    initialValue: dateValue.value,
-                    cursorColor: kPriPurple,
-                    readOnly: true,
-                    validator: validator,
-                    style: const TextStyle(
-                        fontSize: 16,
-                        fontFamily: 'Nunito',
-                        fontWeight: FontWeight.w400,
-                        color: kPriDark),
-                    decoration: const InputDecoration(
-                      fillColor: Colors.white,
-                      filled: true,
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(4.0)),
-                      ),
-                    ),
-                  )),
-            )
-          ])));
+                  suffix: InkWell(
+                      onTap: onTap,
+                      child: const Icon(
+                        Icons.calendar_month,
+                        size: 20,
+                        color: kPriPurple,
+                      ))),
+            )),
+      ]));
 }
 
 Widget loadingWidget(String title) {

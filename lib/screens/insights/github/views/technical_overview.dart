@@ -25,6 +25,7 @@ class _TechnicalOverviewState extends State<TechnicalOverview> {
   @override
   void initState() {
     super.initState();
+    techProfCtrl.getLanguageChart();
   }
 
   @override

@@ -28,6 +28,7 @@ class _AcademicOverviewState extends State<AcademicOverview> {
   @override
   void initState() {
     super.initState();
+    acProfCtrl.getSemUnitsData();
   }
 
   @override

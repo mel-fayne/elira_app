@@ -144,7 +144,7 @@ class LoginState extends State<Login> {
                     if (_loginFormKey.currentState!.validate()) {
                       authSignIn();
                     }
-                    await Future.delayed(const Duration(seconds: 2));
+                    await Future.delayed(const Duration(seconds: 7));
                     setState(() {
                       _isLoading = false;
                     });

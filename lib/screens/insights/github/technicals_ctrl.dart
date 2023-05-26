@@ -24,7 +24,6 @@ class TechnicalsController extends GetxController {
   void onInit() async {
     super.onInit();
     studentId = await getStudentId();
-    getLanguageChart();
   }
 
   @override

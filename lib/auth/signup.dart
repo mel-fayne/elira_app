@@ -160,15 +160,15 @@ class _SignUpState extends State<SignUp> {
                 isLoading: _isLoading,
                 function: () async {
                   setState(() {
-                    _isLoading = true;
+                    _isLoading = !_isLoading;
                   });
                   if (_signupFormKey.currentState!.validate()) {
                     authSignUp();
+                  } else {
+                    setState(() {
+                      _isLoading = !_isLoading;
+                    });
                   }
-                  await Future.delayed(const Duration(seconds: 2));
-                  setState(() {
-                    _isLoading = false;
-                  });
                 },
               ),
               Padding(
