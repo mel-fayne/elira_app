@@ -289,7 +289,11 @@ class AcademicController extends GetxController {
           var holder = StudentUnit.fromJson(unit);
           currentTranscript.studentUnits.add(holder);
         }
-        Get.dialog(const AddTranscriptForm(isEdit: false));
+
+        newTransLoading.value = false;
+        update();
+
+        print(currentTranscript.studentUnits.isNotEmpty);
       } else {
         showSnackbar(
             path: Icons.close_rounded,
@@ -303,8 +307,6 @@ class AcademicController extends GetxController {
           title: "Failed To Load Academic Profile!",
           subtitle: "Please check your internet connection or try again later");
     }
-    newTransLoading.value = false;
-    update();
   }
 
   setEditTranscript(String year, StudentSemester sem) async {

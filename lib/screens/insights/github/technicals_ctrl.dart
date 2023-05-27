@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:elira_app/screens/insights/github/technical_models.dart';
+import 'package:elira_app/screens/insights/github/views/technical_forms.dart';
 import 'package:elira_app/screens/insights/insights_ctrl.dart';
 import 'package:elira_app/screens/insights/internships/views/internship_forms.dart';
 import 'package:elira_app/theme/colors.dart';
@@ -36,6 +37,8 @@ class TechnicalsController extends GetxController {
 
   getLanguageChart() {
     List<ProgLanguage> langs = [];
+    langChart.indicators = [];
+    langChart.sections = [];
     langs = insightsCtrl.stdTchProf.languages;
     for (int i = 0; i < langs.length; i++) {
       var sect = PieChartSectionData(
@@ -44,7 +47,8 @@ class TechnicalsController extends GetxController {
         title: langs[i].name,
       );
       langChart.sections.add(sect);
-      var indct = Indicator(langs[i].name, pieColors[i]);
+      var indct =
+          Indicator('${langs[i].name} : ${langs[i].percentage}%', pieColors[i]);
       langChart.indicators.add(indct);
     }
   }
@@ -92,6 +96,14 @@ class TechnicalsController extends GetxController {
     update();
   }
 
+  setupForm() {
+    gitLoading.value = true;
+
+    gitnamectrl.text = insightsCtrl.stdTchProf.gitUsername;
+    gitLoading.value = false;
+    Get.to(const EditGithubForm());
+  }
+
   editGithubLink() async {
     gitLoading.value = true;
     var body = jsonEncode({'git_username': gitnamectrl.text});
@@ -105,7 +117,9 @@ class TechnicalsController extends GetxController {
       debugPrint(res.body);
 
       if (res.statusCode == 200) {
-        // await insightsCtrl.getStudentInsights();
+        insightsCtrl.getStudentInsights();
+        gitLoading.value = false;
+        update();
         showSnackbar(
             path: Icons.check_rounded,
             title: "Technical Profile Updated!",
@@ -118,7 +132,6 @@ class TechnicalsController extends GetxController {
             title: "Seems there's a problem on our side!",
             subtitle: "Please try again later");
       }
-      update();
       return;
     } catch (error) {
       showSnackbar(
@@ -126,7 +139,5 @@ class TechnicalsController extends GetxController {
           title: "Failed to upload your technical profile!",
           subtitle: "Please check your internet connection or try again later");
     }
-    gitLoading.value = false;
-    update();
   }
 }

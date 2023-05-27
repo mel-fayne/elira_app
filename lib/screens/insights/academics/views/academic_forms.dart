@@ -248,16 +248,18 @@ class _AddTranscriptFormState extends State<AddTranscriptForm> {
       formKey: _AddTranscriptFormForm,
       children: [
         popupHeader(label: isEdit ? 'Edit Transcript' : 'Add Transcript'),
-        acProfCtrl.currentTranscript.studentUnits.isNotEmpty
-            ? Obx(() => ListView.builder(
+        Obx(() => acProfCtrl.currentTranscript.studentUnits.isNotEmpty
+            ? ListView.builder(
                 shrinkWrap: true,
                 physics: const NeverScrollableScrollPhysics(),
                 itemBuilder: (context, index) {
                   var units = acProfCtrl.currentTranscript.studentUnits;
                   return buildSingleUnit(
                       setState: setState, unit: units[index]);
-                }))
-            : Container(),
+                },
+                itemCount: acProfCtrl.currentTranscript.studentUnits.length,
+              )
+            : const Text('sssuppp')),
         primaryBtn(
             label: isEdit ? 'Edit Transcript' : 'Upload Transcript',
             isLoading: acProfCtrl.updateAcLoading,

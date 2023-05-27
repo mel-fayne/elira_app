@@ -37,122 +37,130 @@ class _TechnicalOverviewState extends State<TechnicalOverview> {
   Widget build(BuildContext context) {
     return Scaffold(
         body: SingleChildScrollView(
-      child: Column(children: [
-        const Padding(
-            padding: EdgeInsets.symmetric(vertical: 20),
-            child: Text('Overview', style: kPageTitle)),
+      padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 15),
+      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
         Container(
           decoration: BoxDecoration(
-              color: kPriPurple, borderRadius: BorderRadius.circular(20)),
-          padding: const EdgeInsets.all(10),
+              color: kPriPurple, borderRadius: BorderRadius.circular(12)),
+          padding: const EdgeInsets.all(17),
           child:
               Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-            Column(children: [
+            Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
               const Padding(
                   padding: EdgeInsets.only(bottom: 10),
-                  child: Text('Top Language', style: kWhiteTxt)),
-              Text(insightsCtrl.stdTchProf.topLanguage, style: kLightPurTxt)
+                  child: Text('Top Language', style: kCardSubtitle)),
+              Text(insightsCtrl.stdTchProf.topLanguage,
+                  style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 18,
+                      fontWeight: FontWeight.w700,
+                      fontFamily: 'Nunito'))
             ]),
             Container(
-                width: 150,
-                height: 150,
+                width: 130,
+                height: 90,
                 decoration: BoxDecoration(
-                    color: kLightPurple,
-                    borderRadius: BorderRadius.circular(20)),
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(7)),
                 padding:
                     const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
                 child:
-                    const Icon(FontAwesome5.code, size: 30, color: kPriPurple)),
+                    const Icon(FontAwesome5.code, size: 30, color: kPriPurple))
           ]),
         ),
-        const Padding(
-            padding: EdgeInsets.only(top: 20, bottom: 10),
-            child: Text('Github Summary', style: kPageSubTitle)),
         Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-          const SizedBox(),
+          const Padding(
+              padding: EdgeInsets.only(top: 20, bottom: 10),
+              child: Text('Github Summary', style: kPageSubTitle)),
           primaryBtn(
               label: 'Edit Link',
+              width: 130.0,
               isLoading: techProfCtrl.gitLoading,
               function: () {
-                techProfCtrl.editGithubLink();
+                techProfCtrl.setupForm();
               })
         ]),
         Row(children: [
-          statCard(Entypo.code, 'Total Commits',
+          statCard(
+              Entypo.code,
+              '''Total
+Commits''',
               insightsCtrl.stdTchProf.totalCommits.toString()),
           Container(
+              width: 120,
               height: 150,
               decoration: BoxDecoration(
                   color: Colors.white, borderRadius: BorderRadius.circular(15)),
               margin: const EdgeInsets.symmetric(horizontal: 10),
-              padding: const EdgeInsets.all(10),
+              padding: const EdgeInsets.all(12),
               child: Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Stack(children: [
+                    Stack(alignment: AlignmentDirectional.topCenter, children: [
                       Container(
-                        width: 150,
-                        height: 150,
-                        color: Colors.white,
-                        decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            border: Border.all(color: kPriPurple, width: 5.0)),
-                      ),
-                      Column(children: [
-                        const Icon(FontAwesome5.fire,
-                            color: kPriPurple, size: 56),
-                        Text(insightsCtrl.stdTchProf.currentStreak.toString(),
-                            style: kPurpleTitle)
-                      ])
+                          width: 100,
+                          height: 100,
+                          decoration: BoxDecoration(
+                              color: Colors.white,
+                              shape: BoxShape.circle,
+                              border:
+                                  Border.all(color: kPriPurple, width: 5.0))),
+                      Column(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Container(
+                                width: 50,
+                                height: 50,
+                                padding: const EdgeInsets.all(10),
+                                decoration: const BoxDecoration(
+                                    color: Colors.white,
+                                    shape: BoxShape.circle),
+                                child: const Icon(FontAwesome5.fire,
+                                    color: kPriPurple, size: 30)),
+                            Text(
+                                insightsCtrl.stdTchProf.currentStreak
+                                    .toString(),
+                                textAlign: TextAlign.center,
+                                style: const TextStyle(
+                                    color: kPriPurple,
+                                    fontSize: 34,
+                                    fontWeight: FontWeight.w700,
+                                    fontFamily: 'Nunito')),
+                          ])
                     ]),
-                    const Text('Current Streak', style: kBlackTitle)
+                    const Text('Current Streak',
+                        textAlign: TextAlign.center, style: kPurpleTxt)
                   ])),
-          Row(children: [
-            statCard(FontAwesome5.code_branch, 'Total Contributions',
-                insightsCtrl.stdTchProf.totalContribs.toString())
-          ]),
-          const Padding(
-              padding: EdgeInsets.only(top: 20, bottom: 10),
-              child: Text('Top 5 Languages', style: kPageSubTitle)),
-          Padding(
-              padding: const EdgeInsets.symmetric(vertical: 10),
-              child: Card(
-                  elevation: 4,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(7),
-                  ),
-                  color: kLightPurple,
-                  child: Row(children: [
-                    SizedBox(
-                        width: 240,
-                        height: 300,
-                        child: PieChart(languagesData())),
-                    Padding(
-                        padding:
-                            const EdgeInsets.only(top: 50, left: 10, right: 5),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: pieIndicators(),
-                        )),
-                  ])))
+          statCard(
+              FontAwesome5.code_branch,
+              '''Total
+Contribs''',
+              insightsCtrl.stdTchProf.totalContribs.toString())
         ]),
-        Container(
-            decoration: BoxDecoration(
-                color: kLightPurple, borderRadius: BorderRadius.circular(15)),
-            padding: const EdgeInsets.all(15),
-            margin: const EdgeInsets.only(bottom: 10),
-            child: AspectRatio(
-              aspectRatio: 1.70,
-              child: Padding(
-                  padding: const EdgeInsets.only(
-                    right: 18,
-                    left: 12,
-                    top: 24,
-                    bottom: 12,
-                  ),
-                  child: Container()),
-            )),
+        const Padding(
+            padding: EdgeInsets.only(top: 25, bottom: 10),
+            child: Text('Top 5 Languages', style: kPageSubTitle)),
+        Padding(
+            padding: const EdgeInsets.symmetric(vertical: 10),
+            child: Card(
+                elevation: 4,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(7),
+                ),
+                color: kLightPurple,
+                child: Column(children: [
+                  SizedBox(
+                      width: 240,
+                      height: 250,
+                      child: PieChart(languagesData())),
+                  Padding(
+                      padding: const EdgeInsets.all(15),
+                      child: Wrap(
+                        runSpacing: 2.0,
+                        children: pieIndicators(),
+                      )),
+                ])))
       ]),
     ));
   }
@@ -160,27 +168,33 @@ class _TechnicalOverviewState extends State<TechnicalOverview> {
 
 Widget statCard(IconData iconPath, String statLabel, String stat) {
   return Container(
-      height: 150,
+      width: 118,
+      height: 110,
       decoration: BoxDecoration(
-          color: kLightPurple, borderRadius: BorderRadius.circular(15)),
-      margin: const EdgeInsets.symmetric(horizontal: 10),
+          color: kLightPurple, borderRadius: BorderRadius.circular(7)),
       padding: const EdgeInsets.all(10),
       child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Row(children: [
               Container(
-                  height: 50,
-                  width: 65,
+                  height: 22,
+                  width: 22,
                   decoration: BoxDecoration(
                       color: kPriPurple,
-                      borderRadius: BorderRadius.circular(15)),
-                  margin: const EdgeInsets.only(right: 7),
+                      borderRadius: BorderRadius.circular(7)),
+                  margin: const EdgeInsets.only(right: 5),
                   padding: const EdgeInsets.all(3),
-                  child: Icon(iconPath, size: 30, color: kLightPurple)),
-              Text(statLabel, style: kPurpleTxt)
+                  child: Icon(iconPath, size: 13, color: kLightPurple)),
+              Text(statLabel, style: kWhiteTxt)
             ]),
-            Text(stat, style: kPurpleTitle)
+            Text(stat,
+                softWrap: true,
+                style: const TextStyle(
+                    color: kPriPurple,
+                    fontSize: 30,
+                    fontWeight: FontWeight.w700,
+                    fontFamily: 'Nunito'))
           ]));
 }

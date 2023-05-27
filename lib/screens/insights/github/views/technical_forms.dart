@@ -56,8 +56,7 @@ class _TechProfileFormState extends State<TechProfileForm> {
                       children: [
                         Padding(
                             padding: const EdgeInsets.only(top: 20, bottom: 10),
-                            child: gitForm(
-                                _isLoading, 'Create Technical Profile')),
+                            child: gitForm('Create Technical Profile')),
                         primaryBtn(
                           label: 'Create Profile',
                           isLoading: techProfCtrl.createProf,
@@ -84,27 +83,18 @@ class EditGithubForm extends StatefulWidget {
 }
 
 class _EditGithubFormState extends State<EditGithubForm> {
-  bool _isLoading = false;
-  final _gitNameForm = GlobalKey<FormState>();
-
   @override
   void initState() {
     super.initState();
   }
 
-  void updateState() {
-    setState(() {
-      _isLoading = !_isLoading;
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     return formPopupScaffold(
-      formKey: _gitNameForm,
+      formKey: techProfCtrl.gitNameForm,
       children: [
         popupHeader(label: 'Edit Github Link'),
-        gitForm(_isLoading, 'Edit Link'),
+        gitForm('Edit Link'),
         primaryBtn(
           label: 'Edit Link',
           isLoading: techProfCtrl.gitLoading,
@@ -121,7 +111,7 @@ class _EditGithubFormState extends State<EditGithubForm> {
   }
 }
 
-Widget gitForm(bool isLoading, String btnLabel) {
+Widget gitForm(String btnLabel) {
   return Form(
       key: techProfCtrl.gitNameForm,
       child: Column(children: <Widget>[

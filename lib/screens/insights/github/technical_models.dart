@@ -120,25 +120,12 @@ Widget languageChart() {
 
 PieChartData languagesData() {
   return PieChartData(
-      pieTouchData: PieTouchData(
-          enabled: true,
-          touchCallback: (FlTouchEvent event, pieTouchResponse) {
-            chartState!(() {
-              if (event.isInterestedForInteractions ||
-                  pieTouchResponse == null ||
-                  pieTouchResponse.touchedSection == null) {
-                touchedIndex = -1;
-                return;
-              }
-              touchedIndex =
-                  pieTouchResponse.touchedSection!.touchedSectionIndex;
-            });
-          }),
+      pieTouchData: PieTouchData(enabled: false),
       borderData: FlBorderData(
         show: false,
       ),
       sectionsSpace: 0,
-      centerSpaceRadius: 40,
+      centerSpaceRadius: 65,
       sections: showingSections());
 }
 
@@ -157,10 +144,11 @@ List<PieChartSectionData> showingSections() {
         techProfCtrl.langChart.sections[i].value.toStringAsFixed(2),
         style: kBlackTxt,
       ),
+      badgePositionPercentageOffset: 0.7,
       titlePositionPercentageOffset: 1.5,
       titleStyle: TextStyle(
           color: txtColor,
-          fontFamily: 'Nlango',
+          fontFamily: 'Nunito',
           fontSize: fontSize,
           fontWeight: FontWeight.w500),
     );

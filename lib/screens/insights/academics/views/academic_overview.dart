@@ -1,6 +1,7 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:elira_app/screens/insights/academics/academic_ctrl.dart';
 import 'package:elira_app/screens/insights/academics/academic_models.dart';
+import 'package:elira_app/screens/insights/academics/views/academic_forms.dart';
 import 'package:elira_app/screens/insights/insights_ctrl.dart';
 import 'package:elira_app/theme/colors.dart';
 import 'package:elira_app/theme/global_widgets.dart';
@@ -85,9 +86,10 @@ class honours''', softWrap: true, textAlign: TextAlign.center, style: kDarkTxt)
                             label: 'Add Transcript',
                             width: 135.0,
                             isLoading: acProfCtrl.newTransLoading,
-                            function: () {
-                              // acProfCtrl.getNewTranscript();
-                              acProfCtrl.getSemUnitsData();
+                            function: () async {
+                              await acProfCtrl.getNewTranscript();
+                              Get.dialog(
+                                  const AddTranscriptForm(isEdit: false));
                             })
                       ])),
               Container(
@@ -97,45 +99,46 @@ class honours''', softWrap: true, textAlign: TextAlign.center, style: kDarkTxt)
                   padding: const EdgeInsets.all(15),
                   margin: const EdgeInsets.only(bottom: 10),
                   child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                    CarouselSlider(
-                      items: acProfCtrl.semSliders(),
-                      carouselController: _sliderCtrl,
-                      options: CarouselOptions(
-                          viewportFraction: 1.0,
-                          aspectRatio: 2.0,
-                          onPageChanged: (index, reason) {
-                            setState(() {
-                              _currentSlide = index;
-                            });
-                          }),
-                    ),
-                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
                       mainAxisAlignment: MainAxisAlignment.center,
-                      children: acProfCtrl.carSems.asMap().entries.map((entry) {
-                        return GestureDetector(
-                          onTap: () => _sliderCtrl.animateToPage(entry.key),
-                          child: Container(
-                            width: 12.0,
-                            height: 12.0,
-                            margin: const EdgeInsets.symmetric(
-                                vertical: 8.0, horizontal: 4.0),
-                            decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                                color: (Theme.of(context).brightness ==
-                                            Brightness.dark
-                                        ? Colors.white
-                                        : kPriDark)
-                                    .withOpacity(_currentSlide == entry.key
-                                        ? 0.9
-                                        : 0.4)),
-                          ),
-                        );
-                      }).toList(),
-                    ),
-                  ])),
+                      children: [
+                        CarouselSlider(
+                          items: acProfCtrl.semSliders(),
+                          carouselController: _sliderCtrl,
+                          options: CarouselOptions(
+                              viewportFraction: 1.0,
+                              aspectRatio: 2.0,
+                              onPageChanged: (index, reason) {
+                                setState(() {
+                                  _currentSlide = index;
+                                });
+                              }),
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children:
+                              acProfCtrl.carSems.asMap().entries.map((entry) {
+                            return GestureDetector(
+                              onTap: () => _sliderCtrl.animateToPage(entry.key),
+                              child: Container(
+                                width: 12.0,
+                                height: 12.0,
+                                margin: const EdgeInsets.symmetric(
+                                    vertical: 8.0, horizontal: 4.0),
+                                decoration: BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    color: (Theme.of(context).brightness ==
+                                                Brightness.dark
+                                            ? Colors.white
+                                            : kPriDark)
+                                        .withOpacity(_currentSlide == entry.key
+                                            ? 0.9
+                                            : 0.4)),
+                              ),
+                            );
+                          }).toList(),
+                        ),
+                      ])),
               const Padding(
                   padding: EdgeInsets.only(top: 20, bottom: 10),
                   child: Text('Average Trend', style: kPageSubTitle)),
