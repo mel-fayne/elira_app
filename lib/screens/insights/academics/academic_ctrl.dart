@@ -3,6 +3,8 @@ import 'package:elira_app/screens/insights/github/views/technical_forms.dart';
 import 'package:elira_app/screens/insights/insights_ctrl.dart';
 import 'package:elira_app/screens/insights/insights_models.dart';
 import 'package:elira_app/screens/insights/academics/academic_models.dart';
+import 'package:elira_app/theme/colors.dart';
+import 'package:elira_app/theme/text_styles.dart';
 import 'package:elira_app/utils/app_models.dart';
 import 'package:elira_app/utils/functions.dart';
 import 'package:fl_chart/fl_chart.dart';
@@ -41,7 +43,6 @@ class AcademicController extends GetxController {
   List<StudentSpec> allSpecs = [];
   RxBool loadingData = false.obs;
   RxBool showData = false.obs;
-  RxList<double> semAverages = RxList<double>();
   RxList<StudentSemester> studentSemesters = RxList<StudentSemester>();
   List<CarouselSemesters> carSems = [];
   List<FlSpot> avgSpots = [];
@@ -54,10 +55,10 @@ class AcademicController extends GetxController {
   void onInit() async {
     super.onInit();
     studentId = await getStudentId();
+    getSemUnitsData();
   }
 
   getSemUnitsData() async {
-    loadingData.value = true;
     try {
       var res = await http.get(Uri.parse(studentUnitUrl + studentId.toString()),
           headers: headers);
@@ -66,21 +67,23 @@ class AcademicController extends GetxController {
         var respBody = json.decode(res.body);
 
         // load averages for chart
-        semAverages.value = respBody['semAvgs'];
-        for (int i = 0; i < semAverages.length; i++) {
-          avgSpots.add(FlSpot(i.toDouble(), semAverages[i]));
+        int count = 1;
+        avgSpots.add(const FlSpot(0.0, 0.0));
+        for (var avg in respBody['semAvgs']) {
+          avgSpots.add(FlSpot(count.toDouble(), avg));
         }
+
         // load student semesters
+        studentSemesters = RxList<StudentSemester>();
         respBody['semData'].forEach((sem, details) {
           StudentSemester semHolder = StudentSemester(
-              getSemTitle(sem),
+              getSemTitle(double.parse(sem)),
               details['honours'],
               details['status'],
-              details['average'],
-              details['honours'],
-              details['allUnits']
-                  .map((unit) => StudentUnit.fromJson(unit))
-                  .toList());
+              double.parse(details['average'].toString()),
+              double.parse(details['difference'].toString()), []
+              // getStdUnits(details['allUnits'])
+              );
           studentSemesters.add(semHolder);
         });
 
@@ -95,8 +98,11 @@ class AcademicController extends GetxController {
             currentGroup = [];
           }
         }
-        for (int i = 1; i <= groupedSemesters.length; i++) {
-          String title = getYearTitle(i);
+
+        carSems = [];
+        for (int i = 0; i < groupedSemesters.length; i++) {
+          String title = getYearTitle(i + 1);
+          print(title);
           double semAvg = 0.0;
           List<StudentSemester> semList = groupedSemesters[i];
           for (var sem in semList) {
@@ -107,9 +113,8 @@ class AcademicController extends GetxController {
               CarouselSemesters(title, semAvg, semList);
           carSems.add(carHolder);
         }
-
-        loadingData.value = false;
-        showData.value = true;
+        update();
+        debugPrint('gotten all sem units');
       } else {
         showSnackbar(
             path: Icons.close_rounded,
@@ -341,5 +346,130 @@ class AcademicController extends GetxController {
         1;
     nextSem = semesterStrs[nextSemIdx];
     return double.parse(nextSem);
+  }
+
+  List<Widget> semSliders() {
+    List<Widget> sliders = [];
+    for (int i = 0; i < carSems.length; i++) {
+      Widget item = Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Padding(
+                padding: const EdgeInsets.only(bottom: 10),
+                child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Container(
+                          width: 100,
+                          padding: const EdgeInsets.symmetric(
+                              vertical: 5, horizontal: 10),
+                          decoration: const BoxDecoration(color: kPriPurple),
+                          child: Text(
+                            carSems[i].title,
+                            textAlign: TextAlign.center,
+                            style: kWhiteTxt,
+                          )),
+                      Container(
+                          width: 100,
+                          padding: const EdgeInsets.symmetric(
+                              vertical: 5, horizontal: 10),
+                          decoration: const BoxDecoration(color: Colors.white),
+                          child: Text(
+                            '${carSems[i].average}%',
+                            textAlign: TextAlign.center,
+                            style: kPurpleTxt,
+                          )),
+                    ])),
+            SizedBox(
+                width: double.maxFinite,
+                height: 125,
+                child: ListView.builder(
+                  scrollDirection: Axis.horizontal,
+                  shrinkWrap: true,
+                  reverse: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  itemBuilder: (context, index) {
+                    var semesters = carSems[i].yearSemesters;
+                    return Container(
+                      width: 170,
+                      height: 100,
+                      padding: const EdgeInsets.all(15),
+                      decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(7)),
+                      child: Column(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    semesters[index].semester,
+                                    style: kBlackTitle,
+                                  ),
+                                  GestureDetector(
+                                      onTap: () {
+                                        acProfCtrl.setEditTranscript(
+                                            carSems[i].title, semesters[index]);
+                                      },
+                                      child: Container(
+                                          width: 25,
+                                          height: 25,
+                                          decoration: const BoxDecoration(
+                                              shape: BoxShape.circle,
+                                              color: kPriDark),
+                                          child: const Icon(Icons.edit,
+                                              size: 15, color: Colors.white))),
+                                ]),
+                            Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    '${semesters[index].average}%',
+                                    style: const TextStyle(
+                                        color: kPriPurple,
+                                        fontFamily: 'Nunito',
+                                        fontSize: 21,
+                                        fontWeight: FontWeight.w700),
+                                  ),
+                                  Row(children: [
+                                    Padding(
+                                        padding:
+                                            const EdgeInsets.only(right: 5),
+                                        child: Icon(
+                                            semesters[index].status == 'Drop'
+                                                ? Icons.arrow_downward
+                                                : Icons.arrow_upward,
+                                            size: 18,
+                                            color: semesters[index].status ==
+                                                    'Drop'
+                                                ? kPriRed
+                                                : kPriGreen)),
+                                    Text(
+                                      '${semesters[index].difference}%',
+                                      style: TextStyle(
+                                          color:
+                                              semesters[index].status == 'Drop'
+                                                  ? kPriRed
+                                                  : kPriGreen,
+                                          fontFamily: 'Nunito',
+                                          fontSize: 17,
+                                          fontWeight: FontWeight.w700),
+                                    )
+                                  ])
+                                ])
+                          ]),
+                    );
+                  },
+                  itemCount: carSems[i].yearSemesters.length,
+                ))
+          ]);
+      sliders.add(item);
+    }
+    return sliders;
   }
 }

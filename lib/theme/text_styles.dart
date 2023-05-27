@@ -1,6 +1,18 @@
 import 'package:flutter/material.dart';
 import 'colors.dart';
 
+const kCardSubtitle = TextStyle(
+    color: kLightPurple,
+    fontSize: 16,
+    fontWeight: FontWeight.w600,
+    fontFamily: 'Nunito');
+
+const kCardTitle = TextStyle(
+    color: Colors.white,
+    fontSize: 25,
+    fontWeight: FontWeight.w700,
+    fontFamily: 'Nunito');
+
 const kWhiteTitle = TextStyle(
     color: Colors.white,
     fontSize: 18,
@@ -9,7 +21,6 @@ const kWhiteTitle = TextStyle(
 
 const kWhiteSubTitle = TextStyle(
     color: Colors.white,
-    fontStyle: FontStyle.italic,
     fontSize: 14,
     fontWeight: FontWeight.w700,
     fontFamily: 'Nunito');
@@ -46,7 +57,7 @@ const kLightTxt = TextStyle(
 
 const kDarkTxt = TextStyle(
     color: kPriDark,
-    fontSize: 12,
+    fontSize: 13,
     fontWeight: FontWeight.w700,
     fontFamily: 'Nunito');
 
@@ -70,7 +81,7 @@ const kBlackTitle = TextStyle(
 
 const kPurpleTxt = TextStyle(
     color: kPriPurple,
-    fontSize: 14,
+    fontSize: 15,
     fontWeight: FontWeight.w600,
     fontFamily: 'Nunito');
 

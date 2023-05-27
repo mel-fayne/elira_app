@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 const kCreamBg = Color(0xFFF3F3F3);
 const kPriPurple = Color(0xFF442C7C);
-const kPriGrey = Color(0xFFBBB5BB);
+const kPriGrey = Color.fromARGB(255, 212, 202, 212);
 const kPriDark = Color(0xFF1D1F20);
 const kPriGreen = Color(0xFF218838);
 const kPriRed = Color(0xFFDC3345);
@@ -32,4 +32,13 @@ const kDarkGradient = LinearGradient(
   begin: Alignment.bottomCenter,
   end: Alignment.center,
   colors: [kPriDark, Colors.transparent],
+);
+
+const kMaroonGradient = LinearGradient(
+  begin: Alignment.bottomCenter,
+  end: Alignment.center,
+  colors: [
+    Color.fromARGB(255, 197, 87, 153),
+    Color.fromARGB(255, 131, 105, 196)
+  ],
 );

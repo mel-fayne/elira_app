@@ -36,7 +36,7 @@ class _InsightsPageState extends State<InsightsPage> {
     return Scaffold(
         body: SingleChildScrollView(
             padding:
-                const EdgeInsets.only(top: 65, bottom: 20, right: 25, left: 25),
+                const EdgeInsets.only(top: 80, bottom: 20, right: 25, left: 25),
             child:
                 Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
               const Padding(
@@ -88,11 +88,12 @@ class _InsightsPageState extends State<InsightsPage> {
                                                   radius: 75.0,
                                                   lineWidth: 13.0,
                                                   animation: true,
+                                                  animationDuration: 1000,
                                                   percent: insightsCtrl
                                                       .studentSpec.score,
                                                   center: Text(
                                                     '''${insightsCtrl.studentSpec.score * 100}%
-compatible''',
+match''',
                                                     style: kWhiteTitle,
                                                     textAlign: TextAlign.center,
                                                   ),

@@ -29,11 +29,13 @@ class _AcademicRecommendationsState extends State<AcademicRecommendations> {
   Widget build(BuildContext context) {
     return const Scaffold(
         body: SingleChildScrollView(
-            child: Column(children: [
-      Padding(
-          padding: EdgeInsets.only(top: 20, bottom: 5),
-          child: Text('New Courses For You', style: kPageTitle)),
-      Text('Checkout these sugesstions', style: kPurpleTxt)
-    ])));
+            padding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+            child:
+                Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+              Padding(
+                  padding: EdgeInsets.only(top: 20, bottom: 5),
+                  child: Text('New Courses For You', style: kPageSubTitle)),
+              Text('Checkout these sugesstions', style: kPurpleTxt)
+            ])));
   }
 }

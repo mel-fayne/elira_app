@@ -29,7 +29,7 @@ class _TechnicalsPageState extends State<TechnicalsPage> {
         child: Scaffold(
           appBar: AppBar(
             elevation: 3,
-            toolbarHeight: 80,
+            toolbarHeight: 45,
             backgroundColor: kPriDark,
             title: const Text(
               'Technical Profile',
@@ -48,6 +48,7 @@ class _TechnicalsPageState extends State<TechnicalsPage> {
                   iconSize: 25,
                   color: Colors.white,
                 )),
+            centerTitle: true,
             bottom: TabBar(
               indicatorColor: Colors.white,
               indicatorWeight: 3.0,

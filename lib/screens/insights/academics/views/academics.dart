@@ -1,3 +1,4 @@
+import 'package:elira_app/core/navigator.dart';
 import 'package:elira_app/screens/insights/academics/views/academic_overview.dart';
 import 'package:elira_app/screens/insights/academics/views/academic_recommendations.dart';
 import 'package:elira_app/theme/colors.dart';
@@ -29,7 +30,7 @@ class _AcademicsPageState extends State<AcademicsPage> {
         child: Scaffold(
           appBar: AppBar(
             elevation: 3,
-            toolbarHeight: 80,
+            toolbarHeight: 45,
             backgroundColor: kPriDark,
             title: const Text(
               'Academic Profile',
@@ -38,11 +39,12 @@ class _AcademicsPageState extends State<AcademicsPage> {
                   fontSize: 20,
                   fontWeight: FontWeight.w700),
             ),
+            centerTitle: true,
             leading: Padding(
                 padding: const EdgeInsets.only(left: 5),
                 child: IconButton(
                   onPressed: () {
-                    Get.back();
+                    Get.off(const NavigatorHandler(1));
                   },
                   icon: const Icon(Icons.arrow_back),
                   iconSize: 25,

@@ -29,7 +29,7 @@ class _InternshipsPageState extends State<InternshipsPage> {
         child: Scaffold(
           appBar: AppBar(
             elevation: 3,
-            toolbarHeight: 80,
+            toolbarHeight: 45,
             backgroundColor: kPriDark,
             title: const Text(
               'Work Experience Profile',
@@ -48,6 +48,7 @@ class _InternshipsPageState extends State<InternshipsPage> {
                   iconSize: 25,
                   color: Colors.white,
                 )),
+            centerTitle: true,
             bottom: TabBar(
               indicatorColor: Colors.white,
               indicatorWeight: 3.0,

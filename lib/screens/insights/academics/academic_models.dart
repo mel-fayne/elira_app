@@ -197,13 +197,7 @@ String getCredit(double mark) {
   return credit;
 }
 
-List<Color> gradientColors = [kLightPurple, kCreamBg];
-
 Widget bottomTitleWidgets(double value, TitleMeta meta) {
-  const style = TextStyle(
-    fontWeight: FontWeight.bold,
-    fontSize: 16,
-  );
   Widget text;
   switch (value.toInt()) {
     case 1:
@@ -219,20 +213,20 @@ Widget bottomTitleWidgets(double value, TitleMeta meta) {
       text = const Text('2.2', style: kBlackTxt);
       break;
     case 5:
-      text = const Text('3.2', style: kBlackTxt);
-      break;
-    case 6:
       text = const Text('3.1', style: kBlackTxt);
       break;
+    case 6:
+      text = const Text('3.2', style: kBlackTxt);
+      break;
     case 7:
-      text = const Text('4.2', style: kBlackTxt);
+      text = const Text('4.1', style: kBlackTxt);
       break;
     case 8:
-      text = const Text('4.1', style: kBlackTxt);
+      text = const Text('4.2', style: kBlackTxt);
       break;
 
     default:
-      text = const Text('', style: style);
+      text = const Text('', style: kBlackTxt);
       break;
   }
 
@@ -243,104 +237,33 @@ Widget bottomTitleWidgets(double value, TitleMeta meta) {
 }
 
 Widget leftTitleWidgets(double value, TitleMeta meta) {
-  const style = TextStyle(
-    fontWeight: FontWeight.bold,
-    fontSize: 15,
-  );
-  String text;
+  Widget text;
   switch (value.toInt()) {
-    case 1:
-      text = '0';
+    case 0:
+      text = const Text('0', style: kBlackTxt);
       break;
-    case 2:
-      text = '20';
+    case 20:
+      text = const Text('20', style: kBlackTxt);
       break;
-    case 3:
-      text = '40';
+    case 40:
+      text = const Text('40', style: kBlackTxt);
       break;
-    case 4:
-      text = '60';
+    case 60:
+      text = const Text('60', style: kBlackTxt);
       break;
-    case 5:
-      text = '80';
+    case 80:
+      text = const Text('80', style: kBlackTxt);
       break;
-    case 6:
-      text = '100';
+    case 100:
+      text = const Text('100', style: kBlackTxt);
       break;
     default:
-      return Container();
+      text = const Text('', style: kBlackTxt);
+      break;
   }
 
-  return Text(text, style: style, textAlign: TextAlign.left);
-}
-
-LineChartData mainData(List<FlSpot> chartData) {
-  return LineChartData(
-    gridData: FlGridData(
-      show: true,
-      drawVerticalLine: true,
-      horizontalInterval: 1,
-      verticalInterval: 1,
-      getDrawingHorizontalLine: (value) {
-        return FlLine(
-          color: kPriPurple,
-          strokeWidth: 1,
-        );
-      },
-      getDrawingVerticalLine: (value) {
-        return FlLine(
-          color: kPriPurple,
-          strokeWidth: 1,
-        );
-      },
-    ),
-    titlesData: FlTitlesData(
-      show: true,
-      rightTitles: AxisTitles(
-        sideTitles: SideTitles(showTitles: false),
-      ),
-      topTitles: AxisTitles(
-        sideTitles: SideTitles(showTitles: false),
-      ),
-      bottomTitles: AxisTitles(
-        sideTitles: SideTitles(
-          showTitles: true,
-          reservedSize: 30,
-          interval: 1,
-          getTitlesWidget: bottomTitleWidgets,
-        ),
-      ),
-      leftTitles: AxisTitles(
-        sideTitles: SideTitles(
-          showTitles: true,
-          interval: 1,
-          getTitlesWidget: leftTitleWidgets,
-          reservedSize: 42,
-        ),
-      ),
-    ),
-    borderData: FlBorderData(
-      show: true,
-      border: Border.all(color: kPriDark),
-    ),
-    minX: 0,
-    maxX: 8,
-    minY: 0,
-    maxY: 100,
-    lineBarsData: [
-      LineChartBarData(
-        spots: chartData,
-        isCurved: true,
-        gradient: LinearGradient(
-          colors: gradientColors,
-        ),
-        barWidth: 5,
-        isStrokeCapRound: true,
-        dotData: FlDotData(
-          show: false,
-        ),
-        belowBarData: BarAreaData(show: true, gradient: kDarkGradient),
-      ),
-    ],
+  return SideTitleWidget(
+    axisSide: meta.axisSide,
+    child: text,
   );
 }
