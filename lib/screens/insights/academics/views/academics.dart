@@ -52,12 +52,12 @@ class _AcademicsPageState extends State<AcademicsPage> {
               indicatorColor: Colors.white,
               indicatorWeight: 3.0,
               tabs: <Widget>[
-                Obx(() => Tab(
+                Tab(
                     child: tabitem(
-                        label: "Overview", path: Icons.collections_bookmark))),
-                Obx(() => Tab(
+                        label: "Overview", path: Icons.collections_bookmark)),
+                Tab(
                     child: tabitem(
-                        label: "Recommendations", path: FontAwesome.magic)))
+                        label: "Recommendations", path: FontAwesome.magic))
               ],
             ),
           ),

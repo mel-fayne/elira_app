@@ -73,6 +73,7 @@ class AuthController extends GetxController {
       if (res.statusCode == 200) {
         setlastLogin(respBody['last_active']);
         setProfile(respBody);
+        signInLoading.value = false;
         showSnackbar(
             path: Icons.check_rounded,
             title: "Successful Sign In!",
@@ -99,8 +100,6 @@ class AuthController extends GetxController {
           title: "Failed Sign In!",
           subtitle: "Please check your internet connection or try again later");
     }
-
-    signInLoading.value = false;
     update();
   }
 
@@ -150,10 +149,15 @@ class AuthController extends GetxController {
     var prefs = await SharedPreferences.getInstance();
     if (prefs.containsKey("lastLogin")) {
       var lastActive = prefs.getString("lastLogin");
-      var loginTime = DateFormat("EEE, dd/MM/yy, HH:mm").parse(lastActive!);
-      var twentyFourHoursAgo =
-          DateTime.now().subtract(const Duration(hours: 24));
-      return loginTime.isAfter(twentyFourHoursAgo);
+      if (lastActive != null) {
+        var formatPattern = '"EEE, dd/MM/yy, HH:mm"';
+        var loginTime = DateFormat(formatPattern).parse(lastActive);
+        var twentyFourHoursAgo =
+            DateTime.now().subtract(const Duration(hours: 24));
+        return loginTime.isAfter(twentyFourHoursAgo);
+      } else {
+        return false;
+      }
     } else {
       return false;
     }

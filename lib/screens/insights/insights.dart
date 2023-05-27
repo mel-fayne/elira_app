@@ -1,5 +1,6 @@
 import 'package:elira_app/screens/insights/academics/views//academics.dart';
 import 'package:elira_app/screens/insights/github/views/technicals.dart';
+import 'package:elira_app/screens/insights/softskills/softskills.dart';
 import 'package:fluttericon/entypo_icons.dart';
 import 'package:fluttericon/font_awesome5_icons.dart';
 import 'package:percent_indicator/percent_indicator.dart';
@@ -145,7 +146,7 @@ compatible''',
                                             statDesc: 'Current Avg.:',
                                             stat:
                                                 '${insightsCtrl.stdSsProf.avgScore.toString()}%',
-                                            page: const TechnicalsPage())
+                                            page: const SoftSkillsPage())
                                       ]))
                             ])
                       : noDataWidget(
@@ -180,7 +181,7 @@ class _PredictionPageState extends State<PredictionPage> {
             pageTitle: 'Specialisation Analysis',
             hasLeading: true,
             onTap: () {
-              Get.back();
+              Get.off(const InsightsPage());
             }),
         body: SingleChildScrollView(
             padding: const EdgeInsets.symmetric(vertical: 25, horizontal: 30),

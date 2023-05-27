@@ -56,6 +56,7 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
+  final authCtrl = Get.put(AuthController());
   bool authCheck = false;
 
   @override
@@ -64,8 +65,8 @@ class _MyAppState extends State<MyApp> {
   }
 
   Future<bool> startApp() async {
-    bool foundToken = true;
-    return foundToken;
+    authCheck = await authCtrl.isLoggedIn();
+    return authCheck;
   }
 
   @override

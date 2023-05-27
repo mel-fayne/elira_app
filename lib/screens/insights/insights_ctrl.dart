@@ -12,6 +12,7 @@ import 'dart:convert';
 import 'package:elira_app/theme/global_widgets.dart';
 import 'package:http/http.dart' as http;
 import 'package:elira_app/utils/constants.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class InsightsController extends GetxController {
   int? studentId;
@@ -176,7 +177,13 @@ class InsightsController extends GetxController {
           allSpecs.add(specHolder);
         });
         allSpecs.sort((a, b) => b.score.compareTo(a.score));
+
         studentSpec = allSpecs[0];
+
+        // store specialisation
+        var prefs = await SharedPreferences.getInstance();
+        await prefs.setString(
+            "specialisation", json.encode(studentSpec.abbreviation));
       } else {
         showSnackbar(
             path: Icons.close_rounded,
