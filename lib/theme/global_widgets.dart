@@ -301,9 +301,9 @@ Widget tabitem({label, path}) {
 }
 
 PreferredSizeWidget studDtlsAppBar(
-    {required String pageTitle, required String quote}) {
+    {required String pageTitle, leading = false, required String quote}) {
   return AppBar(
-      automaticallyImplyLeading: false,
+      automaticallyImplyLeading: leading,
       bottom: PreferredSize(
           preferredSize: const Size.fromHeight(1.0),
           child: Container(
@@ -321,6 +321,33 @@ PreferredSizeWidget studDtlsAppBar(
                 style: kWhiteSubTitle,
                 softWrap: true))
       ]),
+      centerTitle: true);
+}
+
+PreferredSizeWidget normalAppBar(
+    {required String pageTitle,
+    bool hasLeading = false,
+    void Function()? onTap}) {
+  return AppBar(
+      automaticallyImplyLeading: false,
+      leading: hasLeading
+          ? InkWell(
+              onTap: onTap,
+              child: const Icon(
+                Icons.arrow_back,
+                color: Colors.white,
+              ),
+            )
+          : const SizedBox(),
+      bottom: PreferredSize(
+          preferredSize: const Size.fromHeight(1.0),
+          child: Container(
+            color: kLightPurple,
+            height: 1.0,
+          )),
+      elevation: 4,
+      toolbarHeight: 80,
+      title: Text(pageTitle, style: kWhiteTitle),
       centerTitle: true);
 }
 

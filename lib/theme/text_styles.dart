@@ -21,14 +21,14 @@ const kWhiteTxt = TextStyle(
     fontFamily: 'Nunito');
 
 const kPageTitle = TextStyle(
-    color: kPriDark,
-    fontSize: 28,
+    color: kPriPurple,
+    fontSize: 32,
     fontWeight: FontWeight.w700,
     fontFamily: 'Nunito');
 
 const kPageSubTitle = TextStyle(
     color: kPriDark,
-    fontSize: 20,
+    fontSize: 22,
     fontWeight: FontWeight.w600,
     fontFamily: 'Nunito');
 
