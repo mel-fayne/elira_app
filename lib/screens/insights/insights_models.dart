@@ -1,6 +1,8 @@
 class StudentSpec {
-  late String name;
-  late String imagePath;
-  late String abbreviation;
-  late double score;
+  final String name;
+  final String imagePath;
+  final String abbreviation;
+  final double score;
+
+  StudentSpec(this.name, this.imagePath, this.abbreviation, this.score);
 }

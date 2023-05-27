@@ -38,7 +38,6 @@ class AcademicController extends GetxController {
   List<NumberBox> semBoxes = [];
   int transcriptIdx = 0;
 
-  StudentSpec studentSpec = StudentSpec();
   List<StudentSpec> allSpecs = [];
   RxBool loadingData = false.obs;
   RxBool showData = false.obs;
@@ -237,7 +236,7 @@ class AcademicController extends GetxController {
           update();
         } else {
           await getSemUnitsData();
-          await insightsCtrl.getStudentInsights();
+          // await insightsCtrl.getStudentInsights();
           showSnackbar(
               path: FontAwesome5.hand_sparkles,
               title: "Transcript Added!",

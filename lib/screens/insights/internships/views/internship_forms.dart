@@ -148,7 +148,6 @@ class _WorkExpFormState extends State<WorkExpForm> {
                       btnLabel: 'Add Internship',
                       fromSetup: true,
                       isEdit: false,
-                      isLoading: _isLoading,
                       context: context),
                   primaryBtn(
                     label: 'Add Internship',
@@ -212,7 +211,6 @@ class AddWorkExpForm extends StatefulWidget {
 class AddWorkExpFormState extends State<AddWorkExpForm> {
   late bool isEdit;
   AddWorkExpFormState(this.isEdit);
-  bool _isLoading = false;
   String btnLabel = 'Add Internship';
 
   @override
@@ -233,7 +231,6 @@ class AddWorkExpFormState extends State<AddWorkExpForm> {
             btnLabel: btnLabel,
             fromSetup: false,
             isEdit: isEdit,
-            isLoading: _isLoading,
             context: context),
         primaryBtn(
           label: btnLabel,
@@ -242,9 +239,6 @@ class AddWorkExpFormState extends State<AddWorkExpForm> {
                   workExpCtrl.indDropdown.value == '' ||
                   workExpCtrl.locTypeDropdown.value == ''
               ? () async {
-                  setState(() {
-                    _isLoading = !_isLoading;
-                  });
                   workExpCtrl.addWorkExp(fromSetup: false, isEdit: isEdit);
                 }
               : null,
@@ -255,8 +249,7 @@ class AddWorkExpFormState extends State<AddWorkExpForm> {
 }
 
 Widget workExpForm(
-    {required bool isLoading,
-    required bool fromSetup,
+    {required bool fromSetup,
     required String btnLabel,
     required BuildContext context,
     required bool isEdit}) {

@@ -20,6 +20,7 @@ class AuthController extends GetxController {
   RxBool logoutLoading = false.obs;
 
   signUp(List userdata) async {
+    signUpLoading.value = true;
     var body = jsonEncode({
       'first_name': userdata[0],
       'last_name': userdata[1],
@@ -62,6 +63,7 @@ class AuthController extends GetxController {
   }
 
   signIn(List userdata) async {
+    signInLoading.value = true;
     var body = jsonEncode({'email': userdata[0], 'password': userdata[1]});
 
     try {
@@ -77,7 +79,7 @@ class AuthController extends GetxController {
             subtitle: "Welcome Back");
 
         await Future.delayed(const Duration(seconds: 2));
-        Get.off(() => const NavigatorHandler(0));
+        Get.off(() => const NavigatorHandler(1));
       } else if (respBody['detail'] == 'Student not found!') {
         showSnackbar(
             path: Icons.close_rounded,
@@ -98,12 +100,13 @@ class AuthController extends GetxController {
           subtitle: "Please check your internet connection or try again later");
     }
 
-    signInLoading.value = true;
+    signInLoading.value = false;
     update();
   }
 
   updateStudent(
       var body, String subtitle, String title, bool fromSecurity) async {
+    updateStdLoading.value = true;
     var prefs = await SharedPreferences.getInstance();
     var studentId = prefs.getInt("studentId");
 
@@ -169,13 +172,13 @@ class AuthController extends GetxController {
     return profile;
   }
 
-  Future<bool> logout() async {
+  logout() async {
     var prefs = await SharedPreferences.getInstance();
     prefs.clear();
     await Future.delayed(const Duration(seconds: 2));
     Get.offAll(const OnBoard());
     logoutLoading.value = false;
     update();
-    return true;
+    return;
   }
 }

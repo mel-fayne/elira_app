@@ -45,6 +45,7 @@ Widget primaryBtn(
                 strokeWidth: 1.5,
               ))
           : Text(label,
+              textAlign: TextAlign.center,
               style: const TextStyle(
                   color: Colors.white,
                   fontFamily: 'Nunito',

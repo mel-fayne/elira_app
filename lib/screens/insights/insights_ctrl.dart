@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:elira_app/screens/insights/github/technical_models.dart';
 import 'package:elira_app/screens/insights/insights_models.dart';
 import 'package:elira_app/screens/insights/academics/academic_models.dart';
@@ -13,7 +15,8 @@ import 'package:elira_app/utils/constants.dart';
 
 class InsightsController extends GetxController {
   int? studentId;
-  StudentSpec studentSpec = StudentSpec();
+  StudentSpec studentSpec = StudentSpec(
+      'Artificial Intelligence and Data', 'assets/images/ai.png', 'AI', 0.56);
   List<StudentSpec> allSpecs = [];
 
   RxBool loadingData = false.obs;
@@ -28,11 +31,11 @@ class InsightsController extends GetxController {
   @override
   void onInit() async {
     super.onInit();
-    studentId = await getStudentId();
-    await getStudentInsights();
+    getStudentInsights();
   }
 
-  getStudentInsights() async {
+  void getStudentInsights() async {
+    studentId = await getStudentId();
     loadingData.value = true;
 
     await getAcademicProfile();
@@ -45,20 +48,25 @@ class InsightsController extends GetxController {
     showData.value = true;
   }
 
-  getAcademicProfile() async {
+  Future getAcademicProfile() async {
     try {
+      await http.get(Uri.parse(studentUnitUrl + studentId.toString()),
+          headers: headers);
+
       var res = await http.get(
           Uri.parse(academicProfileUrl + studentId.toString()),
           headers: headers);
-      debugPrint("Got response ${res.statusCode}");
+      debugPrint("Academic Prof: Response ${res.statusCode}");
       if (res.statusCode == 200) {
         var respBody = json.decode(res.body);
 
         // load academic profile details
         stdAcdProf = AcademicProfile.fromJson(respBody['ac_profile']);
+
         // load student units by cs groupings
         respBody['student_units'].forEach((grouping, details) {
-          stdAcdGroups.add(AcademicGrouping.fromJson(details));
+          AcademicGrouping acGrpHolder = AcademicGrouping.fromJson(details);
+          stdAcdGroups.add(acGrpHolder);
         });
 
         // sort groupings and units
@@ -66,6 +74,8 @@ class InsightsController extends GetxController {
         for (var group in stdAcdGroups) {
           group.groupUnits.sort((a, b) => b.mark.value.compareTo(a.mark.value));
         }
+
+        debugPrint('Done Getting AcademicExp profile ...');
       } else {
         showSnackbar(
             path: Icons.close_rounded,
@@ -81,18 +91,19 @@ class InsightsController extends GetxController {
     }
   }
 
-  getTechnicalProfile() async {
+  Future getTechnicalProfile() async {
+    debugPrint('Getting Technical profile ...');
     try {
       var res = await http.get(Uri.parse(techProfileUrl + studentId.toString()),
           headers: headers);
       debugPrint("Got response ${res.statusCode}");
       if (res.statusCode == 200) {
         var respBody = json.decode(res.body);
-
         stdTchProf = TechnicalProfile.fromJson(respBody);
         stdTchProf.languages
             .sort((a, b) => b.percentage.compareTo(a.percentage));
         stdTchProf.topLanguage = stdTchProf.languages[0].name;
+        debugPrint('Done Getting Tech profile ...');
       } else {
         showSnackbar(
             path: Icons.close_rounded,
@@ -108,7 +119,8 @@ class InsightsController extends GetxController {
     }
   }
 
-  getInternshipProfile() async {
+  Future getInternshipProfile() async {
+    debugPrint('Getting Work Exp profile ...');
     try {
       var res = await http.get(Uri.parse(wxpProfileUrl + studentId.toString()),
           headers: headers);
@@ -116,17 +128,17 @@ class InsightsController extends GetxController {
       if (res.statusCode == 200) {
         var respBody = json.decode(res.body);
         stdWxProf = WorkExpProfile.fromJson(respBody['wx_profile']);
-        stdWxProf.internships = respBody['experiences']
-            .map((wkExp) => WorkExperience.fromJson(wkExp))
-            .toList();
+        stdWxProf.internships = getStdIntp(respBody['experiences']);
         List<InternshipIndustry> indList = [];
         respBody['expPieChart'].forEach((ind, time) {
           InternshipIndustry indHolder = InternshipIndustry();
           indHolder.name = ind;
-          indHolder.name = time;
+          indHolder.percentage = time;
           indList.add(indHolder);
         });
         stdWxProf.indPieChart = indList;
+
+        debugPrint('Done Getting WorkExp profile ...');
       } else {
         showSnackbar(
             path: Icons.close_rounded,
@@ -142,30 +154,27 @@ class InsightsController extends GetxController {
     }
   }
 
-  getStudentPredictions() async {
-    loadingData.value = true;
+  Future getStudentPredictions() async {
     try {
       var res = await http.get(Uri.parse(studentPredUrl + studentId.toString()),
           headers: headers);
-      debugPrint("Got response ${res.statusCode}");
+      debugPrint("Student Preds: Response ${res.statusCode}");
       if (res.statusCode == 200) {
         var respBody = json.decode(res.body);
-
         respBody['compatibility_scores'].forEach((spec, score) {
-          StudentSpec specHolder = StudentSpec();
-          specHolder.abbreviation = spec;
-          specHolder.name = specObjects
-              .where((element) => element.abbreviation == spec)
-              .first
-              .name;
-          specHolder.imagePath = specObjects
-              .where((element) => element.abbreviation == spec)
-              .first
-              .imagePath;
-          specHolder.score = double.parse(score.toStringAsFixed(2));
+          StudentSpec specHolder = StudentSpec(
+              specObjects
+                  .where((element) => element.abbreviation == spec)
+                  .first
+                  .name,
+              specObjects
+                  .where((element) => element.abbreviation == spec)
+                  .first
+                  .imagePath,
+              spec,
+              double.parse(score.toStringAsFixed(2)));
           allSpecs.add(specHolder);
         });
-
         allSpecs.sort((a, b) => b.score.compareTo(a.score));
         studentSpec = allSpecs[0];
       } else {
@@ -178,24 +187,22 @@ class InsightsController extends GetxController {
     } catch (error) {
       showSnackbar(
           path: Icons.close_rounded,
-          title: "Failed To Create Internship Profile!",
+          title: "Failed To Load Student Predictions!",
           subtitle: "Please check your internet connection or try again later");
     }
   }
 
-  getSoftSkillProfile() async {
+  Future getSoftSkillProfile() async {
+    debugPrint('Getting Soft Skills profile ...');
     try {
-      var res = await http.get(Uri.parse(ssProfileUrl + studentId.toString()),
+      var res = await http.get(Uri.parse(ssProfileUrl + 30.toString()),
           headers: headers);
       debugPrint("Got response ${res.statusCode}");
       if (res.statusCode == 200) {
         var respBody = json.decode(res.body);
+
         stdSsProf = SoftSkillProfile.fromJson(respBody['ss_profile']);
-        respBody['skills'].forEach((grouping, details) {
-          stdSsProf.skills = respBody['skills']
-              .map((skill) => StudentUnit.fromJson(skill))
-              .toList();
-        });
+        stdSsProf.skills = getStdSSkills(respBody['skills']);
         stdSsProf.skills.sort((a, b) => b.score.compareTo(a.score));
       } else {
         showSnackbar(
@@ -213,6 +220,7 @@ class InsightsController extends GetxController {
   }
 
   createSoftSkillProfie() async {
+    debugPrint('Creating Soft Skills profile ...');
     var body = jsonEncode({'student_id': studentId});
     try {
       var res = await http.post(Uri.parse(ssProfileUrl),
@@ -232,5 +240,7 @@ class InsightsController extends GetxController {
           title: "Failed To Create Soft Skills Profile!",
           subtitle: "Please check your internet connection or try again later");
     }
+
+    debugPrint('Done creating Soft Skills profile ...');
   }
 }

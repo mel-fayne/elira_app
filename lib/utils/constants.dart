@@ -16,13 +16,13 @@ const filterEventsUrl = "$baseApiUrl/filter_events/";
 
 // ---------------- Student Prediction Urls ----------------
 
-const academicProfileUrl = "$baseApiUrl/academic_profile";
+const academicProfileUrl = "$baseApiUrl/academic_profile/";
 const studentUnitUrl = "$baseApiUrl/student_units/";
 const newTranscriptUrl = "$baseApiUrl/student_transcript/";
-const techProfileUrl = "$baseApiUrl/tech_profile";
-const wxpProfileUrl = "$baseApiUrl/wx_profile";
+const techProfileUrl = "$baseApiUrl/tech_profile/";
+const wxpProfileUrl = "$baseApiUrl/wx_profile/";
 const wxpUrl = "$baseApiUrl/workexp";
-const ssProfileUrl = "$baseApiUrl/softskill_profile";
+const ssProfileUrl = "$baseApiUrl/softskill_profile/";
 const studentPredUrl = "$baseApiUrl/classifier/";
 
 List<SpecialisationConst> specObjects = <SpecialisationConst>[
@@ -58,7 +58,7 @@ List<SpecialisationConst> specObjects = <SpecialisationConst>[
       ]),
   SpecialisationConst(
       id: 3,
-      abbreviation: 'DB',
+      abbreviation: 'DA',
       name: 'Database Administration',
       imagePath: 'assets/images/db.png',
       newsTags: [
@@ -118,7 +118,7 @@ List<SpecialisationConst> specObjects = <SpecialisationConst>[
       ]),
   SpecialisationConst(
       id: 7,
-      abbreviation: 'NA',
+      abbreviation: 'NC',
       name: 'Network Administration',
       imagePath: 'assets/images/na.png',
       newsTags: [

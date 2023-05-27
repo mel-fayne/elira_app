@@ -44,15 +44,13 @@ class TechnicalProfile {
   String topLanguage;
 
   TechnicalProfile.fromJson(Map<String, dynamic> json)
-      : id = json['id'],
+      : id = (json['id']),
         gitUsername = json['git_username'],
         totalCommits = json['total_commits'],
         totalPrs = json['total_prs'],
         totalContribs = json['total_contribs'],
         currentStreak = json['current_streak'],
-        languages = json['languages']
-            .map((unit) => ProgLanguage.fromJson(unit))
-            .toList(),
+        languages = getLanguages(json['languages']),
         topLanguage = '';
 }
 
@@ -65,11 +63,21 @@ class ProgLanguage {
         percentage = json['percentage'];
 }
 
+List<ProgLanguage> getLanguages(dynamic langMap) {
+  List<ProgLanguage> langs = [];
+  for (var map in langMap) {
+    ProgLanguage lang = ProgLanguage.fromJson(map);
+    langs.add(lang);
+  }
+  return langs;
+}
+
 String getLangName(String apiName) {
   String langName = '';
-  for (var item in progLanguages) {
-    if (item['apiName'] == apiName) {
-      langName = item[apiName]!;
+  for (var map in progLanguages) {
+    if (map['apiName'] == apiName) {
+      langName = map['name']!;
+      break;
     }
   }
   return langName;
@@ -152,7 +160,7 @@ List<PieChartSectionData> showingSections() {
       titlePositionPercentageOffset: 1.5,
       titleStyle: TextStyle(
           color: txtColor,
-          fontFamily: 'Nunito',
+          fontFamily: 'Nlango',
           fontSize: fontSize,
           fontWeight: FontWeight.w500),
     );

@@ -71,6 +71,15 @@ class SoftSkill {
       {'id': id, 'name': name, 'score': score, 'ss_profile': ssProfile};
 }
 
+List<SoftSkill> getStdSSkills(dynamic ssMapStr) {
+  List<SoftSkill> sskills = [];
+  for (var map in ssMapStr) {
+    SoftSkill sskill = SoftSkill.fromJson(map);
+    sskills.add(sskill);
+  }
+  return sskills;
+}
+
 String getLabel(double avgScore) {
   String label = '';
 
@@ -87,9 +96,10 @@ String getLabel(double avgScore) {
 
 String getDesc(String name) {
   String desc = '';
-  for (var item in skillDescriptions) {
-    if (item['name'] == name) {
-      desc = item[desc]!;
+  for (var map in skillDescriptions) {
+    if (map['name'] == name) {
+      desc = map['description']!;
+      break;
     }
   }
   return desc;

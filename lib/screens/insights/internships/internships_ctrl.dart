@@ -203,8 +203,8 @@ class WorkExpController extends GetxController {
     var body = jsonEncode({"student_id": studentId, "workExp": workExp});
 
     try {
-      var res = await http.post(Uri.parse(wxpProfileUrl),
-          body: body, headers: headers);
+      var res =
+          await http.post(Uri.parse(wxpUrl), body: body, headers: headers);
 
       debugPrint("Got response ${res.statusCode}");
       debugPrint(res.body);
@@ -215,7 +215,7 @@ class WorkExpController extends GetxController {
           if (isEdit) {
             snackTitle = "Internship Updated!";
           }
-          await insightsCtrl.getStudentInsights();
+          // await insightsCtrl.getStudentInsights();
           showSnackbar(
               path: Icons.check_rounded,
               title: snackTitle,
@@ -231,8 +231,8 @@ class WorkExpController extends GetxController {
 
           formCount++;
           if (formCount == internshipNo) {
-            await insightsCtrl.getStudentInsights();
             await insightsCtrl.createSoftSkillProfie();
+            // await insightsCtrl.getStudentInsights();
             showSnackbar(
                 path: FontAwesome5.hand_sparkles,
                 title: "High-five! You did it!",
@@ -292,21 +292,21 @@ class WorkExpController extends GetxController {
     Get.to(const AddWorkExpForm(isEdit: true));
   }
 
-  String getApiInd(String name) {
+  String getApiInd(String intpName) {
     String name = '';
-    if (name == 'Software Development') {
+    if (intpName == 'Software Development') {
       name = 'sd_industry';
-    } else if (name == 'A.I & Data') {
+    } else if (intpName == 'A.I & Data') {
       name = 'ai_industry';
-    } else if (name == 'Design & Graphics') {
+    } else if (intpName == 'Design & Graphics') {
       name = 'gd_industry';
-    } else if (name == 'Networking') {
+    } else if (intpName == 'Networking') {
       name = 'na_industry';
-    } else if (name == 'Hardware, IoT & Operating Systems') {
+    } else if (intpName == 'Hardware, IoT & Operating Systems') {
       name = 'ho_industry';
-    } else if (name == 'Cyber Security') {
+    } else if (intpName == 'Cyber Security') {
       name = 'cs_industry';
-    } else if (name == 'Database Administration') {
+    } else if (intpName == 'Database Administration') {
       name = 'da_industry';
     } else {
       name = 'is_industry';

@@ -105,7 +105,7 @@ class TechnicalsController extends GetxController {
       debugPrint(res.body);
 
       if (res.statusCode == 200) {
-        await insightsCtrl.getStudentInsights();
+        // await insightsCtrl.getStudentInsights();
         showSnackbar(
             path: Icons.check_rounded,
             title: "Technical Profile Updated!",

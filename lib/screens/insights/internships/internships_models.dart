@@ -36,8 +36,8 @@ class WorkExperience {
   final String startDate;
   final String endDate;
   final String industry;
-  final String timeSpent;
-  final String skills;
+  final int timeSpent;
+  final List skills;
 
   WorkExperience.fromJson(Map<String, dynamic> json)
       : id = json['id'],
@@ -48,8 +48,8 @@ class WorkExperience {
         location = json['location'],
         locationType = json['location_type'],
         startDate = json['start_date'],
-        endDate = json['end_date'],
-        industry = json['industry'],
+        endDate = json['end_date'] ?? '',
+        industry = getIndName(json['industry']),
         timeSpent = json['time_spent'],
         skills = json['skills'];
 
@@ -67,6 +67,37 @@ class WorkExperience {
         'time_spent': timeSpent,
         'skills': skills,
       };
+}
+
+List<WorkExperience> getStdIntp(dynamic intpMapStr) {
+  List<WorkExperience> intps = [];
+  for (var map in intpMapStr) {
+    WorkExperience intp = WorkExperience.fromJson(map);
+    intps.add(intp);
+  }
+  return intps;
+}
+
+String getIndName(String apiName) {
+  String name = '';
+  if (apiName == 'sd_industry') {
+    name = 'Software Development';
+  } else if (apiName == 'sd_industry') {
+    name = 'A.I & Data';
+  } else if (apiName == 'gd_industry') {
+    name = 'Design & Graphics';
+  } else if (apiName == 'na_industry') {
+    name = 'Networking';
+  } else if (apiName == 'ho_industry') {
+    name = 'Hardware, IoT & Operating Systems';
+  } else if (apiName == 'cs_industry') {
+    name = 'Cyber Security';
+  } else if (apiName == 'da_industry') {
+    name = 'Database Administration';
+  } else {
+    name = 'Information Systems';
+  }
+  return name;
 }
 
 class IndustryChartData {

@@ -30,11 +30,10 @@ class AcademicGrouping {
   AcademicGrouping.fromJson(Map<String, dynamic> json)
       : code = json['code'],
         name = getGroupName(json['code']),
-        completeness = json['completeness'],
+        completeness = double.parse(json['completeness'].toString()),
         total = json['total'],
         isExpanded = false,
-        groupUnits =
-            json['units'].map((unit) => StudentUnit.fromJson(unit)).toList();
+        groupUnits = getStdUnits(json['units']);
 }
 
 class CarouselSemesters {
@@ -72,9 +71,9 @@ class StudentUnit {
       : id = json['id'],
         acProfile = json['ac_profile'],
         schoolUnit = json['school_unit'],
-        grade = json['grade'] ?? ''.obs,
-        mark = RxDouble(json['mark']),
         unitName = json['unit_name'],
+        grade = RxString(json['grade'] ?? ''),
+        mark = RxDouble(json['mark']),
         unitCodes = json['unit_codes'],
         unitPerc = json['unit_perc'],
         credit = getCredit(json['mark']);
@@ -117,6 +116,15 @@ class CompleteUnit {
         'grade': grade,
         'mark': gradeMark(grade).value,
       };
+}
+
+List<StudentUnit> getStdUnits(dynamic unitMapsStr) {
+  List<StudentUnit> units = [];
+  for (var map in unitMapsStr) {
+    StudentUnit unit = StudentUnit.fromJson(map);
+    units.add(unit);
+  }
+  return units;
 }
 
 String getGroupName(String code) {
@@ -181,6 +189,8 @@ String getCredit(double mark) {
   String credit = '';
   if (mark >= 40) {
     credit = 'Pass';
+  } else if (mark == 0.0) {
+    credit = '';
   } else {
     credit = 'Fail';
   }
