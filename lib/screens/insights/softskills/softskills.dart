@@ -41,7 +41,7 @@ class _SoftSkillsPageState extends State<SoftSkillsPage> {
             pageTitle: 'Soft Skills Overview',
             hasLeading: true,
             onTap: () {
-              Get.off(const NavigatorHandler(1));
+              Get.off(const NavigatorHandler(0));
             }),
         body: SingleChildScrollView(
             padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 20),

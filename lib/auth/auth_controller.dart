@@ -3,6 +3,7 @@ import 'package:elira_app/core/navigator.dart';
 import 'package:elira_app/core/onboard.dart';
 import 'package:elira_app/auth/security_questions.dart';
 import 'package:elira_app/screens/insights/academics/views/academic_forms.dart';
+import 'package:elira_app/screens/insights/insights_ctrl.dart';
 import 'package:elira_app/theme/global_widgets.dart';
 import 'package:elira_app/utils/constants.dart';
 import 'package:elira_app/utils/functions.dart';
@@ -11,6 +12,8 @@ import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+final insightsCtrl = Get.find<InsightsController>();
 
 class AuthController extends GetxController {
   RxBool signUpLoading = false.obs;
@@ -80,7 +83,9 @@ class AuthController extends GetxController {
             subtitle: "Welcome Back");
 
         await Future.delayed(const Duration(seconds: 2));
-        Get.off(() => const NavigatorHandler(1));
+        insightsCtrl.getStudentInsights();
+
+        Get.off(() => const NavigatorHandler(0));
       } else if (respBody['detail'] == 'Student not found!') {
         showSnackbar(
             path: Icons.close_rounded,
@@ -167,6 +172,7 @@ class AuthController extends GetxController {
     var prefs = await SharedPreferences.getInstance();
     await prefs.setString("profile", json.encode(profile));
     await prefs.setInt("studentId", profile['id']);
+    await prefs.setString("studentName", profile['first_name']);
     await prefs.setString("specialisation", profile['specialisation'] ?? '');
   }
 

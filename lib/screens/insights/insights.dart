@@ -1,8 +1,10 @@
 import 'package:elira_app/core/navigator.dart';
+import 'package:elira_app/screens/account.dart';
 import 'package:elira_app/screens/insights/academics/views//academics.dart';
 import 'package:elira_app/screens/insights/github/views/technicals.dart';
 import 'package:elira_app/screens/insights/internships/views/internships.dart';
 import 'package:elira_app/screens/insights/softskills/softskills.dart';
+import 'package:elira_app/utils/constants.dart';
 import 'package:fluttericon/entypo_icons.dart';
 import 'package:fluttericon/font_awesome5_icons.dart';
 import 'package:percent_indicator/percent_indicator.dart';
@@ -37,30 +39,58 @@ class _InsightsPageState extends State<InsightsPage> {
   Widget build(BuildContext context) {
     return Scaffold(
         body: SingleChildScrollView(
-            padding:
-                const EdgeInsets.only(top: 80, bottom: 20, right: 25, left: 25),
+            padding: const EdgeInsets.only(
+                top: 120, bottom: 20, right: 25, left: 25),
             child:
                 Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              const Padding(
-                padding: EdgeInsets.symmetric(vertical: 10),
-                child: Text(
-                  "Insights",
-                  style: kPageTitle,
-                ),
-              ),
               Obx(() => insightsCtrl.loadingData.value
                   ? loadingWidget('Loading Insights ...')
                   : Obx(() => insightsCtrl.showData.value
                       ? Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                              const Padding(
-                                  padding: EdgeInsets.only(top: 10, bottom: 5),
-                                  child: Text(
-                                    'Your Specialisation',
-                                    style: kPageSubTitle,
-                                  )),
+                              Row(children: [
+                                GestureDetector(
+                                    onTap: () {
+                                      Get.to(const AccountPage());
+                                    },
+                                    child: Container(
+                                        height: 60,
+                                        width: 60,
+                                        margin: const EdgeInsets.only(right: 7),
+                                        padding: const EdgeInsets.all(10),
+                                        decoration: BoxDecoration(
+                                            border: Border.all(
+                                                color: kPriPurple, width: 1.0),
+                                            shape: BoxShape.circle,
+                                            image: DecorationImage(
+                                                image: AssetImage(specObjects
+                                                    .firstWhere((element) =>
+                                                        element.abbreviation ==
+                                                        insightsCtrl.studentSpec
+                                                            .abbreviation)
+                                                    .imagePath),
+                                                fit: BoxFit.cover)))),
+                                Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Padding(
+                                        padding:
+                                            const EdgeInsets.only(bottom: 5),
+                                        child: Text(
+                                          "Hello ${insightsCtrl.studentName}",
+                                          style: kPurpleTitle,
+                                        ),
+                                      ),
+                                      Text(
+                                        insightsCtrl.studentSpec.name,
+                                        style: kPurpleTxt,
+                                      ),
+                                    ])
+                              ]),
                               Container(
+                                margin: const EdgeInsets.only(top: 15),
                                 width: double.maxFinite,
                                 decoration: BoxDecoration(
                                     color: kPriPurple,
@@ -184,7 +214,7 @@ class _PredictionPageState extends State<PredictionPage> {
             pageTitle: 'Specialisation Analysis',
             hasLeading: true,
             onTap: () {
-              Get.off(const NavigatorHandler(1));
+              Get.off(const NavigatorHandler(0));
             }),
         body: SingleChildScrollView(
             padding: const EdgeInsets.symmetric(vertical: 25, horizontal: 30),

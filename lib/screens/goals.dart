@@ -2,16 +2,16 @@ import 'package:elira_app/theme/colors.dart';
 import 'package:elira_app/theme/text_styles.dart';
 import 'package:flutter/material.dart';
 
-class StudentAccountPage extends StatefulWidget {
-  static const routeName = "/studentaccount";
-  const StudentAccountPage({Key? key}) : super(key: key);
+class GoalTrackerPage extends StatefulWidget {
+  static const routeName = "/GoalTrackerPage";
+  const GoalTrackerPage({Key? key}) : super(key: key);
 
   @override
   // ignore: library_private_types_in_public_api
-  _StudentAccountPageState createState() => _StudentAccountPageState();
+  _GoalTrackerPageState createState() => _GoalTrackerPageState();
 }
 
-class _StudentAccountPageState extends State<StudentAccountPage> {
+class _GoalTrackerPageState extends State<GoalTrackerPage> {
   @override
   void initState() {
     super.initState();
@@ -29,7 +29,7 @@ class _StudentAccountPageState extends State<StudentAccountPage> {
               Padding(
                 padding: EdgeInsets.symmetric(vertical: 10),
                 child: Text(
-                  "Hello Ada Lovelace",
+                  "Goals",
                   style: kPageTitle,
                 ),
               ),

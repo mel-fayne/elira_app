@@ -44,7 +44,7 @@ class _AcademicsPageState extends State<AcademicsPage> {
                 padding: const EdgeInsets.only(left: 5),
                 child: IconButton(
                   onPressed: () {
-                    Get.off(const NavigatorHandler(1));
+                    Get.off(const NavigatorHandler(0));
                   },
                   icon: const Icon(Icons.arrow_back),
                   iconSize: 25,

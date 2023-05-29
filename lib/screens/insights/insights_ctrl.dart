@@ -16,6 +16,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class InsightsController extends GetxController {
   int? studentId;
+  String? studentName;
   StudentSpec studentSpec = StudentSpec(
       'Artificial Intelligence and Data', 'assets/images/ai.png', 'AI', 0.56);
   List<StudentSpec> allSpecs = [];
@@ -37,6 +38,7 @@ class InsightsController extends GetxController {
 
   void getStudentInsights() async {
     studentId = await getStudentId();
+    studentName = await getStudentName();
     loadingData.value = true;
 
     await getAcademicProfile();

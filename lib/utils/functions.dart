@@ -10,6 +10,12 @@ Future<int?> getStudentId() async {
   return studentId;
 }
 
+Future<String?> getStudentName() async {
+  var prefs = await SharedPreferences.getInstance();
+  var studentName = prefs.getString("studentName");
+  return studentName;
+}
+
 Future<String?> getSpecialisation() async {
   var prefs = await SharedPreferences.getInstance();
   var specialisation = prefs.getString("specialisation");

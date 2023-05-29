@@ -1,9 +1,9 @@
-import 'package:elira_app/screens/home.dart';
 import 'package:elira_app/screens/insights/insights.dart';
-import 'package:elira_app/screens/myaccount.dart';
+import 'package:elira_app/screens/goals.dart';
 import 'package:elira_app/screens/news/news.dart';
 import 'package:elira_app/theme/colors.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttericon/font_awesome5_icons.dart';
 
 class NavigatorHandler extends StatefulWidget {
   static const routeName = "/navigatorhandler";
@@ -22,10 +22,9 @@ class _NavigatorHandlerState extends State<NavigatorHandler> {
   _NavigatorHandlerState(this.index);
 
   final screens = [
-    const HomePage(),
     const InsightsPage(),
     const NewsPage(),
-    const StudentAccountPage()
+    const GoalTrackerPage()
   ];
 
   @override
@@ -55,15 +54,6 @@ class _NavigatorHandlerState extends State<NavigatorHandler> {
                 destinations: const [
                   NavigationDestination(
                       selectedIcon: Icon(
-                        Icons.bar_chart_rounded,
-                        size: 20,
-                        color: kPriPurple,
-                      ),
-                      icon: Icon(Icons.bar_chart_outlined,
-                          size: 20, color: kPriGrey),
-                      label: 'Home'),
-                  NavigationDestination(
-                      selectedIcon: Icon(
                         Icons.bar_chart,
                         size: 20,
                         color: kPriPurple,
@@ -82,13 +72,13 @@ class _NavigatorHandlerState extends State<NavigatorHandler> {
                       label: 'News'),
                   NavigationDestination(
                       selectedIcon: Icon(
-                        Icons.person,
+                        FontAwesome5.bullseye,
                         size: 20,
                         color: kPriPurple,
                       ),
-                      icon: Icon(Icons.person_3_outlined,
+                      icon: Icon(FontAwesome5.bullseye,
                           size: 20, color: kPriGrey),
-                      label: 'Account')
+                      label: 'Goals')
                 ])));
   }
 }
