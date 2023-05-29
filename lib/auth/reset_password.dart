@@ -8,34 +8,34 @@ import 'package:get/get.dart';
 
 final authCtrl = Get.find<AuthController>();
 
-class ForgotPassword extends StatefulWidget {
-  static const routeName = "/ForgotPassword";
+class ResetPassword extends StatefulWidget {
+  static const routeName = "/ResetPassword";
 
-  const ForgotPassword({Key? key}) : super(key: key);
+  const ResetPassword({Key? key}) : super(key: key);
 
   @override
   State<StatefulWidget> createState() {
-    return ForgotPasswordState();
+    return ResetPasswordState();
   }
 }
 
-class ForgotPasswordState extends State<ForgotPassword> {
-  late TextEditingController emailctrl;
-  final GlobalKey<FormState> forgotpassFormKey = GlobalKey<FormState>();
+class ResetPasswordState extends State<ResetPassword> {
+  TextEditingController passctrl = TextEditingController();
+  TextEditingController confirmpassctrl = TextEditingController();
+  final _resetPasswordKey = GlobalKey<FormState>();
+  final _isHidden = false.obs;
 
   @override
   void initState() {
     super.initState();
-    emailctrl = TextEditingController();
   }
 
   @override
   void dispose() {
-    emailctrl.dispose();
+    passctrl.dispose();
+    confirmpassctrl.dispose();
     super.dispose();
   }
-
-  void sendRecovery() {}
 
   @override
   Widget build(BuildContext context) {
@@ -61,7 +61,7 @@ class ForgotPasswordState extends State<ForgotPassword> {
             ),
           ),
           title: const Text(
-            'Forgot Password',
+            'Reset Password',
             style: TextStyle(
                 fontFamily: 'Montserrat',
                 fontSize: 18,
@@ -72,35 +72,52 @@ class ForgotPasswordState extends State<ForgotPassword> {
         padding:
             const EdgeInsets.only(top: 30, bottom: 10, left: 25, right: 25),
         child: Form(
-            key: forgotpassFormKey,
+            key: _resetPasswordKey,
             child: Column(
               children: <Widget>[
                 const Padding(
                     padding: EdgeInsets.only(top: 80, bottom: 25),
                     child: Text(
-                      "Don't worry, it happens to the best of us",
+                      "Enter your New Password",
                       textAlign: TextAlign.center,
                       style: kDarkTxt,
                     )),
-                formField(
-                  label: 'Email Address',
-                  require: true,
-                  controller: emailctrl,
-                  type: TextInputType.emailAddress,
+                passwordField(
+                  isHidden: _isHidden,
                   validator: (value) {
-                    if (!GetUtils.isEmail(value!)) {
-                      return 'Please enter your Email';
+                    if (value == null || value.isEmpty) {
+                      return 'Please enter your Password';
+                    }
+                    if (value.length < 6) {
+                      return 'Password must be 6 characters or more';
                     }
                     return null;
                   },
+                  controller: passctrl,
+                  label: 'Password',
+                ),
+                passwordField(
+                  isHidden: _isHidden,
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please confirm your Password';
+                    }
+                    if (value != passctrl.text) {
+                      return 'Passwords do not Match!';
+                    }
+
+                    return null;
+                  },
+                  controller: confirmpassctrl,
+                  label: 'Confirm Password',
                 ),
                 primaryBtn(
-                  label: 'Confirm Email',
+                  label: 'Reset Password',
                   isLoading: authCtrl.forgotPassLoading,
                   function: () async {
                     authCtrl.forgotPassLoading.value = true;
-                    if (forgotpassFormKey.currentState!.validate()) {
-                      authCtrl.sendRecovery(emailctrl.text);
+                    if (_resetPasswordKey.currentState!.validate()) {
+                      authCtrl.resetPassword(passctrl.text);
                     } else {
                       authCtrl.forgotPassLoading.value = false;
                     }

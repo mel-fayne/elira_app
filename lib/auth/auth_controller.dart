@@ -1,4 +1,6 @@
 import 'dart:convert';
+import 'package:elira_app/auth/login.dart';
+import 'package:elira_app/auth/student_models.dart';
 import 'package:elira_app/core/navigator.dart';
 import 'package:elira_app/core/onboard.dart';
 import 'package:elira_app/auth/security_questions.dart';
@@ -21,6 +23,8 @@ class AuthController extends GetxController {
   RxBool forgotPassLoading = false.obs;
   RxBool updateStdLoading = false.obs;
   RxBool logoutLoading = false.obs;
+  late SecurityAnswers stdAnswers;
+  late String recoveryEmail = '';
 
   signUp(List userdata) async {
     signUpLoading.value = true;
@@ -47,7 +51,7 @@ class AuthController extends GetxController {
             subtitle: "Welcome to Elira");
 
         await Future.delayed(const Duration(seconds: 2));
-        Get.off(() => const SecurityQuestions());
+        Get.off(() => const SecurityQuestions(fromRecovery: false));
       } else {
         showSnackbar(
             path: Icons.close_rounded,
@@ -143,6 +147,64 @@ class AuthController extends GetxController {
     }
     updateStdLoading.value = false;
     update();
+  }
+
+  sendRecovery(String email) async {
+    try {
+      var res =
+          await http.get(Uri.parse(confirmEmailUrl + email), headers: headers);
+      debugPrint("Send Recovery Response ${res.statusCode}");
+      if (res.statusCode == 200) {
+        var respBody = json.decode(res.body);
+        recoveryEmail = email;
+        stdAnswers.firstpet = respBody["first_pet"];
+        stdAnswers.childstreet = respBody["childhood_street"];
+        stdAnswers.firsttr = respBody["first_teacher"];
+        stdAnswers.favflavour = respBody["favourite_flavour"];
+        stdAnswers.childname = respBody["childhod_nickname"];
+        stdAnswers.firstphone = respBody["first_phone"];
+        Get.off(() => const SecurityQuestions(fromRecovery: true));
+        debugPrint('Done with recovery ...');
+      } else {
+        showSnackbar(
+            path: Icons.close_rounded,
+            title: "Seems there's a problem on our side!",
+            subtitle: "Please try again later");
+      }
+      return;
+    } catch (error) {
+      showSnackbar(
+          path: Icons.close_rounded,
+          title: "Failed To Confirm User Email!",
+          subtitle: "Please check your internet connection or try again later");
+    }
+  }
+
+  resetPassword(String password) async {
+    var body = jsonEncode({'password': password});
+    try {
+      var res = await http.post(Uri.parse(resetPassUrl + recoveryEmail),
+          body: body, headers: headers);
+      debugPrint("Reset Password Response ${res.statusCode}");
+      if (res.statusCode == 200) {
+        showSnackbar(
+            path: Icons.check_rounded,
+            title: "Password Reset Suuccessfuly!",
+            subtitle: "Let's test your new password");
+        Get.offAll(const Login());
+      } else {
+        showSnackbar(
+            path: Icons.close_rounded,
+            title: "Seems there's a problem on our side!",
+            subtitle: "Please try again later");
+      }
+      return;
+    } catch (error) {
+      showSnackbar(
+          path: Icons.close_rounded,
+          title: "Failed To Confirm User Email!",
+          subtitle: "Please check your internet connection or try again later");
+    }
   }
 
   void setlastLogin(String lastLogin) async {

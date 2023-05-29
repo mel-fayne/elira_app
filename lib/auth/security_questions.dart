@@ -1,6 +1,8 @@
 import 'dart:convert';
 
 import 'package:elira_app/auth/auth_controller.dart';
+import 'package:elira_app/auth/reset_password.dart';
+import 'package:elira_app/auth/student_models.dart';
 import 'package:elira_app/theme/colors.dart';
 import 'package:elira_app/theme/global_widgets.dart';
 import 'package:flutter/material.dart';
@@ -29,15 +31,56 @@ class QuestionCircle {
 
 class SecurityQuestions extends StatefulWidget {
   static const routeName = "/security_questions";
-  const SecurityQuestions({Key? key}) : super(key: key);
+  final bool fromRecovery;
+
+  const SecurityQuestions({Key? key, required this.fromRecovery})
+      : super(key: key);
 
   @override
   // ignore: library_private_types_in_public_api
-  _SecurityQuestionsState createState() => _SecurityQuestionsState();
+  _SecurityQuestionsState createState() =>
+      // ignore: no_logic_in_create_state
+      _SecurityQuestionsState(fromRecovery);
 }
 
 class _SecurityQuestionsState extends State<SecurityQuestions> {
+  bool fromRecovery;
+
+  _SecurityQuestionsState(this.fromRecovery);
+
   final authCtrl = Get.find<AuthController>();
+  List<QuestionCircle> questions = [
+    QuestionCircle(
+        id: 1,
+        question: "What was the name of your first pet?",
+        answer: firstpet,
+        path: "assets/images/firstPet.png"),
+    QuestionCircle(
+        id: 2,
+        question: "What was the name of your childhood street?",
+        answer: childstreet,
+        path: "assets/images/childhoodStreet.png"),
+    QuestionCircle(
+        id: 3,
+        question: "What was the name of your first phone?",
+        answer: firstphone,
+        path: "assets/images/firstPhone.png"),
+    QuestionCircle(
+        id: 4,
+        question: "What was the name of your first teacher?",
+        answer: firsttr,
+        path: "assets/images/firstTeacher.png"),
+    QuestionCircle(
+        id: 5,
+        question: "What is your favourite flavour?",
+        answer: favflavour,
+        path: "assets/images/favouriteFlavour.png"),
+    QuestionCircle(
+        id: 6,
+        question: "What was your childhood nickname?",
+        answer: childname,
+        path: "assets/images/childhoodNickname.png")
+  ];
 
   @override
   Widget build(BuildContext context) {
@@ -68,87 +111,92 @@ class _SecurityQuestionsState extends State<SecurityQuestions> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  const Padding(
-                      padding: EdgeInsets.only(bottom: 30),
-                      child: Text(
-                        'Select at least three secuirity questions to answer for account recovery',
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                            color: kPriDark,
-                            fontFamily: 'Nunito',
-                            fontSize: 18,
-                            fontWeight: FontWeight.w700),
-                      )),
+                  fromRecovery
+                      ? const Padding(
+                          padding: EdgeInsets.only(bottom: 30),
+                          child: Text(
+                            '''Answer correctly at least three secuirity questions you selected during account setup for account recovery''',
+                            softWrap: true,
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                                color: kPriDark,
+                                fontFamily: 'Nunito',
+                                fontSize: 18,
+                                fontWeight: FontWeight.w700),
+                          ))
+                      : const Padding(
+                          padding: EdgeInsets.only(bottom: 30),
+                          child: Text(
+                            'Select at least three secuirity questions to answer for account recovery',
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                                color: kPriDark,
+                                fontFamily: 'Nunito',
+                                fontSize: 18,
+                                fontWeight: FontWeight.w700),
+                          )),
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      genderCard(
-                          queCircle: QuestionCircle(
-                              id: 1,
-                              question: "What was the name of your first pet?",
-                              answer: firstpet,
-                              path: "assets/images/firstPet.png")),
+                      genderCard(queCircle: questions[0]),
                       Padding(
                           padding: const EdgeInsets.symmetric(vertical: 30),
-                          child: genderCard(
-                              queCircle: QuestionCircle(
-                                  id: 2,
-                                  question:
-                                      "What was the name of your childhood street?",
-                                  answer: childstreet,
-                                  path: "assets/images/childhoodStreet.png"))),
-                      genderCard(
-                          queCircle: QuestionCircle(
-                              id: 3,
-                              question:
-                                  "What was the name of your first phone?",
-                              answer: firstphone,
-                              path: "assets/images/firstPhone.png")),
-                      genderCard(
-                          queCircle: QuestionCircle(
-                              id: 4,
-                              question:
-                                  "What was the name of your first teacher?",
-                              answer: firsttr,
-                              path: "assets/images/firstTeacher.png")),
+                          child: genderCard(queCircle: questions[1])),
+                      genderCard(queCircle: questions[2]),
+                      genderCard(queCircle: questions[3]),
                       Padding(
                           padding: const EdgeInsets.symmetric(vertical: 30),
-                          child: genderCard(
-                              queCircle: QuestionCircle(
-                                  id: 5,
-                                  question: "What is your favourite flavour?",
-                                  answer: favflavour,
-                                  path: "assets/images/favouriteFlavour.png"))),
+                          child: genderCard(queCircle: questions[4])),
                       Padding(
                           padding: const EdgeInsets.only(),
-                          child: genderCard(
-                              queCircle: QuestionCircle(
-                                  id: 6,
-                                  question: "What was your childhood nickname?",
-                                  answer: childname,
-                                  path: "assets/images/childhoodNickname.png")))
+                          child: genderCard(queCircle: questions[5]))
                     ],
                   ),
                   Obx(() => primaryBtn(
                       label: 'Secure My Account',
                       isLoading: authCtrl.updateStdLoading,
                       function: selectedQuestions.length >= 3
-                          ? () {
-                              authCtrl.updateStdLoading.value = true;
-                              var studentBody = jsonEncode({
-                                "first_pet": firstpet.value,
-                                "childhood_street": childstreet.value,
-                                "first_phone": firstphone.value,
-                                "first_teacher": firsttr.value,
-                                "favourite_flavour": favflavour.value,
-                                "childhod_nickname": childname.value
-                              });
-                              authCtrl.updateStudent(
-                                  studentBody,
-                                  "Let's add your academic details next and get to predicting",
-                                  "Your Account is now more secure",
-                                  true);
-                            }
+                          ? fromRecovery
+                              ? () {
+                                  authCtrl.updateStdLoading.value = true;
+                                  SecurityAnswers givenAnswers =
+                                      SecurityAnswers();
+                                  givenAnswers.firstpet = firstpet.value;
+                                  givenAnswers.childstreet = childstreet.value;
+                                  givenAnswers.firstphone = firstphone.value;
+                                  givenAnswers.favflavour = favflavour.value;
+                                  givenAnswers.childname = childname.value;
+                                  givenAnswers.firsttr = firsttr.value;
+                                  authCtrl.updateStdLoading.value = false;
+                                  if (givenAnswers == authCtrl.stdAnswers) {
+                                    showSnackbar(
+                                        path: Icons.check_rounded,
+                                        title: "100% Pass!",
+                                        subtitle: "Let's reset your password");
+                                    Get.to(const ResetPassword());
+                                  } else {
+                                    showSnackbar(
+                                        path: Icons.close_rounded,
+                                        title: "You got some answers wrong!",
+                                        subtitle: "Please try again");
+                                  }
+                                }
+                              : () {
+                                  authCtrl.updateStdLoading.value = true;
+                                  var studentBody = jsonEncode({
+                                    "first_pet": firstpet.value,
+                                    "childhood_street": childstreet.value,
+                                    "first_phone": firstphone.value,
+                                    "first_teacher": firsttr.value,
+                                    "favourite_flavour": favflavour.value,
+                                    "childhod_nickname": childname.value
+                                  });
+                                  authCtrl.updateStudent(
+                                      studentBody,
+                                      "Let's add your academic details next and get to predicting",
+                                      "Your Account is now more secure",
+                                      true);
+                                }
                           : null))
                 ])));
   }

@@ -4,3 +4,12 @@ class StudentSpec {
   late String abbreviation;
   late double score;
 }
+
+class SecurityAnswers {
+  String firstpet = '';
+  String childstreet = '';
+  String firstphone = '';
+  String favflavour = '';
+  String childname = '';
+  String firsttr = '';
+}
