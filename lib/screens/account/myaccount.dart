@@ -33,39 +33,49 @@ class _AccountPageState extends State<AccountPage> {
         appBar:
             AppBar(backgroundColor: kCreamBg, elevation: 0, toolbarHeight: 100),
         body: SingleChildScrollView(
-            padding: const EdgeInsets.all(15),
+            padding:
+                const EdgeInsets.only(top: 10, bottom: 20, right: 25, left: 25),
             child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Column(children: [
-                    ListView(children: [
-                      Card(
-                          color: Colors.white,
-                          elevation: 2.5,
-                          margin: const EdgeInsets.symmetric(vertical: 5),
-                          child: ListTile(
-                            onTap: () {
-                              Get.to(const UserForm());
-                            },
-                            leading: const Icon(Icons.person,
-                                color: kPriPurple, size: 30),
-                            title: const Text('Update Account',
-                                style: kBlackTitle),
-                            trailing: Container(
-                              width: 35,
-                              height: 35,
-                              decoration: const BoxDecoration(
-                                color: kPriDark,
-                                shape: BoxShape.circle,
+                  const Padding(
+                    padding: EdgeInsets.only(bottom: 10),
+                    child: Text(
+                      "Account Details",
+                      style: kPageTitle,
+                    ),
+                  ),
+                  SizedBox(
+                      height: 550,
+                      child: ListView(children: [
+                        Card(
+                            color: Colors.white,
+                            elevation: 2.5,
+                            margin: const EdgeInsets.symmetric(vertical: 5),
+                            child: ListTile(
+                              onTap: () {
+                                Get.to(const UserForm());
+                              },
+                              leading: const Icon(Icons.person,
+                                  color: kPriPurple, size: 30),
+                              title: const Text('Update Account',
+                                  style: kBlackTitle),
+                              trailing: Container(
+                                width: 35,
+                                height: 35,
+                                decoration: const BoxDecoration(
+                                  color: kPriDark,
+                                  shape: BoxShape.circle,
+                                ),
+                                child: const Icon(Icons.keyboard_arrow_right,
+                                    color: Colors.white, size: 20),
                               ),
-                              child: const Icon(Icons.keyboard_arrow_right,
-                                  color: Colors.white, size: 20),
-                            ),
-                          ))
-                    ])
-                  ]),
+                            ))
+                      ])),
                   primaryBtn(
                       label: 'Log Out',
+                      width: double.infinity,
                       isLoading: authCtrl.logoutLoading,
                       function: () {
                         authCtrl.logoutLoading.value = true;
@@ -92,13 +102,17 @@ class _UserFormState extends State<UserForm> {
   final _userFormKey = GlobalKey<FormState>();
 
   @override
-  void initState() async {
+  void initState() {
     super.initState();
+    setProfile();
+  }
+
+  void setProfile() async {
     var profile = await authCtrl.getProfile();
-    print(profile);
-    firstnamectrl.text = '';
-    lastnamectrl.text = '';
-    emailctrl.text = '';
+    Map<String, dynamic> profJson = jsonDecode(profile!);
+    firstnamectrl.text = profJson['first_name'];
+    lastnamectrl.text = profJson['last_name'];
+    emailctrl.text = profJson['email'];
   }
 
   @override
@@ -120,24 +134,12 @@ class _UserFormState extends State<UserForm> {
               Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
             const Padding(
                 padding: EdgeInsets.only(top: 80),
-                child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Padding(
-                          padding: EdgeInsets.only(bottom: 10),
-                          child: Text('Sign Up',
-                              style: TextStyle(
-                                  color: kPriPurple,
-                                  fontSize: 34,
-                                  fontFamily: 'Nunito',
-                                  fontWeight: FontWeight.w700))),
-                      Text('Become a better graduate today',
-                          style: TextStyle(
-                              color: kPriDark,
-                              fontSize: 14,
-                              fontFamily: 'Nunito',
-                              fontWeight: FontWeight.w700)),
-                    ])),
+                child: Text('Update Account',
+                    style: TextStyle(
+                        color: kPriPurple,
+                        fontSize: 34,
+                        fontFamily: 'Nunito',
+                        fontWeight: FontWeight.w700))),
             Column(crossAxisAlignment: CrossAxisAlignment.center, children: [
               Padding(
                 padding: const EdgeInsets.only(top: 20, bottom: 10),

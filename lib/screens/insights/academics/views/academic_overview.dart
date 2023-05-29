@@ -87,9 +87,10 @@ class honours''', softWrap: true, textAlign: TextAlign.center, style: kDarkTxt)
                             width: 135.0,
                             isLoading: acProfCtrl.newTransLoading,
                             function: () async {
-                              await acProfCtrl.getNewTranscript();
                               Get.dialog(
-                                  const AddTranscriptForm(isEdit: false));
+                                   AddTranscriptForm(isEdit: false, year: '', sem: StudentSemester(
+                                    '', '', '', 0.0, 0.0, []
+                                   )));
                             })
                       ])),
               Container(
@@ -158,14 +159,13 @@ class honours''', softWrap: true, textAlign: TextAlign.center, style: kDarkTxt)
                             lineBarsData: [
                               LineChartBarData(
                                 spots: acProfCtrl.avgSpots,
-                                isCurved: true,
+                                isCurved: false,
                                 color: kPriDark,
                                 barWidth: 3,
                                 dotData: FlDotData(
                                   show: true,
                                 ),
-                                belowBarData: BarAreaData(
-                                    show: true, gradient: kMaroonGradient),
+                                belowBarData: BarAreaData(show: false),
                               ),
                             ],
                             titlesData: FlTitlesData(

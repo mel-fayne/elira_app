@@ -25,6 +25,7 @@ class _AcademicProfileFormState extends State<AcademicProfileForm> {
   @override
   void initState() {
     super.initState();
+    Get.dialog(const TermsConditions());
   }
 
   @override
@@ -184,7 +185,7 @@ class _TranscriptPageState extends State<TranscriptPage> {
                       label: 'Upload Transcript',
                       isLoading: acProfCtrl.updateAcLoading,
                       function: () async {
-                        acProfCtrl.updateAcademicProfile(true);
+                        acProfCtrl.updateAcademicProfile(true, false);
                       })
                 ])));
   }
@@ -218,21 +219,53 @@ class _TranscriptPageState extends State<TranscriptPage> {
                     fontFamily: 'Nunito',
                     fontWeight: FontWeight.bold))));
   }
+
+  buildSingleUnit({required StudentUnit unit, required StateSetter setState}) {
+    return Padding(
+        padding: const EdgeInsets.symmetric(vertical: 10),
+        child: Row(children: [
+          Container(
+              width: 225,
+              margin: const EdgeInsets.only(right: 25),
+              padding: const EdgeInsets.symmetric(horizontal: 15),
+              child: Text(
+                unit.unitName,
+                style: kWhiteTxt,
+                softWrap: true,
+              )),
+          dropDownField(
+              dropdownValue: unit.grade.value,
+              dropItems: acProfCtrl.grades,
+              bgcolor: kLightPurple,
+              function: (String? newValue) {
+                setState(() {
+                  unit.grade.value = newValue!;
+                });
+              })
+        ]));
+  }
 }
 
 class AddTranscriptForm extends StatefulWidget {
   final bool isEdit;
-  const AddTranscriptForm({Key? key, required this.isEdit}) : super(key: key);
+  final String year;
+  final StudentSemester sem;
+  const AddTranscriptForm(
+      {Key? key, required this.isEdit, required this.year, required this.sem})
+      : super(key: key);
 
   @override
   // ignore: library_private_types_in_public_api
-  _AddTranscriptFormState createState() => _AddTranscriptFormState(isEdit);
+  _AddTranscriptFormState createState() =>
+      _AddTranscriptFormState(isEdit, year, sem);
 }
 
 class _AddTranscriptFormState extends State<AddTranscriptForm> {
   bool isEdit;
+  String year;
+  StudentSemester sem;
 
-  _AddTranscriptFormState(this.isEdit);
+  _AddTranscriptFormState(this.isEdit, this.year, this.sem);
 
   // ignore: non_constant_identifier_names
   final _AddTranscriptFormForm = GlobalKey<FormState>();
@@ -240,6 +273,19 @@ class _AddTranscriptFormState extends State<AddTranscriptForm> {
   @override
   void initState() {
     super.initState();
+    if (isEdit) {
+      setScript();
+    } else {
+      getScript();
+    }
+  }
+
+  getScript() async {
+    await acProfCtrl.getNewTranscript();
+  }
+
+  setScript() async {
+    await acProfCtrl.setEditTranscript(year, sem);
   }
 
   @override
@@ -259,41 +305,80 @@ class _AddTranscriptFormState extends State<AddTranscriptForm> {
                 },
                 itemCount: acProfCtrl.currentTranscript.studentUnits.length,
               )
-            : const Text('sssuppp')),
+            : const SizedBox()),
         primaryBtn(
             label: isEdit ? 'Edit Transcript' : 'Upload Transcript',
             isLoading: acProfCtrl.updateAcLoading,
             function: () async {
-              acProfCtrl.updateAcademicProfile(false);
+              acProfCtrl.updateAcademicProfile(false, isEdit);
               await Future.delayed(const Duration(seconds: 5));
             })
       ],
     );
   }
+
+  buildSingleUnit({required StudentUnit unit, required StateSetter setState}) {
+    return Padding(
+        padding: const EdgeInsets.symmetric(vertical: 10),
+        child: Row(children: [
+          Container(
+              width: 225,
+              margin: const EdgeInsets.only(right: 25),
+              padding: const EdgeInsets.symmetric(horizontal: 15),
+              child: Text(
+                unit.unitName,
+                style: kWhiteTxt,
+                softWrap: true,
+              )),
+          dropDownField(
+              dropdownValue: unit.grade.value,
+              dropItems: acProfCtrl.grades,
+              bgcolor: kLightPurple,
+              function: (String? newValue) {
+                setState(() {
+                  unit.grade.value = newValue!;
+                });
+              })
+        ]));
+  }
 }
 
-Widget buildSingleUnit(
-    {required StudentUnit unit, required StateSetter setState}) {
-  return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 10),
-      child: Row(children: [
-        Container(
-            width: 225,
-            margin: const EdgeInsets.only(right: 25),
-            padding: const EdgeInsets.symmetric(horizontal: 15),
-            child: Text(
-              unit.unitName,
-              style: kWhiteTxt,
-              softWrap: true,
-            )),
-        dropDownField(
-            dropdownValue: unit.grade.value,
-            dropItems: acProfCtrl.grades,
-            bgcolor: kLightPurple,
-            function: (String? newValue) {
-              setState(() {
-                unit.grade.value = newValue!;
-              });
+class TermsConditions extends StatefulWidget {
+  const TermsConditions({Key? key, required}) : super(key: key);
+
+  @override
+  // ignore: library_private_types_in_public_api
+  _TermsConditionsState createState() => _TermsConditionsState();
+}
+
+class _TermsConditionsState extends State<TermsConditions> {
+  RxBool isLoading = false.obs;
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return popupScaffold(
+      children: [
+        popupHeader(label: 'Terms & Conditions'),
+        const Text(
+          '''
+By pressing Continue, you agree to the terms and conditions of our app. These terms include providing accurate information during account creation, safeguarding your login credentials, and using the app responsibly for its intended purpose. 
+You retain ownership of the content you upload, but grant us a license to use it for app operation and improvement. The app integrates with third-party services, and your use of those services is subject to their respective terms and conditions. 
+We may update the app and its terms, and while we strive for accuracy, we provide no warranties and are not liable for any damages resulting from app use.
+''',
+          style: kWhiteTxt,
+        ),
+        primaryBtn(
+            label: 'Continiue',
+            width: double.infinity,
+            isLoading: isLoading,
+            function: () async {
+              Get.back();
             })
-      ]));
+      ],
+    );
+  }
 }

@@ -1,5 +1,4 @@
 import 'package:elira_app/core/navigator.dart';
-import 'package:elira_app/screens/insights/insights.dart';
 import 'package:elira_app/screens/insights/insights_ctrl.dart';
 import 'package:elira_app/screens/insights/softskills/softskills_ctrl.dart';
 import 'package:elira_app/screens/insights/softskills/softskills_models.dart';

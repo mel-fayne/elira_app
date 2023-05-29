@@ -263,7 +263,7 @@ Widget formPopupScaffold({
   required Key formKey,
 }) {
   return Dialog(
-      insetPadding: const EdgeInsets.only(bottom: 90, left: 26, right: 26),
+      insetPadding: const EdgeInsets.only(top: 30, left: 26, right: 26),
       child: SingleChildScrollView(
           child: Container(
               padding: const EdgeInsets.only(bottom: 20),

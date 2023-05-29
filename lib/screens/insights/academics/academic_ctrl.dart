@@ -1,3 +1,4 @@
+import 'package:elira_app/core/navigator.dart';
 import 'package:elira_app/screens/insights/academics/views/academic_forms.dart';
 import 'package:elira_app/screens/insights/github/views/technical_forms.dart';
 import 'package:elira_app/screens/insights/insights_ctrl.dart';
@@ -71,6 +72,7 @@ class AcademicController extends GetxController {
         avgSpots.add(const FlSpot(0.0, 0.0));
         for (var avg in respBody['semAvgs']) {
           avgSpots.add(FlSpot(count.toDouble(), avg));
+          count++;
         }
 
         // load student semesters
@@ -81,9 +83,8 @@ class AcademicController extends GetxController {
               details['honours'],
               details['status'],
               double.parse(details['average'].toString()),
-              double.parse(details['difference'].toString()), []
-              // getStdUnits(details['allUnits'])
-              );
+              double.parse(details['difference'].toString()),
+              getStdUnits(details['allUnits']));
           studentSemesters.add(semHolder);
         });
 
@@ -102,7 +103,6 @@ class AcademicController extends GetxController {
         carSems = [];
         for (int i = 0; i < groupedSemesters.length; i++) {
           String title = getYearTitle(i + 1);
-          print(title);
           double semAvg = 0.0;
           List<StudentSemester> semList = groupedSemesters[i];
           for (var sem in semList) {
@@ -144,35 +144,45 @@ class AcademicController extends GetxController {
       debugPrint("Got response ${res.statusCode}");
 
       if (res.statusCode == 200) {
-        var respBody = json.decode(res.body);
+        if (double.parse(semDropdown.value) == 1.1) {
+          showSnackbar(
+              path: Icons.check_rounded,
+              title: "Academic Profile Complete!",
+              subtitle:
+                  "Let's add your technical details next and get to predicting");
+          await Future.delayed(const Duration(seconds: 2));
+          Get.off(const TechProfileForm());
+        } else {
+          var respBody = json.decode(res.body);
 
-        // store empty transcripts
-        respBody.forEach((semester, units) {
-          if (units.isNotEmpty) {
-            Transcript transcriptHolder = Transcript();
-            transcriptHolder.semester.value = semester;
-            NumberBox sem = NumberBox();
-            sem.title = semester;
-            semBoxes.add(sem);
+          // store empty transcripts
+          respBody.forEach((semester, units) {
+            if (units.isNotEmpty) {
+              Transcript transcriptHolder = Transcript();
+              transcriptHolder.semester.value = semester;
+              NumberBox sem = NumberBox();
+              sem.title = semester;
+              semBoxes.add(sem);
 
-            for (var unit in units) {
-              var holder = StudentUnit.fromJson(unit);
-              transcriptHolder.studentUnits.add(holder);
+              for (var unit in units) {
+                var holder = StudentUnit.fromJson(unit);
+                transcriptHolder.studentUnits.add(holder);
+              }
+              emptyTranscripts.add(transcriptHolder);
             }
-            emptyTranscripts.add(transcriptHolder);
-          }
-        });
+          });
 
-        // set current transcript
-        currentTranscript = emptyTranscripts[0];
+          // set current transcript
+          currentTranscript = emptyTranscripts[0];
 
-        showSnackbar(
-            path: Icons.check_rounded,
-            title: "Transcripts Loaded!",
-            subtitle:
-                "Please fill in your details for each of your previous semesters");
-        await Future.delayed(const Duration(seconds: 2));
-        Get.off(() => const TranscriptPage());
+          showSnackbar(
+              path: Icons.check_rounded,
+              title: "Transcripts Loaded!",
+              subtitle:
+                  "Please fill in your details for each of your previous semesters");
+          await Future.delayed(const Duration(seconds: 2));
+          Get.off(() => const TranscriptPage());
+        }
       } else {
         showSnackbar(
             path: Icons.close_rounded,
@@ -190,28 +200,30 @@ class AcademicController extends GetxController {
     update();
   }
 
-  updateAcademicProfile(bool fromSetup) async {
+  updateAcademicProfile(bool fromSetup, bool isEdit) async {
     updateAcLoading.value = true;
+    // upload current semester's transcript
+    var units = [];
+    for (var unit in currentTranscript.studentUnits) {
+      var holder = CompleteUnit.fromStudentUnit(unit);
+      units.add(holder.toJson());
+    }
+    double currentSem = 1.1;
+    if (fromSetup) {
+      currentSem = double.parse(semDropdown.value);
+    } else {
+      currentSem = getNextSem(insightsCtrl.stdAcdProf.currentSem.toString());
+    }
+
+    var body = jsonEncode({'current_sem': currentSem, 'studentUnits': units});
+
     try {
-      // upload current semester's transcript
-      var units = [];
-      for (var unit in currentTranscript.studentUnits) {
-        var holder = CompleteUnit.fromStudentUnit(unit);
-        units.add(holder.toJson());
-      }
-      double currentSem = double.parse(semDropdown.value);
-      if (!fromSetup) {
-        currentSem = getNextSem(insightsCtrl.stdAcdProf.currentSem.toString());
-      }
-      var body = jsonEncode({'current_sem': currentSem, 'studentUnits': units});
       var res = await http.patch(
           Uri.parse(studentUnitUrl + studentId.toString()),
           body: body,
           headers: headers);
 
       debugPrint("Got response ${res.statusCode}");
-      debugPrint(res.body);
-
       if (res.statusCode == 200) {
         if (fromSetup) {
           // move to the next transcript
@@ -241,14 +253,21 @@ class AcademicController extends GetxController {
           update();
         } else {
           await getSemUnitsData();
-          // await insightsCtrl.getStudentInsights();
-          showSnackbar(
-              path: FontAwesome5.hand_sparkles,
-              title: "Transcript Added!",
-              subtitle:
-                  "Congratulations on finishing ${insightsCtrl.stdAcdProf.currentSem.toString()}");
+          insightsCtrl.getStudentInsights();
+          if (isEdit) {
+            showSnackbar(
+                path: FontAwesome5.hand_sparkles,
+                title: "Transcript Updated!",
+                subtitle: "Redirecting ...");
+          } else {
+            showSnackbar(
+                path: FontAwesome5.hand_sparkles,
+                title: "Transcript Added!",
+                subtitle:
+                    "Congratulations on finishing ${insightsCtrl.stdAcdProf.currentSem.toString()}");
+          }
           await Future.delayed(const Duration(seconds: 7));
-          Get.back();
+          Get.off(const NavigatorHandler(0));
         }
       } else {
         showSnackbar(
@@ -256,7 +275,6 @@ class AcademicController extends GetxController {
             title: "Transcript Upload Failed",
             subtitle: "Please ensure you've filled in all your grades");
       }
-      return;
     } catch (error) {
       showSnackbar(
           path: Icons.close_rounded,
@@ -265,6 +283,7 @@ class AcademicController extends GetxController {
     }
     updateAcLoading.value = false;
     update();
+    return;
   }
 
   getNewTranscript() async {
@@ -292,6 +311,12 @@ class AcademicController extends GetxController {
 
         newTransLoading.value = false;
         update();
+        showSnackbar(
+            path: Icons.check_rounded,
+            title: "Transcript Loaded!",
+            subtitle:
+                "Please fill in your details for each of the new semester");
+        await Future.delayed(const Duration(seconds: 2));
       } else {
         showSnackbar(
             path: Icons.close_rounded,
@@ -307,11 +332,11 @@ class AcademicController extends GetxController {
     }
   }
 
-  setEditTranscript(String year, StudentSemester sem) async {
+  setEditTranscript(String year, StudentSemester sem) {
     currentTranscript = Transcript();
     currentTranscript.semester.value = '$year : ${sem.semester}';
     currentTranscript.studentUnits.value = [...sem.semUnits];
-    Get.dialog(const AddTranscriptForm(isEdit: true));
+    update();
   }
 
   String getYearTitle(int year) {
@@ -393,9 +418,11 @@ class AcademicController extends GetxController {
                   itemBuilder: (context, index) {
                     var semesters = carSems[i].yearSemesters;
                     return Container(
-                      width: 170,
+                      width: 155,
                       height: 100,
-                      padding: const EdgeInsets.all(15),
+                      padding: const EdgeInsets.all(10),
+                      margin: const EdgeInsets.symmetric(
+                          horizontal: 10, vertical: 5),
                       decoration: BoxDecoration(
                           color: Colors.white,
                           borderRadius: BorderRadius.circular(7)),
@@ -412,8 +439,10 @@ class AcademicController extends GetxController {
                                   ),
                                   GestureDetector(
                                       onTap: () {
-                                        acProfCtrl.setEditTranscript(
-                                            carSems[i].title, semesters[index]);
+                                        Get.dialog(AddTranscriptForm(
+                                            isEdit: true,
+                                            year: carSems[i].title,
+                                            sem: semesters[index]));
                                       },
                                       child: Container(
                                           width: 25,

@@ -1,4 +1,3 @@
-import 'package:elira_app/theme/colors.dart';
 import 'package:elira_app/theme/text_styles.dart';
 import 'package:get/get.dart';
 import 'package:fl_chart/fl_chart.dart';
@@ -15,7 +14,7 @@ class AcademicProfile {
       : id = json['id'],
         school = json['school'],
         currentSem = json['current_sem'],
-        currentAvg = json['current_avg'],
+        currentAvg = double.parse(json['current_avg'].toStringAsFixed(2)),
         currentHonours = json['current_honours'];
 }
 
