@@ -138,25 +138,12 @@ Widget industryChart() {
 
 PieChartData industriesData() {
   return PieChartData(
-      pieTouchData: PieTouchData(
-          enabled: true,
-          touchCallback: (FlTouchEvent event, pieTouchResponse) {
-            chartState!(() {
-              if (event.isInterestedForInteractions ||
-                  pieTouchResponse == null ||
-                  pieTouchResponse.touchedSection == null) {
-                touchedIndex = -1;
-                return;
-              }
-              touchedIndex =
-                  pieTouchResponse.touchedSection!.touchedSectionIndex;
-            });
-          }),
+      pieTouchData: PieTouchData(enabled: false),
       borderData: FlBorderData(
         show: false,
       ),
       sectionsSpace: 0,
-      centerSpaceRadius: 40,
+      centerSpaceRadius: 60,
       sections: showingSections());
 }
 
@@ -175,7 +162,8 @@ List<PieChartSectionData> showingSections() {
         workExpCtrl.indChart.sections[i].value.toStringAsFixed(2),
         style: kBlackTxt,
       ),
-      titlePositionPercentageOffset: 1.5,
+      badgePositionPercentageOffset: 0.4,
+      titlePositionPercentageOffset: 1.6,
       titleStyle: TextStyle(
           color: txtColor,
           fontFamily: 'Nunito',

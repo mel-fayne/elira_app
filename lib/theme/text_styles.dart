@@ -85,8 +85,8 @@ const kPurpleTxt = TextStyle(
     fontWeight: FontWeight.w600,
     fontFamily: 'Nunito');
 
-const kMaroonTxt = TextStyle(
-    fontSize: 16,
+const kMaroonTitle = TextStyle(
+    fontSize: 24,
     fontFamily: 'Nunito',
     fontWeight: FontWeight.w500,
     color: kPriMaroon);

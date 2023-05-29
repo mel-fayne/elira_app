@@ -292,8 +292,6 @@ class AcademicController extends GetxController {
 
         newTransLoading.value = false;
         update();
-
-        print(currentTranscript.studentUnits.isNotEmpty);
       } else {
         showSnackbar(
             path: Icons.close_rounded,

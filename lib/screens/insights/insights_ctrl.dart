@@ -133,7 +133,7 @@ class InsightsController extends GetxController {
         List<InternshipIndustry> indList = [];
         respBody['expPieChart'].forEach((ind, time) {
           InternshipIndustry indHolder = InternshipIndustry();
-          indHolder.name = ind;
+          indHolder.name = getIndName(ind);
           indHolder.percentage = time;
           indList.add(indHolder);
         });

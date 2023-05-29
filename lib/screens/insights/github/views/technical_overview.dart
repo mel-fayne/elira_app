@@ -37,7 +37,7 @@ class _TechnicalOverviewState extends State<TechnicalOverview> {
   Widget build(BuildContext context) {
     return Scaffold(
         body: SingleChildScrollView(
-      padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 15),
+      padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 20),
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
         Container(
           decoration: BoxDecoration(
@@ -138,9 +138,6 @@ Commits''',
 Contribs''',
               insightsCtrl.stdTchProf.totalContribs.toString())
         ]),
-        const Padding(
-            padding: EdgeInsets.only(top: 25, bottom: 10),
-            child: Text('Top 5 Languages', style: kPageSubTitle)),
         Padding(
             padding: const EdgeInsets.symmetric(vertical: 10),
             child: Card(
@@ -150,6 +147,9 @@ Contribs''',
                 ),
                 color: kLightPurple,
                 child: Column(children: [
+                  const Padding(
+                      padding: EdgeInsets.only(top: 25),
+                      child: Text('Top 5 Languages', style: kBlackTitle)),
                   SizedBox(
                       width: 240,
                       height: 250,

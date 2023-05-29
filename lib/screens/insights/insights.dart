@@ -1,5 +1,6 @@
 import 'package:elira_app/screens/insights/academics/views//academics.dart';
 import 'package:elira_app/screens/insights/github/views/technicals.dart';
+import 'package:elira_app/screens/insights/internships/views/internships.dart';
 import 'package:elira_app/screens/insights/softskills/softskills.dart';
 import 'package:fluttericon/entypo_icons.dart';
 import 'package:fluttericon/font_awesome5_icons.dart';
@@ -140,7 +141,7 @@ match''',
                                             statDesc: 'Time Spent:',
                                             stat:
                                                 '${insightsCtrl.stdWxProf.timeSpent.toString()} months',
-                                            page: const TechnicalsPage()),
+                                            page: const InternshipsPage()),
                                         traitWidget(
                                             iconPath: Icons.handshake,
                                             title: 'Soft Skills',

@@ -40,7 +40,7 @@ class _AcademicOverviewState extends State<AcademicOverview> {
   Widget build(BuildContext context) {
     return Scaffold(
         body: SingleChildScrollView(
-            padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+            padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 20),
             child:
                 Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
               Container(
