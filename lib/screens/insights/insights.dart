@@ -1,5 +1,5 @@
 import 'package:elira_app/core/navigator.dart';
-import 'package:elira_app/screens/account.dart';
+import 'package:elira_app/screens/account/myaccount.dart';
 import 'package:elira_app/screens/insights/academics/views//academics.dart';
 import 'package:elira_app/screens/insights/github/views/technicals.dart';
 import 'package:elira_app/screens/insights/internships/views/internships.dart';
