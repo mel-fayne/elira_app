@@ -122,18 +122,17 @@ class _InternshipsOverviewState extends State<InternshipsOverview> {
                   workExpCtrl.addInternship();
                 })
           ]),
-          Container(
-              padding: const EdgeInsets.all(15),
+          Padding(
+              padding: const EdgeInsets.only(top: 12),
               child: Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     CarouselSlider(
                       items: workExpCtrl.expSliders(),
                       carouselController: _sliderCtrl,
                       options: CarouselOptions(
                           enlargeCenterPage: true,
-                          aspectRatio: 2.0,
+                          aspectRatio: 1.4,
                           onPageChanged: (index, reason) {
                             setState(() {
                               _currentSlide = index;
@@ -166,7 +165,7 @@ class _InternshipsOverviewState extends State<InternshipsOverview> {
                         );
                       }).toList(),
                     ),
-                  ])),
+                  ]))
         ]),
       ),
     );

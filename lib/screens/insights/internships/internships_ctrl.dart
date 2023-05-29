@@ -286,9 +286,15 @@ class WorkExpController extends GetxController {
     indDropdown.value = workExp.industry;
     startDatectrl.text = workExp.startDate;
     startDate = dateFormat.parse(workExp.startDate);
-
-    endDate = dateFormat.parse(workExp.endDate);
-    endDatectrl.text = workExp.endDate;
+    if (workExp.endDate == '') {
+      endDate = DateTime.now();
+      endDatectrl.text = '';
+      currentlyWorking.value = true;
+    } else {
+      endDate = dateFormat.parse(workExp.endDate);
+      endDatectrl.text = workExp.endDate;
+      currentlyWorking.value = false;
+    }
 
     Get.to(const AddWorkExpForm(isEdit: true));
   }
@@ -318,76 +324,95 @@ class WorkExpController extends GetxController {
   List<Widget> expSliders() {
     List<Widget> expCards = [];
     for (int i = 0; i < insightsCtrl.stdWxProf.internships.length; i++) {
-      Widget item = Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            GestureDetector(
-                onTap: () {
-                  editInternship(insightsCtrl.stdWxProf.internships[i]);
-                },
-                child: Container(
-                    width: 40,
-                    height: 40,
-                    decoration: const BoxDecoration(
-                        shape: BoxShape.circle, color: kPriDark),
-                    child:
-                        const Icon(Icons.edit, size: 25, color: Colors.white))),
-            Padding(
-                padding: const EdgeInsets.symmetric(vertical: 7),
-                child: Text(insightsCtrl.stdWxProf.internships[i].title,
-                    style: kPurpleTitle, textAlign: TextAlign.center)),
-            Text(insightsCtrl.stdWxProf.internships[i].companyName,
-                style: kBlackTitle, textAlign: TextAlign.center),
-            Padding(
-                padding: const EdgeInsets.symmetric(vertical: 7),
-                child:
-                    Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-                  Text(insightsCtrl.stdWxProf.internships[i].location,
-                      style: kPurpleTxt, textAlign: TextAlign.center),
-                  Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 5),
-                      child: Container(
-                          width: 5,
-                          height: 5,
-                          decoration: const BoxDecoration(
-                            color: kPriPurple,
-                            shape: BoxShape.circle,
-                          ))),
-                  Text(insightsCtrl.stdWxProf.internships[i].locationType,
-                      style: kPurpleTxt, textAlign: TextAlign.center),
-                  Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 5),
-                      child: Container(
-                          width: 5,
-                          height: 5,
-                          decoration: const BoxDecoration(
-                            color: kPriPurple,
-                            shape: BoxShape.circle,
-                          ))),
-                  Text(insightsCtrl.stdWxProf.internships[i].employmentType,
-                      style: kPurpleTxt, textAlign: TextAlign.center),
-                ])),
-            Text('${insightsCtrl.stdWxProf.internships[i].timeSpent} months',
-                style: kMaroonTitle, textAlign: TextAlign.center),
-            Padding(
-                padding: const EdgeInsets.symmetric(vertical: 7),
-                child:
-                    Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-                  Text(insightsCtrl.stdWxProf.internships[i].startDate,
-                      style: kPurpleTxt, textAlign: TextAlign.center),
-                  const Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 5),
-                      child: Text('-',
-                          style: kPurpleTxt, textAlign: TextAlign.center)),
-                  Text(
-                      insightsCtrl.stdWxProf.internships[i].endDate == ''
-                          ? 'Today'
-                          : insightsCtrl.stdWxProf.internships[i].endDate,
-                      style: kPurpleTxt,
-                      textAlign: TextAlign.center)
-                ])),
-          ]);
+      Widget item = Container(
+          padding: const EdgeInsets.all(15),
+          decoration: BoxDecoration(
+              color: Colors.white, borderRadius: BorderRadius.circular(15)),
+          child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                GestureDetector(
+                    onTap: () {
+                      editInternship(insightsCtrl.stdWxProf.internships[i]);
+                    },
+                    child: Container(
+                        width: 40,
+                        height: 40,
+                        decoration: const BoxDecoration(
+                            shape: BoxShape.circle, color: kPriDark),
+                        child: const Icon(Icons.edit,
+                            size: 25, color: Colors.white))),
+                Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 7),
+                    child: Text(insightsCtrl.stdWxProf.internships[i].title,
+                        style: kPurpleTitle, textAlign: TextAlign.center)),
+                Text(insightsCtrl.stdWxProf.internships[i].companyName,
+                    style: kBlackTitle, textAlign: TextAlign.center),
+                Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 7),
+                    child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(insightsCtrl.stdWxProf.internships[i].location,
+                              style: kPurpleTxt, textAlign: TextAlign.center),
+                          Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 5),
+                              child: Container(
+                                  width: 5,
+                                  height: 5,
+                                  decoration: const BoxDecoration(
+                                    color: kPriPurple,
+                                    shape: BoxShape.circle,
+                                  ))),
+                          Text(
+                              insightsCtrl
+                                  .stdWxProf.internships[i].locationType,
+                              style: kPurpleTxt,
+                              textAlign: TextAlign.center),
+                          Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 5),
+                              child: Container(
+                                  width: 5,
+                                  height: 5,
+                                  decoration: const BoxDecoration(
+                                    color: kPriPurple,
+                                    shape: BoxShape.circle,
+                                  ))),
+                          Text(
+                              insightsCtrl
+                                  .stdWxProf.internships[i].employmentType,
+                              style: kPurpleTxt,
+                              textAlign: TextAlign.center),
+                        ])),
+                Text(
+                    '${insightsCtrl.stdWxProf.internships[i].timeSpent} months',
+                    style: kMaroonTitle,
+                    textAlign: TextAlign.center),
+                Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 7),
+                    child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(insightsCtrl.stdWxProf.internships[i].startDate,
+                              style: kPurpleTxt, textAlign: TextAlign.center),
+                          const Padding(
+                              padding: EdgeInsets.symmetric(horizontal: 5),
+                              child: Text('-',
+                                  style: kPurpleTxt,
+                                  textAlign: TextAlign.center)),
+                          Text(
+                              insightsCtrl.stdWxProf.internships[i].endDate ==
+                                      ''
+                                  ? 'Today'
+                                  : insightsCtrl
+                                      .stdWxProf.internships[i].endDate,
+                              style: kPurpleTxt,
+                              textAlign: TextAlign.center)
+                        ])),
+              ]));
 
       expCards.add(item);
     }

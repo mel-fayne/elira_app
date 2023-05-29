@@ -49,7 +49,7 @@ class TechnicalProfile {
         totalCommits = json['total_commits'],
         totalPrs = json['total_prs'],
         totalContribs = json['total_contribs'],
-        currentStreak = json['current_streak'],
+        currentStreak = json['current_streak'] ?? 0,
         languages = getLanguages(json['languages']),
         topLanguage = '';
 }
