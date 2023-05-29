@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 
 Widget formField(
     {required label,
+    labelColor = kPriDark,
     required require,
     required controller,
     type,
@@ -17,11 +18,11 @@ Widget formField(
                 text: TextSpan(children: [
               TextSpan(
                   text: label,
-                  style: const TextStyle(
+                  style: TextStyle(
                       fontSize: 12,
                       fontFamily: 'Nunito',
                       fontWeight: FontWeight.w500,
-                      color: kPriDark)),
+                      color: labelColor)),
               TextSpan(
                 text: require ? ' *' : '',
                 style: const TextStyle(

@@ -1,5 +1,6 @@
 import 'package:elira_app/screens/insights/github/technical_models.dart';
 import 'package:elira_app/screens/insights/github/technicals_ctrl.dart';
+import 'package:elira_app/screens/insights/github/views/technical_forms.dart';
 import 'package:elira_app/screens/insights/insights_ctrl.dart';
 import 'package:elira_app/theme/colors.dart';
 import 'package:elira_app/theme/global_widgets.dart';
@@ -68,76 +69,84 @@ class _TechnicalOverviewState extends State<TechnicalOverview> {
                     const Icon(FontAwesome5.code, size: 30, color: kPriPurple))
           ]),
         ),
-        Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-          const Padding(
-              padding: EdgeInsets.only(top: 20, bottom: 10),
-              child: Text('Github Summary', style: kPageSubTitle)),
-          primaryBtn(
-              label: 'Edit Link',
-              width: 130.0,
-              isLoading: techProfCtrl.gitLoading,
-              function: () {
-                techProfCtrl.setupForm();
-              })
-        ]),
-        Row(children: [
-          statCard(
-              Entypo.code,
-              '''Total
+        Padding(
+            padding: const EdgeInsets.only(top: 30),
+            child: Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  const Text('Github Summary', style: kPageSubTitle),
+                  primaryBtn(
+                      label: 'Edit Link',
+                      width: 130.0,
+                      isLoading: techProfCtrl.gitLoading,
+                      function: () {
+                        Get.dialog(const EditGithubForm());
+                      })
+                ])),
+        Padding(
+            padding: const EdgeInsets.symmetric(vertical: 20),
+            child: Row(children: [
+              statCard(
+                  Entypo.code,
+                  '''Total
 Commits''',
-              insightsCtrl.stdTchProf.totalCommits.toString()),
-          Container(
-              width: 120,
-              height: 150,
-              decoration: BoxDecoration(
-                  color: Colors.white, borderRadius: BorderRadius.circular(15)),
-              margin: const EdgeInsets.symmetric(horizontal: 10),
-              padding: const EdgeInsets.all(12),
-              child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Stack(alignment: AlignmentDirectional.topCenter, children: [
-                      Container(
-                          width: 100,
-                          height: 100,
-                          decoration: BoxDecoration(
-                              color: Colors.white,
-                              shape: BoxShape.circle,
-                              border:
-                                  Border.all(color: kPriPurple, width: 5.0))),
-                      Column(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            Container(
-                                width: 50,
-                                height: 50,
-                                padding: const EdgeInsets.all(10),
-                                decoration: const BoxDecoration(
-                                    color: Colors.white,
-                                    shape: BoxShape.circle),
-                                child: const Icon(FontAwesome5.fire,
-                                    color: kPriPurple, size: 30)),
-                            Text(
-                                insightsCtrl.stdTchProf.currentStreak
-                                    .toString(),
-                                textAlign: TextAlign.center,
-                                style: const TextStyle(
-                                    color: kPriPurple,
-                                    fontSize: 34,
-                                    fontWeight: FontWeight.w700,
-                                    fontFamily: 'Nunito')),
-                          ])
-                    ]),
-                    const Text('Current Streak',
-                        textAlign: TextAlign.center, style: kPurpleTxt)
-                  ])),
-          statCard(
-              FontAwesome5.code_branch,
-              '''Total
+                  insightsCtrl.stdTchProf.totalCommits.toString()),
+              Container(
+                  width: 120,
+                  height: 150,
+                  decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(15)),
+                  margin: const EdgeInsets.symmetric(horizontal: 10),
+                  padding: const EdgeInsets.all(12),
+                  child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Stack(
+                            alignment: AlignmentDirectional.topCenter,
+                            children: [
+                              Container(
+                                  width: 100,
+                                  height: 100,
+                                  decoration: BoxDecoration(
+                                      color: Colors.white,
+                                      shape: BoxShape.circle,
+                                      border: Border.all(
+                                          color: kPriPurple, width: 5.0))),
+                              Column(
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    Container(
+                                        width: 50,
+                                        height: 50,
+                                        padding: const EdgeInsets.all(10),
+                                        decoration: const BoxDecoration(
+                                            color: Colors.white,
+                                            shape: BoxShape.circle),
+                                        child: const Icon(FontAwesome5.fire,
+                                            color: kPriPurple, size: 30)),
+                                    Text(
+                                        insightsCtrl.stdTchProf.currentStreak
+                                            .toString(),
+                                        textAlign: TextAlign.center,
+                                        style: const TextStyle(
+                                            color: kPriPurple,
+                                            fontSize: 34,
+                                            fontWeight: FontWeight.w700,
+                                            fontFamily: 'Nunito')),
+                                  ])
+                            ]),
+                        const Text('Current Streak',
+                            textAlign: TextAlign.center, style: kPurpleTxt)
+                      ])),
+              statCard(
+                  FontAwesome5.code_branch,
+                  '''Total
 Contribs''',
-              insightsCtrl.stdTchProf.totalContribs.toString())
-        ]),
+                  insightsCtrl.stdTchProf.totalContribs.toString())
+            ])),
         Padding(
             padding: const EdgeInsets.symmetric(vertical: 10),
             child: Card(
@@ -148,14 +157,15 @@ Contribs''',
                 color: kLightPurple,
                 child: Column(children: [
                   const Padding(
-                      padding: EdgeInsets.only(top: 25),
+                      padding: EdgeInsets.only(top: 25, bottom: 20),
                       child: Text('Top 5 Languages', style: kBlackTitle)),
                   SizedBox(
                       width: 240,
                       height: 250,
                       child: PieChart(languagesData())),
                   Padding(
-                      padding: const EdgeInsets.all(15),
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 32, horizontal: 15),
                       child: Wrap(
                         runSpacing: 2.0,
                         children: pieIndicators(),

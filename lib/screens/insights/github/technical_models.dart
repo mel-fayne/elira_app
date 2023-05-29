@@ -176,7 +176,7 @@ Widget chartIndicator({required String label, required Color color}) {
     ),
     Text(
       label,
-      style: kBlackTxt,
+      style: kDarkTxt,
     )
   ]);
 }

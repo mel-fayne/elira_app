@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:elira_app/core/navigator.dart';
 import 'package:elira_app/screens/insights/github/technical_models.dart';
 import 'package:elira_app/screens/insights/github/views/technical_forms.dart';
 import 'package:elira_app/screens/insights/insights_ctrl.dart';
@@ -19,20 +20,12 @@ class TechnicalsController extends GetxController {
   int? studentId;
   RxBool gitLoading = false.obs;
   RxBool createProf = false.obs;
-  TextEditingController gitnamectrl = TextEditingController();
-  final gitNameForm = GlobalKey<FormState>();
   LanguageChartData langChart = LanguageChartData();
 
   @override
   void onInit() async {
     super.onInit();
     studentId = await getStudentId();
-  }
-
-  @override
-  void dispose() {
-    gitnamectrl.dispose();
-    super.dispose();
   }
 
   getLanguageChart() {
@@ -53,18 +46,9 @@ class TechnicalsController extends GetxController {
     }
   }
 
-  getGithubDetails(bool fromSetup) async {
-    if (fromSetup) {
-      await createTechProfile();
-    } else {
-      await editGithubLink();
-    }
-  }
-
-  createTechProfile() async {
+  createTechProfile(String gitName) async {
     createProf.value = true;
-    var body =
-        jsonEncode({'student_id': studentId, 'git_username': gitnamectrl.text});
+    var body = jsonEncode({'student_id': studentId, 'git_username': gitName});
     try {
       var res = await http.post(Uri.parse(techProfileUrl),
           body: body, headers: headers);
@@ -96,17 +80,9 @@ class TechnicalsController extends GetxController {
     update();
   }
 
-  setupForm() {
+  editGithubLink(String gitName) async {
     gitLoading.value = true;
-
-    gitnamectrl.text = insightsCtrl.stdTchProf.gitUsername;
-    gitLoading.value = false;
-    Get.to(const EditGithubForm());
-  }
-
-  editGithubLink() async {
-    gitLoading.value = true;
-    var body = jsonEncode({'git_username': gitnamectrl.text});
+    var body = jsonEncode({'git_username': gitName});
     try {
       var res = await http.patch(
           Uri.parse('$techProfileUrl/${studentId.toString()}'),
@@ -125,7 +101,7 @@ class TechnicalsController extends GetxController {
             title: "Technical Profile Updated!",
             subtitle: "Recomputing Overview ...");
         await Future.delayed(const Duration(seconds: 2));
-        Get.off(() => const WorkExpProfile());
+        Get.off(() => const NavigatorHandler(0));
       } else {
         showSnackbar(
             path: Icons.close_rounded,

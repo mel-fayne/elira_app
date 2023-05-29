@@ -17,11 +17,19 @@ class TechProfileForm extends StatefulWidget {
 }
 
 class _TechProfileFormState extends State<TechProfileForm> {
+  TextEditingController gitnamectrl = TextEditingController();
+  final _gitNameForm = GlobalKey<FormState>();
   bool _isLoading = false;
 
   @override
   void initState() {
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    gitnamectrl.dispose();
+    super.dispose();
   }
 
   void updateState() {
@@ -56,14 +64,28 @@ class _TechProfileFormState extends State<TechProfileForm> {
                       children: [
                         Padding(
                             padding: const EdgeInsets.only(top: 20, bottom: 10),
-                            child: gitForm('Create Technical Profile')),
+                            child: Form(
+                                key: _gitNameForm,
+                                child: Column(children: <Widget>[
+                                  formField(
+                                      label: 'Github Username',
+                                      labelColor: Colors.white,
+                                      require: true,
+                                      controller: gitnamectrl,
+                                      type: TextInputType.name,
+                                      validator: (value) {
+                                        if (value == null || value.isEmpty) {
+                                          return 'Please enter your github username';
+                                        }
+                                        return null;
+                                      }),
+                                ]))),
                         primaryBtn(
                           label: 'Create Profile',
                           isLoading: techProfCtrl.createProf,
                           function: () async {
-                            if (techProfCtrl.gitNameForm.currentState!
-                                .validate()) {
-                              techProfCtrl.getGithubDetails(true);
+                            if (_gitNameForm.currentState!.validate()) {
+                              techProfCtrl.createTechProfile(gitnamectrl.text);
                             } else {
                               techProfCtrl.createProf.value = false;
                             }
@@ -83,24 +105,45 @@ class EditGithubForm extends StatefulWidget {
 }
 
 class _EditGithubFormState extends State<EditGithubForm> {
+  TextEditingController gitnamectrl = TextEditingController();
+  final _gitNameForm = GlobalKey<FormState>();
+
   @override
   void initState() {
     super.initState();
+    gitnamectrl.text = insightsCtrl.stdTchProf.gitUsername;
+  }
+
+  @override
+  void dispose() {
+    gitnamectrl.dispose();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return formPopupScaffold(
-      formKey: techProfCtrl.gitNameForm,
+      formKey: _gitNameForm,
       children: [
         popupHeader(label: 'Edit Github Link'),
-        gitForm('Edit Link'),
+        formField(
+            label: 'Github Username',
+            require: true,
+            controller: gitnamectrl,
+            labelColor: Colors.white,
+            type: TextInputType.name,
+            validator: (value) {
+              if (value == null || value.isEmpty) {
+                return 'Please enter your github username';
+              }
+              return null;
+            }),
         primaryBtn(
           label: 'Edit Link',
           isLoading: techProfCtrl.gitLoading,
           function: () async {
-            if (techProfCtrl.gitNameForm.currentState!.validate()) {
-              techProfCtrl.getGithubDetails(false);
+            if (_gitNameForm.currentState!.validate()) {
+              techProfCtrl.editGithubLink(gitnamectrl.text);
             } else {
               techProfCtrl.gitLoading.value = false;
             }
@@ -109,22 +152,4 @@ class _EditGithubFormState extends State<EditGithubForm> {
       ],
     );
   }
-}
-
-Widget gitForm(String btnLabel) {
-  return Form(
-      key: techProfCtrl.gitNameForm,
-      child: Column(children: <Widget>[
-        formField(
-            label: 'Github Username',
-            require: true,
-            controller: techProfCtrl.gitnamectrl,
-            type: TextInputType.name,
-            validator: (value) {
-              if (value == null || value.isEmpty) {
-                return 'Please enter your github username';
-              }
-              return null;
-            }),
-      ]));
 }

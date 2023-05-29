@@ -190,12 +190,13 @@ class _UserFormState extends State<UserForm> {
                   authCtrl.updateStdLoading.value = true;
                   if (_userFormKey.currentState!.validate()) {
                     var studentBody = jsonEncode({
-                      "first_name": firstnamectrl.value,
-                      "last_name": lastnamectrl.value,
-                      "email": emailctrl.value
+                      "first_name": firstnamectrl.text,
+                      "last_name": lastnamectrl.text,
+                      "email": emailctrl.text
                     });
-                    authCtrl.updateStudent(studentBody,
-                        "Account Details Updated", "Redirecting", false);
+                    authCtrl.updateStudent(studentBody, "Redirecting ...",
+                        "Account Details Updated", false);
+                    Get.back();
                   } else {
                     authCtrl.updateStdLoading.value = false;
                   }
