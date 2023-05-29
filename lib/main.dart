@@ -24,7 +24,7 @@ void main() async {
   }
 
   SystemChrome.setSystemUIOverlayStyle(
-      const SystemUiOverlayStyle(statusBarColor: kCreamBg));
+      const SystemUiOverlayStyle(statusBarColor: kPriDark));
 
   runApp(const MyApp());
 

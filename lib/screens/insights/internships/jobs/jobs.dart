@@ -18,87 +18,116 @@ class JobsPage extends StatefulWidget {
 }
 
 class _JobsPageState extends State<JobsPage> {
-  final ScrollController _scrollctrl = ScrollController();
-  bool _showBackToTopBtn = false;
   final RxBool isLoading = false.obs;
 
   @override
   void initState() {
     super.initState();
-    _scrollctrl.addListener(() {
-      setState(() {
-        if (_scrollctrl.offset >= 400) {
-          _showBackToTopBtn = true;
-        } else {
-          _showBackToTopBtn = false;
-        }
-      });
-    });
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-    _scrollctrl.dispose();
-  }
-
-  void _scrollToTop() {
-    _scrollctrl.animateTo(0,
-        duration: const Duration(milliseconds: 1), curve: Curves.linear);
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body: SingleChildScrollView(
-            padding: const EdgeInsets.all(20),
-            child: Obx(() => jobsCtrl.loadingData.value
-                ? loadingWidget('Loading Jobs ...')
-                : Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                        Obx(() => Text(
-                              jobsCtrl.currentView.value,
-                              style: kPageTitle,
-                            )),
+        body: Stack(children: [
+      Obx(() => jobsCtrl.loadingData.value
+          ? Center(child: loadingWidget('Loading Jobs ...'))
+          : RefreshIndicator(
+              triggerMode: RefreshIndicatorTriggerMode.onEdge,
+              onRefresh: () async {
+                jobsCtrl.currentPage++;
+                if (jobsCtrl.currentPage >=
+                    jobsCtrl.filteredJobs.length ~/ 16) {
+                  jobsCtrl.currentPage = 0;
+                }
+                jobsCtrl.filterPaginator();
+                await Future.delayed(const Duration(seconds: 1));
+              },
+              child: SingleChildScrollView(
+                  padding: const EdgeInsets.only(
+                      top: 100, bottom: 20, right: 25, left: 25),
+                  child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text(
+                          'Jobs',
+                          style: kPageTitle,
+                        ),
                         Padding(
-                            padding: const EdgeInsets.symmetric(vertical: 15),
+                            padding: const EdgeInsets.only(top: 15, bottom: 22),
+                            child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Row(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.center,
+                                      children: [
+                                        const Padding(
+                                            padding: EdgeInsets.symmetric(
+                                                horizontal: 10),
+                                            child: Icon(
+                                                Icons.filter_alt_outlined,
+                                                size: 30,
+                                                color: kPriDark)),
+                                        dropDownField(
+                                          bgcolor: kPriPurple,
+                                          dropItems: jobsCtrl.jobAreas,
+                                          dropdownValue:
+                                              jobsCtrl.filterArea.value,
+                                          function: (String? newValue) {
+                                            setState(() {
+                                              jobsCtrl.filterArea.value =
+                                                  newValue!;
+                                              jobsCtrl.filterByArea();
+                                            });
+                                          },
+                                        )
+                                      ]),
+                                  GestureDetector(
+                                      onTap: () {
+                                        jobsCtrl.resetFilters();
+                                      },
+                                      child: Container(
+                                          width: 30,
+                                          height: 30,
+                                          decoration: const BoxDecoration(
+                                              shape: BoxShape.circle,
+                                              color: kPriDark),
+                                          child: const Icon(
+                                            Icons.refresh,
+                                            color: Colors.white,
+                                            size: 20,
+                                          ))),
+                                ])),
+                        Padding(
+                            padding: const EdgeInsets.only(bottom: 15),
                             child: Row(children: [
-                              const Icon(Icons.filter_alt_outlined,
-                                  size: 25, color: Colors.white),
-                              const Padding(
-                                  padding: EdgeInsets.symmetric(horizontal: 10),
+                              Padding(
+                                  padding: const EdgeInsets.only(right: 5),
                                   child: Text(
-                                    'Filter By',
+                                    jobsCtrl.currentView.value,
                                     style: kPageSubTitle,
                                   )),
-                              dropDownField(
-                                bgcolor: kPriPurple,
-                                dropItems: jobsCtrl.jobAreas,
-                                dropdownValue: jobsCtrl.filterArea.value,
-                                function: (String? newValue) {
-                                  setState(() {
-                                    jobsCtrl.filterArea.value = newValue!;
-                                    jobsCtrl.filterByArea();
-                                  });
-                                },
-                              )
+                              Container(
+                                  width: 30,
+                                  height: 30,
+                                  decoration: const BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      color: kPriMaroon),
+                                  padding: const EdgeInsets.only(top: 5),
+                                  child: Text(
+                                    jobsCtrl.filteredJobs.length.toString(),
+                                    textAlign: TextAlign.center,
+                                    style: kWhiteTitle,
+                                  ))
                             ])),
-                        GestureDetector(
-                            onTap: () {
-                              jobsCtrl.resetFilters();
-                            },
-                            child: const Icon(
-                              Icons.refresh,
-                              color: kPriPurple,
-                              size: 25,
-                            )),
                         Obx(() => jobsCtrl.showData.value
                             ? Column(
                                 crossAxisAlignment: CrossAxisAlignment.end,
                                 children: [
                                     Obx(() => ExpansionPanelList(
-                                          dividerColor: Colors.teal,
+                                          dividerColor: kPriPurple,
+                                          expandIconColor: kPriPurple,
                                           expandedHeaderPadding:
                                               const EdgeInsets.all(0),
                                           expansionCallback:
@@ -112,48 +141,94 @@ class _JobsPageState extends State<JobsPage> {
                                               .map<ExpansionPanel>(
                                                   (TechJob job) {
                                             return ExpansionPanel(
+                                              canTapOnHeader: true,
                                               backgroundColor: Colors.white,
                                               headerBuilder:
                                                   (BuildContext context,
                                                       bool isExpanded) {
-                                                return ListTile(
-                                                    leading: Container(
-                                                        padding: const EdgeInsets
-                                                            .all(10),
+                                                return Container(
+                                                    height: 150,
+                                                    width: double.infinity,
+                                                    padding: const EdgeInsets
+                                                        .symmetric(vertical: 5),
+                                                    child: ListTile(
+                                                      tileColor: Colors.white,
+                                                      leading: Container(
+                                                        width: 65,
+                                                        height: 65,
                                                         decoration: BoxDecoration(
+                                                            shape: BoxShape
+                                                                .circle,
                                                             image: DecorationImage(
-                                                                image: AssetImage(
+                                                                image: NetworkImage(
                                                                     job
                                                                         .jobLogo),
                                                                 fit: BoxFit
                                                                     .cover,
                                                                 colorFilter: const ColorFilter
                                                                         .mode(
-                                                                    Colors
-                                                                        .black45,
+                                                                    Color.fromRGBO(
+                                                                        0,
+                                                                        0,
+                                                                        0,
+                                                                        0.20),
                                                                     BlendMode
-                                                                        .darken)))),
-                                                    title: Column(children: [
-                                                      Text(
-                                                        job.title,
-                                                        style: kPurpleTxt,
+                                                                        .darken))),
                                                       ),
-                                                      Padding(
-                                                          padding:
-                                                              const EdgeInsets
-                                                                      .symmetric(
-                                                                  vertical: 3),
-                                                          child: Text(
-                                                            job.company,
-                                                            style: kLightTxt,
-                                                          )),
-                                                      Text(
-                                                        job.areasString,
-                                                        style: kDarkTxt,
-                                                      )
-                                                    ]),
-                                                    trailing: Text(job.posted,
-                                                        style: kPurpleTxt));
+                                                      title: Column(
+                                                          crossAxisAlignment:
+                                                              CrossAxisAlignment
+                                                                  .start,
+                                                          children: [
+                                                            Text(
+                                                              job.title,
+                                                              style: kPurpleTxt,
+                                                            ),
+                                                            Text(job.company,
+                                                                style:
+                                                                    kBlackTxt),
+                                                            Row(
+                                                                crossAxisAlignment:
+                                                                    CrossAxisAlignment
+                                                                        .start,
+                                                                mainAxisAlignment:
+                                                                    MainAxisAlignment
+                                                                        .spaceBetween,
+                                                                children: [
+                                                                  Text(
+                                                                    job.areasString,
+                                                                    style: const TextStyle(
+                                                                        color:
+                                                                            kPriMaroon,
+                                                                        fontFamily:
+                                                                            'Nunito',
+                                                                        fontSize:
+                                                                            12,
+                                                                        fontWeight:
+                                                                            FontWeight.w600),
+                                                                  ),
+                                                                  Container(
+                                                                      width: 55,
+                                                                      height:
+                                                                          50,
+                                                                      decoration: BoxDecoration(
+                                                                          borderRadius: BorderRadius.circular(
+                                                                              7),
+                                                                          color:
+                                                                              kPriPurple),
+                                                                      padding:
+                                                                          const EdgeInsets.all(
+                                                                              5),
+                                                                      child: Column(
+                                                                          children: [
+                                                                            Text(job.day,
+                                                                                style: kWhiteTxt),
+                                                                            Text(job.month,
+                                                                                style: kWhiteTxt)
+                                                                          ]))
+                                                                ]),
+                                                          ]),
+                                                    ));
                                               },
                                               body: ListTile(
                                                   title: Column(children: [
@@ -164,14 +239,17 @@ class _JobsPageState extends State<JobsPage> {
                                                     child: Text(
                                                       job.description,
                                                       softWrap: true,
+                                                      textAlign:
+                                                          TextAlign.center,
                                                       style: kBlackTxt,
                                                     )),
                                                 primaryBtn(
-                                                    width: 100,
+                                                    width: 120.0,
                                                     label: 'View More',
                                                     isLoading: isLoading,
                                                     function: () {
                                                       Get.to(AppWebView(
+                                                          fromPage: 'Jobs',
                                                           url: job.link,
                                                           title: job.title));
                                                     })
@@ -183,18 +261,8 @@ class _JobsPageState extends State<JobsPage> {
                                   ])
                             : noDataWidget(
                                 '''No jobs found matching your filter at the moment
-                                    Check again tomorrow'''))
-                      ]))),
-        floatingActionButton: _showBackToTopBtn
-            ? FloatingActionButton(
-                elevation: 2.0,
-                backgroundColor: kPriDark,
-                onPressed: _scrollToTop,
-                child: const Icon(
-                  Icons.arrow_upward,
-                  color: Colors.white,
-                ),
-              )
-            : Container());
+Check again tomorrow'''))
+                      ]))))
+    ]));
   }
 }

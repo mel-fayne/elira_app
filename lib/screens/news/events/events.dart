@@ -19,32 +19,9 @@ class EventsPage extends StatefulWidget {
 }
 
 class _EventsPageState extends State<EventsPage> {
-  final ScrollController _scrollctrl = ScrollController();
-  bool _showBackToTopBtn = false;
-
   @override
   void initState() {
     super.initState();
-    _scrollctrl.addListener(() {
-      setState(() {
-        if (_scrollctrl.offset >= 400) {
-          _showBackToTopBtn = true;
-        } else {
-          _showBackToTopBtn = false;
-        }
-      });
-    });
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-    _scrollctrl.dispose();
-  }
-
-  void _scrollToTop() {
-    _scrollctrl.animateTo(0,
-        duration: const Duration(milliseconds: 1), curve: Curves.linear);
   }
 
   @override
@@ -324,18 +301,7 @@ class _EventsPageState extends State<EventsPage> {
                               : noDataWidget(
                                   '''No events found matching your filter at the moment! Check again tomorrow''')
                         ]))
-            ])),
-        floatingActionButton: _showBackToTopBtn
-            ? FloatingActionButton(
-                elevation: 2.0,
-                backgroundColor: kPriDark,
-                onPressed: _scrollToTop,
-                child: const Icon(
-                  Icons.arrow_upward,
-                  color: Colors.white,
-                ),
-              )
-            : Container());
+            ])));
   }
 }
 

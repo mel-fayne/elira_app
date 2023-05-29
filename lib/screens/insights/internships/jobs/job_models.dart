@@ -1,3 +1,4 @@
+import 'package:elira_app/utils/functions.dart';
 import 'package:intl/intl.dart';
 
 class TechJob {
@@ -9,6 +10,8 @@ class TechJob {
   final String description;
   final String company;
   final String posted;
+  final String day;
+  final String month;
   final List<String> areas;
   final String areasString;
   bool isExpanded;
@@ -22,7 +25,9 @@ class TechJob {
         description = json['description'],
         company = json['company'],
         posted = getDate(json['posted']),
-        areas = json['areas'],
+        day = getDay(json['posted']),
+        month = getMonth(json['posted']),
+        areas = getStringList(json['areas']),
         areasString = getTags(json['areas']),
         isExpanded = false;
 }
@@ -36,10 +41,23 @@ String getDate(String inputDate) {
   return jobDate;
 }
 
-String getTags(List<String> areas) {
+String getDay(String inputDate) {
+  DateTime dateTime = DateFormat("yyyy-MM-dd").parseUtc(inputDate);
+  return dateTime.day.toString();
+}
+
+String getMonth(String inputDate) {
+  String jobMnth = '';
+  DateTime dateTime = DateFormat("yyyy-MM-dd").parseUtc(inputDate);
+  jobMnth = DateFormat("MMM").format(dateTime);
+  return jobMnth;
+}
+
+String getTags(List<dynamic> areas) {
   String areasString = '';
-  if (areas.isNotEmpty) {
-    for (var tag in areas) {
+  List<String> areasList = getStringList(areas);
+  if (areasList.isNotEmpty) {
+    for (var tag in areasList) {
       areasString = '$areasString#$tag ';
     }
   }

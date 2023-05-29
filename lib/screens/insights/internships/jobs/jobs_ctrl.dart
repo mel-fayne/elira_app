@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:elira_app/screens/insights/insights_ctrl.dart';
 import 'package:elira_app/screens/insights/internships/jobs/job_models.dart';
 import 'package:elira_app/theme/global_widgets.dart';
 import 'package:elira_app/utils/constants.dart';
@@ -8,8 +9,14 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 
+final insightsCtrl = Get.find<InsightsController>();
+// ignore: constant_identifier_names
+const PAGE_SIZE = 20;
+
 class JobsController extends GetxController {
   String? studentSpec;
+  int? studentId;
+  String studentFilter = '';
   RxString currentView = ''.obs;
   RxString filterArea = ''.obs;
   List<String> jobAreas = [
@@ -28,24 +35,35 @@ class JobsController extends GetxController {
   ];
   RxList<TechJob> studentJobs = RxList<TechJob>();
   RxList<TechJob> otherJobs = RxList<TechJob>();
+
   RxList<TechJob> filteredJobs = RxList<TechJob>();
+  RxList<TechJob> filteredPaginated = RxList<TechJob>();
+  int currentPage = 0;
+
   RxBool loadingData = false.obs;
   RxBool showData = false.obs;
 
   @override
   void onInit() async {
     super.onInit();
+    studentId = await getStudentId();
     studentSpec = await getSpecialisation();
-    getStudentFilter();
+    if (studentSpec == null) {
+      await insightsCtrl.getStudentPredictions();
+      studentSpec = await getSpecialisation();
+    }
+    await getStudentFilter();
     await loadJobs();
   }
 
   loadJobs() async {
     filteredJobs.clear();
+    studentJobs.clear();
+    otherJobs.clear();
     loadingData.value = true;
     try {
-      var res =
-          await http.get(Uri.parse('${filterJobsUrl}7'), headers: headers);
+      var res = await http.get(Uri.parse(filterJobsUrl + studentId.toString()),
+          headers: headers);
       debugPrint("Got response ${res.statusCode}");
       if (res.statusCode == 200) {
         var respBody = json.decode(res.body);
@@ -59,12 +77,16 @@ class JobsController extends GetxController {
         }
         filteredJobs.value = [...studentJobs];
         currentView.value = 'Work Near You';
+        filterPaginator();
         loadingData.value = false;
         if (filteredJobs.isNotEmpty) {
           showData.value = true;
         } else {
           showData.value = false;
         }
+
+        update();
+        debugPrint('done getting jobs');
       } else {
         showSnackbar(
             path: Icons.close_rounded,
@@ -83,6 +105,9 @@ class JobsController extends GetxController {
   filterByArea() {
     loadingData.value = true;
     filteredJobs.clear();
+    if (filterArea.value == studentFilter) {
+      filteredJobs.value = [...studentJobs];
+    }
     for (var item in otherJobs) {
       if (item.areas.contains(filterArea.value)) {
         filteredJobs.add(item);
@@ -95,6 +120,18 @@ class JobsController extends GetxController {
       showData.value = true;
     } else {
       showData.value = false;
+    }
+  }
+
+  filterPaginator() {
+    filteredPaginated.clear();
+    int startIndex = currentPage * PAGE_SIZE;
+    int endIndex = startIndex + PAGE_SIZE;
+    if (endIndex > filteredJobs.length) {
+      endIndex = filteredJobs.length;
+    }
+    for (int i = startIndex; i < endIndex; i++) {
+      filteredPaginated.add(filteredJobs[i]);
     }
   }
 
@@ -134,5 +171,6 @@ class JobsController extends GetxController {
     } else {
       filterArea.value = 'Developer';
     }
+    studentFilter = filterArea.value;
   }
 }

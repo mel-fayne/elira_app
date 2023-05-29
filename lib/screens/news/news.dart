@@ -1,3 +1,4 @@
+import 'package:elira_app/screens/insights/internships/jobs/jobs.dart';
 import 'package:elira_app/screens/news/events/events.dart';
 import 'package:elira_app/screens/news/news_ctrl.dart';
 import 'package:elira_app/screens/news/news_models.dart';
@@ -79,20 +80,45 @@ class _NewsPageState extends State<NewsPage> {
                                           ),
                                         ),
                                       ]),
-                                  GestureDetector(
-                                      onTap: () {
-                                        Get.to(const EventsPage());
-                                      },
-                                      child: Container(
-                                        width: 35,
-                                        height: 35,
-                                        decoration: const BoxDecoration(
-                                          color: kPriDark,
-                                          shape: BoxShape.circle,
-                                        ),
-                                        child: const Icon(Icons.event,
-                                            color: Colors.white, size: 25),
-                                      ))
+                                  Row(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Padding(
+                                            padding:
+                                                const EdgeInsets.only(right: 7),
+                                            child: GestureDetector(
+                                                onTap: () {
+                                                  Get.to(const JobsPage());
+                                                },
+                                                child: Container(
+                                                  width: 35,
+                                                  height: 35,
+                                                  decoration:
+                                                      const BoxDecoration(
+                                                    color: kPriDark,
+                                                    shape: BoxShape.circle,
+                                                  ),
+                                                  child: const Icon(Icons.work,
+                                                      color: Colors.white,
+                                                      size: 20),
+                                                ))),
+                                        GestureDetector(
+                                            onTap: () {
+                                              Get.to(const EventsPage());
+                                            },
+                                            child: Container(
+                                              width: 35,
+                                              height: 35,
+                                              decoration: const BoxDecoration(
+                                                color: kPriDark,
+                                                shape: BoxShape.circle,
+                                              ),
+                                              child: const Icon(Icons.event,
+                                                  color: Colors.white,
+                                                  size: 20),
+                                            ))
+                                      ])
                                 ])),
                         const Text(
                           'Filter News by Topic',
