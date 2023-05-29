@@ -116,10 +116,10 @@ class AcademicController extends GetxController {
         update();
         debugPrint('gotten all sem units');
       } else {
-        showSnackbar(
-            path: Icons.close_rounded,
-            title: "Seems there's a problem on our side!",
-            subtitle: "Please try again later");
+        // showSnackbar(
+        //     path: Icons.close_rounded,
+        //     title: "Seems there's a problem on our side!",
+        //     subtitle: "Please try again later");
       }
       return;
     } catch (error) {

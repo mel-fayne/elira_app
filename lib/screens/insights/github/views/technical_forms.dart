@@ -69,7 +69,6 @@ class _TechProfileFormState extends State<TechProfileForm> {
                                 child: Column(children: <Widget>[
                                   formField(
                                       label: 'Github Username',
-                                      labelColor: Colors.white,
                                       require: true,
                                       controller: gitnamectrl,
                                       type: TextInputType.name,

@@ -81,13 +81,14 @@ class WorkExpController extends GetxController {
 
       if (res.statusCode == 200) {
         if (internshipNo == 0) {
+          await insightsCtrl.createSoftSkillProfie();
           showSnackbar(
               path: FontAwesome5.hand_sparkles,
               title: "High-five! You did it!",
               subtitle:
                   "Your student profile is complete. Your specialisation is ...");
           await Future.delayed(const Duration(seconds: 2));
-          Get.off(() => const PredictionPage());
+          Get.off(() => const InsightsPage());
         } else {
           for (var i = 0; i < internshipNo; i++) {
             NumberBox intShp = NumberBox();
@@ -176,14 +177,13 @@ class WorkExpController extends GetxController {
           formCount++;
           if (formCount == internshipNo) {
             await insightsCtrl.createSoftSkillProfie();
-            // await insightsCtrl.getStudentInsights();
             showSnackbar(
                 path: FontAwesome5.hand_sparkles,
                 title: "High-five! You did it!",
                 subtitle:
                     "Your student profile is complete. Your specialisation is ...");
             await Future.delayed(const Duration(seconds: 2));
-            Get.off(() => const PredictionPage());
+            Get.off(() => const InsightsPage());
           } else {
             showSnackbar(
                 path: Icons.check_rounded,

@@ -131,7 +131,12 @@ class AuthController extends GetxController {
         showSnackbar(
             path: Icons.check_rounded, title: title, subtitle: subtitle);
         await Future.delayed(const Duration(seconds: 2));
-        fromSecurity ? Get.off(() => const AcademicProfileForm()) : Get.back();
+        if (fromSecurity) {
+          Get.off(() => const AcademicProfileForm());
+          Get.dialog(const TermsConditions());
+        } else {
+          Get.back();
+        }
       } else {
         showSnackbar(
             path: Icons.close_rounded,

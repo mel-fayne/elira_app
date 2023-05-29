@@ -25,7 +25,6 @@ class _AcademicProfileFormState extends State<AcademicProfileForm> {
   @override
   void initState() {
     super.initState();
-    Get.dialog(const TermsConditions());
   }
 
   @override

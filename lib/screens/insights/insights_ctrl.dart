@@ -56,8 +56,7 @@ class InsightsController extends GetxController {
       await http.get(Uri.parse(studentUnitUrl + studentId.toString()),
           headers: headers);
 
-      var res = await http.get(
-          Uri.parse(academicProfileUrl + studentId.toString()),
+      var res = await http.get(Uri.parse('$academicProfileUrl/$studentId'),
           headers: headers);
       debugPrint("Academic Prof: Response ${res.statusCode}");
       if (res.statusCode == 200) {
@@ -97,7 +96,7 @@ class InsightsController extends GetxController {
   Future getTechnicalProfile() async {
     debugPrint('Getting Technical profile ...');
     try {
-      var res = await http.get(Uri.parse(techProfileUrl + studentId.toString()),
+      var res = await http.get(Uri.parse('$techProfileUrl/$studentId'),
           headers: headers);
       debugPrint("Got response ${res.statusCode}");
       if (res.statusCode == 200) {
@@ -125,7 +124,7 @@ class InsightsController extends GetxController {
   Future getInternshipProfile() async {
     debugPrint('Getting Work Exp profile ...');
     try {
-      var res = await http.get(Uri.parse(wxpProfileUrl + studentId.toString()),
+      var res = await http.get(Uri.parse('$wxpProfileUrl/$studentId'),
           headers: headers);
       debugPrint("Got response ${res.statusCode}");
       if (res.statusCode == 200) {
@@ -203,7 +202,7 @@ class InsightsController extends GetxController {
   Future getSoftSkillProfile() async {
     debugPrint('Getting Soft Skills profile ...');
     try {
-      var res = await http.get(Uri.parse(ssProfileUrl + 30.toString()),
+      var res = await http.get(Uri.parse('$ssProfileUrl/$studentId'),
           headers: headers);
       debugPrint("Got response ${res.statusCode}");
       if (res.statusCode == 200) {
