@@ -34,122 +34,124 @@ class _NewsPageState extends State<NewsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: RefreshIndicator(
-          onRefresh: () async {
-            // newsctrl.currentPage++;
-            // if (newsctrl.currentPage >= newsctrl.filteredNews.length ~/ 16) {
-            //   newsctrl.currentPage = 0;
-            // }
-            // newsctrl.filterPaginator();
-            newsctrl.getStudentNews();
-            await Future.delayed(const Duration(seconds: 1));
-          },
-          child: CustomScrollView(slivers: [
-            SliverFillRemaining(
-                child: Obx(() => newsctrl.loadingData.value
-                    ? Center(child: loadingWidget('Loading News ...'))
-                    : SingleChildScrollView(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 20, vertical: 30),
-                        child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Padding(
-                                  padding: const EdgeInsets.only(
-                                      top: 80, right: 8, bottom: 15),
-                                  child: Row(
+        body: Stack(children: [
+      Obx(() => newsctrl.loadingData.value
+          ? Center(child: loadingWidget('Loading News ...'))
+          : RefreshIndicator(
+              triggerMode: RefreshIndicatorTriggerMode.onEdge,
+              onRefresh: () async {
+                newsctrl.currentPage++;
+                if (newsctrl.currentPage >=
+                    newsctrl.filteredNews.length ~/ 16) {
+                  newsctrl.currentPage = 0;
+                }
+                newsctrl.filterPaginator();
+                await Future.delayed(const Duration(seconds: 1));
+              },
+              child: SingleChildScrollView(
+                  padding: const EdgeInsets.only(
+                      top: 45, bottom: 20, right: 25, left: 25),
+                  child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Padding(
+                            padding: const EdgeInsets.only(
+                                top: 80, right: 8, bottom: 15),
+                            child: Row(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Column(
                                       crossAxisAlignment:
                                           CrossAxisAlignment.start,
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
                                       children: [
-                                        Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: [
-                                              const Text(
-                                                'Daily Rundown',
-                                                style: kPageTitle,
-                                              ),
-                                              Padding(
-                                                padding: const EdgeInsets.only(
-                                                    top: 5),
-                                                child: Text(
-                                                  today,
-                                                  style: kBlackTitle,
-                                                ),
-                                              ),
-                                            ]),
-                                        GestureDetector(
-                                            onTap: () {
-                                              Get.to(const EventsPage());
-                                            },
-                                            child: Container(
-                                              width: 35,
-                                              height: 35,
-                                              decoration: const BoxDecoration(
-                                                color: kPriDark,
-                                                shape: BoxShape.circle,
-                                              ),
-                                              child: const Icon(Icons.event,
-                                                  color: Colors.white,
-                                                  size: 25),
-                                            ))
-                                      ])),
-                              const Text(
-                                'Filter News by Topic',
-                                style: kDarkTxt,
-                              ),
-                              Wrap(
-                                spacing: 5.0,
-                                children: List<Widget>.generate(
-                                  newsctrl.newsTags.length,
-                                  (int index) {
-                                    final tag = newsctrl.newsTags[index];
-                                    return FilterChip(
-                                      backgroundColor:
-                                          newsctrl.currentTag.value == tag
-                                              ? kPriPurple
-                                              : kLightPurple,
-                                      selectedColor: kPriPurple,
-                                      label: Text(
-                                        tag,
-                                        style: TextStyle(
-                                            color:
-                                                newsctrl.currentTag.value == tag
-                                                    ? Colors.white
-                                                    : kPriDark),
-                                      ),
-                                      selected:
-                                          newsctrl.currentTag.value == tag,
-                                      onSelected: (bool selected) {
-                                        setState(() {
-                                          if (selected) {
-                                            newsctrl.currentTag.value = tag;
-                                          }
-                                          newsctrl.filterByTags();
-                                        });
+                                        const Text(
+                                          'Daily Rundown',
+                                          style: kPageTitle,
+                                        ),
+                                        Padding(
+                                          padding:
+                                              const EdgeInsets.only(top: 5),
+                                          child: Text(
+                                            today,
+                                            style: kBlackTitle,
+                                          ),
+                                        ),
+                                      ]),
+                                  GestureDetector(
+                                      onTap: () {
+                                        Get.to(const EventsPage());
                                       },
-                                    );
-                                  },
-                                ).toList(),
-                              ),
-                              Obx(() => newsctrl.showData.value
-                                  ? Obx(() => StaggeredGrid.count(
-                                          crossAxisCount: 2,
-                                          crossAxisSpacing: 7,
-                                          mainAxisSpacing: 12,
-                                          children: [
-                                            ...newsctrl.filteredPaginated
-                                                .map(buildNewsPiece)
-                                                .toList()
-                                          ]))
-                                  : noDataWidget(
-                                      '''No news found matching your filter at the moment
-                              Check again tomorrow'''))
-                            ]))))
-          ])),
-    );
+                                      child: Container(
+                                        width: 35,
+                                        height: 35,
+                                        decoration: const BoxDecoration(
+                                          color: kPriDark,
+                                          shape: BoxShape.circle,
+                                        ),
+                                        child: const Icon(Icons.event,
+                                            color: Colors.white, size: 25),
+                                      ))
+                                ])),
+                        const Text(
+                          'Filter News by Topic',
+                          style: kPurpleTxt,
+                        ),
+                        Padding(
+                            padding: const EdgeInsets.only(bottom: 15),
+                            child: SingleChildScrollView(
+                                scrollDirection: Axis.horizontal,
+                                child: Wrap(
+                                  spacing: 5.0,
+                                  children: List<Widget>.generate(
+                                    newsctrl.newsTags.length,
+                                    (int index) {
+                                      final tag = newsctrl.newsTags[index];
+                                      return FilterChip(
+                                        backgroundColor:
+                                            newsctrl.currentTag.value == tag
+                                                ? kPriPurple
+                                                : kLightPurple,
+                                        selectedColor: kPriPurple,
+                                        label: Text(
+                                          tag,
+                                          style: TextStyle(
+                                              color:
+                                                  newsctrl.currentTag.value ==
+                                                          tag
+                                                      ? Colors.white
+                                                      : kPriDark),
+                                        ),
+                                        selected:
+                                            newsctrl.currentTag.value == tag,
+                                        onSelected: (bool selected) {
+                                          setState(() {
+                                            if (selected) {
+                                              newsctrl.currentTag.value = tag;
+                                            }
+                                            newsctrl.filterByTags();
+                                          });
+                                        },
+                                      );
+                                    },
+                                  ).toList(),
+                                ))),
+                        Obx(() => newsctrl.showData.value
+                            ? Obx(() => StaggeredGrid.count(
+                                    crossAxisCount: 2,
+                                    crossAxisSpacing: 7,
+                                    mainAxisSpacing: 12,
+                                    children: [
+                                      ...newsctrl.filteredPaginated
+                                          .map(buildNewsPiece)
+                                          .toList()
+                                    ]))
+                            : noDataWidget(
+                                '''No news found matching your filter at the moment!
+Check again tomorrow'''))
+                      ])))),
+    ]));
   }
 
   Widget buildNewsPiece(NewsPiece newsPiece) =>
@@ -164,6 +166,7 @@ class _NewsPageState extends State<NewsPage> {
           height: 160,
           padding: const EdgeInsets.all(10),
           decoration: BoxDecoration(
+              color: const Color.fromRGBO(0, 0, 0, 0.75),
               borderRadius: BorderRadius.circular(7),
               image: DecorationImage(
                   image: NetworkImage(newsPiece.headerImg),

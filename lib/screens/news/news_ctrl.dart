@@ -93,8 +93,17 @@ class NewsController extends GetxController {
     filteredNews.clear();
     loadingData.value = true;
     clearLists();
-    filteredNews.value =
-        otherNews.where((obj) => obj.tags.contains(currentTag.value)).toList();
+    if (currentTag.value == newsTags[0]) {
+      filteredNews.value = [...studentNews];
+    } else if (currentTag.value == 'Others') {
+      filteredNews.value = otherNews
+          .where((obj) => obj.tags.every((str) => !newsTags.contains(str)))
+          .toList();
+    } else {
+      filteredNews.value = otherNews
+          .where((obj) => obj.tags.contains(currentTag.value))
+          .toList();
+    }
     filterPaginator();
     loadingData.value = false;
     if (filteredNews.isNotEmpty) {
@@ -116,17 +125,9 @@ class NewsController extends GetxController {
     for (int i = startIndex; i < endIndex; i++) {
       filteredPaginated.add(filteredNews[i]);
     }
-    print(filteredNews.length);
-    print(filteredPaginated.length);
-  }
-
-  Future<void> Function() refreshPage() {
-    currentPage++;
-    if (currentPage >= filteredNews.length ~/ 16) {
-      currentPage = 0;
-    }
-    filterPaginator();
-    return refreshPage();
+    print(currentPage);
+    print(startIndex);
+    print(endIndex);
   }
 
   clearLists() {

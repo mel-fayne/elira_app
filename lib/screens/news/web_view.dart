@@ -1,3 +1,6 @@
+import 'package:elira_app/theme/global_widgets.dart';
+import 'package:url_launcher/url_launcher.dart';
+import 'package:elira_app/theme/text_styles.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:elira_app/theme/colors.dart';
 import 'package:flutter/material.dart';
@@ -18,6 +21,7 @@ class AppWebView extends StatefulWidget {
 class _AppWebViewState extends State<AppWebView> {
   String url = '';
   String title = '';
+  RxBool isLoading = false.obs;
 
   _AppWebViewState(this.url, this.title);
 
@@ -29,41 +33,40 @@ class _AppWebViewState extends State<AppWebView> {
     url = widget.url;
   }
 
+  void _openUrlInBrowser() async {
+    if (await canLaunchUrl(Uri.parse(url))) {
+      await launchUrl(Uri.parse(url), mode: LaunchMode.externalApplication);
+    } else {
+      throw 'Could not launch $url';
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          bottom: PreferredSize(
-            preferredSize: const Size.fromHeight(1.0),
-            child: Container(
-              color: kPriDark,
-              height: 1.0,
+            bottom: PreferredSize(
+              preferredSize: const Size.fromHeight(1.0),
+              child: Container(
+                color: kPriDark,
+                height: 1.0,
+              ),
             ),
-          ),
-          elevation: 4,
-          toolbarHeight: 80,
-          leading: Padding(
-            padding: const EdgeInsets.only(left: 13),
-            child: IconButton(
-              icon: const Icon(Icons.keyboard_arrow_left),
-              onPressed: () {
-                Get.back();
-              },
-            ),
-          ),
-          title: Text(
-            title,
-            style: const TextStyle(
-                fontFamily: 'Nunito',
-                fontSize: 18,
-                fontWeight: FontWeight.w700),
-          ),
-          centerTitle: true,
-        ),
+            elevation: 4,
+            toolbarHeight: 80,
+            automaticallyImplyLeading: true,
+            title: const Text('Back to News', style: kWhiteTitle)),
         body: SingleChildScrollView(
-            padding: const EdgeInsets.all(20),
+            child: Column(children: [
+          SizedBox(
+            height: 2000,
             child: InAppWebView(
-                initialUrlRequest:
-                    URLRequest(url: Uri.parse("https://flutter.dev")))));
+                initialUrlRequest: URLRequest(url: Uri.parse(url))),
+          ),
+          primaryBtn(
+              label: 'Open In Browser',
+              isLoading: isLoading,
+              function: _openUrlInBrowser)
+        ])));
   }
 }
