@@ -40,7 +40,7 @@ class _InsightsPageState extends State<InsightsPage> {
     return Scaffold(
         body: SingleChildScrollView(
             padding: const EdgeInsets.only(
-                top: 120, bottom: 20, right: 25, left: 25),
+                top: 100, bottom: 20, right: 25, left: 25),
             child:
                 Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
               Obx(() => insightsCtrl.loadingData.value
@@ -77,7 +77,7 @@ class _InsightsPageState extends State<InsightsPage> {
                                     children: [
                                       Padding(
                                         padding:
-                                            const EdgeInsets.only(bottom: 5),
+                                            const EdgeInsets.only(bottom: 3),
                                         child: Text(
                                           "Hello ${insightsCtrl.studentName}",
                                           style: kPurpleTitle,
@@ -90,7 +90,7 @@ class _InsightsPageState extends State<InsightsPage> {
                                     ])
                               ]),
                               Container(
-                                margin: const EdgeInsets.only(top: 15),
+                                margin: const EdgeInsets.only(top: 20),
                                 width: double.maxFinite,
                                 decoration: BoxDecoration(
                                     color: kPriPurple,

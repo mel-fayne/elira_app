@@ -50,13 +50,13 @@ class _NewsPageState extends State<NewsPage> {
               },
               child: SingleChildScrollView(
                   padding: const EdgeInsets.only(
-                      top: 45, bottom: 20, right: 25, left: 25),
+                      top: 20, bottom: 20, right: 25, left: 25),
                   child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Padding(
                             padding: const EdgeInsets.only(
-                                top: 80, right: 8, bottom: 15),
+                                top: 80, right: 8, bottom: 35),
                             child: Row(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 mainAxisAlignment:
@@ -160,10 +160,11 @@ Check again tomorrow'''))
   Widget buildSingleNewsPiece({required NewsPiece newsPiece}) {
     return GestureDetector(
         onTap: () {
-          Get.to(AppWebView(url: newsPiece.link, title: newsPiece.title));
+          Get.to(AppWebView(
+              fromPage: 'News', url: newsPiece.link, title: newsPiece.title));
         },
         child: Container(
-          height: 160,
+          height: 190,
           padding: const EdgeInsets.all(10),
           decoration: BoxDecoration(
               color: const Color.fromRGBO(0, 0, 0, 0.75),
@@ -172,7 +173,7 @@ Check again tomorrow'''))
                   image: NetworkImage(newsPiece.headerImg),
                   fit: BoxFit.cover,
                   colorFilter: const ColorFilter.mode(
-                      Color.fromRGBO(0, 0, 0, 0.75), BlendMode.darken))),
+                      Color.fromRGBO(0, 0, 0, 0.70), BlendMode.darken))),
           child: Column(
               textBaseline: TextBaseline.alphabetic,
               crossAxisAlignment: CrossAxisAlignment.baseline,

@@ -1,3 +1,4 @@
+import 'package:elira_app/utils/functions.dart';
 import 'package:intl/intl.dart';
 
 class NewsPiece {
@@ -20,7 +21,7 @@ class NewsPiece {
         headerImg = json['header_img'],
         publication = json['publication'],
         days = getPublicationDays(json['publication']),
-        tags = getTags(json['tags']);
+        tags = getStringList(json['tags']);
 }
 
 String getPublicationDays(String publicationDate) {
@@ -31,10 +32,4 @@ String getPublicationDays(String publicationDate) {
   int difference = today.difference(givenDate).inDays;
   days = difference <= 1 ? '1d' : '${difference}d';
   return days;
-}
-
-List<String> getTags(List<dynamic> apiTags) {
-  List<String> tags = [];
-  tags = apiTags.map((dynamic item) => item.toString()).toList();
-  return tags;
 }

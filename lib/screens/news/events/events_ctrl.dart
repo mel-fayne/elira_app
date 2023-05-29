@@ -10,7 +10,7 @@ import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 
 class EventsController extends GetxController {
-  String filterField = 'Date';
+  String filterField = 'Choose Filter By';
   RxString currentView = ''.obs;
   RxString filterPeriod = ''.obs;
   RxString filterTheme = ''.obs;
@@ -29,6 +29,7 @@ class EventsController extends GetxController {
 
   loadEvents() async {
     filteredEvents.clear();
+    weekEvents.clear();
     loadingData.value = true;
     try {
       var res =
@@ -44,15 +45,17 @@ class EventsController extends GetxController {
         for (var item in ltrEvnts) {
           laterEvents.add(TechEvent.fromJson(item));
         }
+
         filteredEvents.value = [...weekEvents];
-        currentView.value = 'This Week';
-        update();
+        currentView.value = 'Upcoming Events';
         loadingData.value = false;
         if (filteredEvents.isNotEmpty) {
           showData.value = true;
         } else {
           showData.value = false;
         }
+        update();
+        debugPrint('done getting events');
       } else {
         showSnackbar(
             path: Icons.close_rounded,
@@ -72,65 +75,49 @@ class EventsController extends GetxController {
     loadingData.value = true;
     showData.value = false;
     filteredEvents.clear();
-    DateFormat eventDateFormat = DateFormat("EEE, dd MMM");
     var filterDate = DateTime.now();
+    DateFormat eventDateFormat = DateFormat("yyyy-MM-ddTHH:mm:ss");
 
     if (filterPeriod.value == 'This Week') {
       filteredEvents.value = [...weekEvents];
       currentView.value = 'This Week';
     }
+
     if (filterPeriod.value == 'Today') {
-      for (var item in laterEvents) {
-        DateTime eventDate = eventDateFormat.parse(item.date);
-        if (eventDate == filterDate) {
+      for (var item in weekEvents) {
+        DateTime eventDate = eventDateFormat.parseUtc(item.date);
+        String today = DateFormat('yyyy-MM-dd').format(filterDate);
+        if (DateFormat('yyyy-MM-dd').format(eventDate) == today) {
           filteredEvents.add(item);
         }
       }
-
       currentView.value = 'Today';
     } else {
       filterDate = DateTime.now().add(const Duration(days: 30));
-      if (filterPeriod.value == 'This Month') {
-        filteredEvents.value = [...weekEvents];
-        for (var item in laterEvents) {
-          DateTime eventDate = eventDateFormat.parse(item.date);
-          if (eventDate.isBefore(filterDate)) {
-            filteredEvents.add(item);
-          }
+      filteredEvents.value = [...weekEvents];
+      for (var item in laterEvents) {
+        DateTime eventDate = eventDateFormat.parse(item.date);
+        if (eventDate.isBefore(filterDate)) {
+          filteredEvents.add(item);
         }
-
-        currentView.value = 'This Month';
-      } else {
-        for (var item in laterEvents) {
-          DateTime eventDate = eventDateFormat.parse(item.date);
-          if (eventDate.isAfter(filterDate)) {
-            filteredEvents.add(item);
-          }
-        }
-
-        currentView.value = 'Later Events';
       }
+      currentView.value = 'This Month';
     }
+
+    if (filteredEvents.isNotEmpty) {
+      showData.value = true;
+    } else {
+      showData.value = false;
+    }
+    loadingData.value = false;
     update();
-    loadingData.value = false;
-    if (filteredEvents.isNotEmpty) {
-      showData.value = true;
-    } else {
-      showData.value = false;
-    }
-    loadingData.value = false;
-    if (filteredEvents.isNotEmpty) {
-      showData.value = true;
-    } else {
-      showData.value = false;
-    }
   }
 
   filterByTheme() {
     loadingData.value = true;
     showData.value = false;
     filteredEvents.clear();
-    for (var item in laterEvents) {
+    for (var item in weekEvents) {
       if (item.themes.contains(filterTheme.value)) {
         filteredEvents.add(item);
       }
@@ -149,7 +136,7 @@ class EventsController extends GetxController {
     loadingData.value = true;
     showData.value = false;
     filteredEvents.clear();
-    for (var item in laterEvents) {
+    for (var item in weekEvents) {
       if (item.formats.contains(filterFormat.value)) {
         filteredEvents.add(item);
       }
@@ -168,7 +155,7 @@ class EventsController extends GetxController {
     loadingData.value = true;
     showData.value = false;
     filteredEvents.clear();
-    filterField = 'Date';
+    filterField = 'Choose Filter By';
     filteredEvents.value = [...weekEvents];
     currentView.value = 'This Week';
     filterFormat.value = '';

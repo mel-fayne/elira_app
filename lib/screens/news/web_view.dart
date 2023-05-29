@@ -7,23 +7,29 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class AppWebView extends StatefulWidget {
+  final String fromPage;
   final String url;
   final String title;
 
-  const AppWebView({Key? key, required this.url, required this.title})
+  const AppWebView(
+      {Key? key,
+      required this.fromPage,
+      required this.url,
+      required this.title})
       : super(key: key);
 
   @override
   // ignore: no_logic_in_create_state
-  State<AppWebView> createState() => _AppWebViewState(url, title);
+  State<AppWebView> createState() => _AppWebViewState(fromPage, url, title);
 }
 
 class _AppWebViewState extends State<AppWebView> {
+  String fromPage = '';
   String url = '';
   String title = '';
   RxBool isLoading = false.obs;
 
-  _AppWebViewState(this.url, this.title);
+  _AppWebViewState(this.fromPage, this.url, this.title);
 
   InAppWebViewController? webViewController;
 
@@ -55,7 +61,7 @@ class _AppWebViewState extends State<AppWebView> {
             elevation: 4,
             toolbarHeight: 80,
             automaticallyImplyLeading: true,
-            title: const Text('Back to News', style: kWhiteTitle)),
+            title: Text('Back to $fromPage', style: kWhiteTitle)),
         body: SingleChildScrollView(
             child: Column(children: [
           SizedBox(

@@ -21,3 +21,9 @@ Future<String?> getSpecialisation() async {
   var specialisation = prefs.getString("specialisation");
   return specialisation;
 }
+
+List<String> getStringList(List<dynamic> apiList) {
+  List<String> strList = [];
+  strList = apiList.map((dynamic item) => item.toString()).toList();
+  return strList;
+}

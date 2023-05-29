@@ -51,201 +51,280 @@ class _EventsPageState extends State<EventsPage> {
   Widget build(BuildContext context) {
     return Scaffold(
         body: SingleChildScrollView(
-            padding: const EdgeInsets.all(20),
-            child: Obx(() => eventsCtrl.loadingData.value
-                ? loadingWidget('Loading Events ...')
-                : Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                        Obx(() => Text(
-                              eventsCtrl.currentView.value,
-                              style: kPageTitle,
-                            )),
-                        Padding(
-                            padding: const EdgeInsets.symmetric(vertical: 15),
-                            child: Row(children: [
-                              const Icon(Icons.filter_alt_outlined,
-                                  size: 25, color: Colors.white),
-                              const Padding(
-                                  padding: EdgeInsets.symmetric(horizontal: 10),
-                                  child: Text(
-                                    'Filter By',
-                                    style: kPageSubTitle,
-                                  )),
-                              dropDownField(
-                                bgcolor: kPriPurple,
-                                dropItems: ['Date', 'Format', 'Theme'],
-                                dropdownValue: eventsCtrl.filterField,
-                                function: (String? newValue) {
-                                  setState(() {
-                                    eventsCtrl.filterField = newValue!;
-                                    showModalBottomSheet(
-                                        context: context,
-                                        builder: (context) {
-                                          return StatefulBuilder(builder:
-                                              (BuildContext context,
-                                                  StateSetter setSheetState) {
-                                            return eventsCtrl.filterField ==
-                                                    'Date'
-                                                ? dateFilterSheet(
-                                                    context, setSheetState)
-                                                : eventsCtrl.filterField ==
-                                                        'Theme'
-                                                    ? themeFilterSheet(
-                                                        context, setSheetState)
-                                                    : formatFilterSheet(
-                                                        context, setSheetState);
-                                          });
-                                        });
-                                  });
-                                },
-                              )
-                            ])),
-                        GestureDetector(
-                            onTap: () {
-                              eventsCtrl.resetFilters();
-                            },
-                            child: const Icon(
-                              Icons.refresh,
-                              color: kPriPurple,
-                              size: 25,
-                            )),
-                        Obx(() => eventsCtrl.showData.value
-                            ? Column(
-                                crossAxisAlignment: CrossAxisAlignment.end,
-                                children: [
-                                    Obx(
-                                      () => ListView.builder(
-                                          shrinkWrap: true,
-                                          physics:
-                                              const NeverScrollableScrollPhysics(),
-                                          itemBuilder: (context, index) {
-                                            var events =
-                                                eventsCtrl.filteredEvents;
-                                            return GestureDetector(
-                                                onTap: () {
-                                                  Get.to(AppWebView(
-                                                      url: events[index].link,
-                                                      title:
-                                                          events[index].title));
-                                                },
-                                                child: ListTile(
-                                                  leading: ShaderMask(
-                                                      shaderCallback: (rect) =>
-                                                          kDarkGradient
-                                                              .createShader(
-                                                                  rect),
-                                                      blendMode:
-                                                          BlendMode.darken,
-                                                      child: Container(
-                                                          padding:
-                                                              const EdgeInsets.all(
-                                                                  10),
-                                                          decoration: BoxDecoration(
-                                                              image: DecorationImage(
-                                                                  image: AssetImage(
-                                                                      events[index]
-                                                                          .img),
-                                                                  fit: BoxFit
-                                                                      .cover,
-                                                                  colorFilter:
-                                                                      const ColorFilter.mode(Colors.black45, BlendMode.darken))))),
-                                                  title: Column(children: [
+            padding: const EdgeInsets.symmetric(vertical: 40, horizontal: 20),
+            child:
+                Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+              const Text(
+                'Events',
+                style: kPageTitle,
+              ),
+              Obx(() => eventsCtrl.loadingData.value
+                  ? loadingWidget('Loading Events ...')
+                  : Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                          Padding(
+                              padding:
+                                  const EdgeInsets.only(top: 15, bottom: 22),
+                              child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Row(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.center,
+                                        children: [
+                                          const Padding(
+                                              padding: EdgeInsets.symmetric(
+                                                  horizontal: 10),
+                                              child: Icon(
+                                                  Icons.filter_alt_outlined,
+                                                  size: 30,
+                                                  color: kPriDark)),
+                                          dropDownField(
+                                            bgcolor: kPriPurple,
+                                            dropItems: [
+                                              'Choose Filter By',
+                                              'Date',
+                                              'Format',
+                                              'Theme'
+                                            ],
+                                            dropdownValue:
+                                                eventsCtrl.filterField,
+                                            function: (String? newValue) {
+                                              setState(() {
+                                                eventsCtrl.filterField =
+                                                    newValue!;
+                                                showModalBottomSheet(
+                                                    context: context,
+                                                    builder: (context) {
+                                                      return StatefulBuilder(
+                                                          builder: (BuildContext
+                                                                  context,
+                                                              StateSetter
+                                                                  setSheetState) {
+                                                        return eventsCtrl.filterField ==
+                                                                'Date'
+                                                            ? dateFilterSheet(
+                                                                context,
+                                                                setSheetState)
+                                                            : eventsCtrl.filterField ==
+                                                                    'Theme'
+                                                                ? themeFilterSheet(
+                                                                    context,
+                                                                    setSheetState)
+                                                                : formatFilterSheet(
+                                                                    context,
+                                                                    setSheetState);
+                                                      });
+                                                    });
+                                              });
+                                            },
+                                          ),
+                                        ]),
+                                    GestureDetector(
+                                        onTap: () {
+                                          eventsCtrl.resetFilters();
+                                        },
+                                        child: Container(
+                                            width: 30,
+                                            height: 30,
+                                            decoration: const BoxDecoration(
+                                                shape: BoxShape.circle,
+                                                color: kPriDark),
+                                            child: const Icon(
+                                              Icons.refresh,
+                                              color: Colors.white,
+                                              size: 20,
+                                            ))),
+                                  ])),
+                          Padding(
+                              padding: const EdgeInsets.only(bottom: 15),
+                              child: Row(children: [
+                                Padding(
+                                    padding: const EdgeInsets.only(right: 5),
+                                    child: Text(
+                                      eventsCtrl.currentView.value,
+                                      style: kPageSubTitle,
+                                    )),
+                                Container(
+                                    width: 30,
+                                    height: 30,
+                                    decoration: const BoxDecoration(
+                                        shape: BoxShape.circle,
+                                        color: kPriMaroon),
+                                    padding: const EdgeInsets.only(top: 5),
+                                    child: Text(
+                                      eventsCtrl.filteredEvents.length
+                                          .toString(),
+                                      textAlign: TextAlign.center,
+                                      style: kWhiteTitle,
+                                    ))
+                              ])),
+                          eventsCtrl.showData.value
+                              ? ListView.builder(
+                                  shrinkWrap: true,
+                                  physics: const NeverScrollableScrollPhysics(),
+                                  itemBuilder: (context, index) {
+                                    var events = eventsCtrl.filteredEvents;
+                                    return GestureDetector(
+                                        onTap: () {
+                                          Get.to(AppWebView(
+                                              fromPage: 'Events',
+                                              url: events[index].link,
+                                              title: events[index].title));
+                                        },
+                                        child: Container(
+                                            decoration: BoxDecoration(
+                                                borderRadius:
+                                                    BorderRadius.circular(10),
+                                                color: Colors.white),
+                                            height: 140,
+                                            margin: const EdgeInsets.symmetric(
+                                                vertical: 5),
+                                            padding: const EdgeInsets.symmetric(
+                                                vertical: 10),
+                                            child: ListTile(
+                                              leading: Container(
+                                                width: 65,
+                                                height: 65,
+                                                decoration: BoxDecoration(
+                                                    shape: BoxShape.circle,
+                                                    image: DecorationImage(
+                                                        image: NetworkImage(
+                                                            events[index].img),
+                                                        fit: BoxFit.fill,
+                                                        colorFilter:
+                                                            const ColorFilter
+                                                                    .mode(
+                                                                Color.fromRGBO(
+                                                                    0,
+                                                                    0,
+                                                                    0,
+                                                                    0.20),
+                                                                BlendMode
+                                                                    .darken))),
+                                              ),
+                                              title: Column(
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.start,
+                                                  children: [
                                                     Text(
-                                                      '${events[index].title} - ${events[index].organiser}',
-                                                      style: kPurpleTxt,
+                                                      events[index].title,
+                                                      style: const TextStyle(
+                                                          color: kPriPurple,
+                                                          fontFamily: 'Nunito',
+                                                          fontSize: 15,
+                                                          fontWeight:
+                                                              FontWeight.w700),
                                                     ),
-                                                    Padding(
-                                                        padding:
-                                                            const EdgeInsets
-                                                                    .symmetric(
-                                                                vertical: 3),
-                                                        child: Text(
-                                                          events[index]
-                                                              .location,
-                                                          style: kLightTxt,
-                                                        )),
                                                     Text(
-                                                      events[index].themeString,
+                                                      'By ${events[index].organiser}',
+                                                      style: kLightTxt,
+                                                    ),
+                                                    Text(
+                                                      events[index].location,
                                                       style: kDarkTxt,
-                                                    )
-                                                  ]),
-                                                  trailing: Column(children: [
-                                                    events[index]
-                                                            .formats
-                                                            .isNotEmpty
-                                                        ? Container(
-                                                            height: 15,
-                                                            decoration:
-                                                                const BoxDecoration(
-                                                                    color:
-                                                                        kLightPurple),
-                                                            padding:
-                                                                const EdgeInsets
-                                                                        .symmetric(
-                                                                    vertical: 5,
-                                                                    horizontal:
-                                                                        10),
-                                                            child: Row(
-                                                                children: [
-                                                                  Padding(
-                                                                      padding: const EdgeInsets
-                                                                              .only(
-                                                                          right:
-                                                                              5),
-                                                                      child: Icon(
-                                                                          events[index].formats.contains('Bootcamp')
-                                                                              ? FontAwesome5.campground
-                                                                              : events[index].formats.contains('Hackathon')
-                                                                                  ? FontAwesome5.trophy
-                                                                                  : Icons.people,
-                                                                          size: 10,
-                                                                          color: kPriPurple)),
-                                                                  Text(
-                                                                      events[index]
-                                                                          .formats
-                                                                          .toString(),
-                                                                      style:
-                                                                          kPurpleTxt)
-                                                                ]),
-                                                          )
-                                                        : const SizedBox(),
-                                                    Container(
-                                                        height: 40,
-                                                        decoration:
-                                                            const BoxDecoration(
-                                                                color:
-                                                                    kLightPurple),
-                                                        padding:
-                                                            const EdgeInsets
-                                                                .all(5),
-                                                        child: Column(
-                                                            mainAxisAlignment:
-                                                                MainAxisAlignment
-                                                                    .spaceBetween,
-                                                            children: [
-                                                              Text(
+                                                    ),
+                                                    Row(
+                                                        crossAxisAlignment:
+                                                            CrossAxisAlignment
+                                                                .start,
+                                                        mainAxisAlignment:
+                                                            MainAxisAlignment
+                                                                .spaceBetween,
+                                                        children: [
+                                                          Column(
+                                                              crossAxisAlignment:
+                                                                  CrossAxisAlignment
+                                                                      .start,
+                                                              children: [
+                                                                events[index]
+                                                                        .formats
+                                                                        .isNotEmpty
+                                                                    ? Container(
+                                                                        width:
+                                                                            125,
+                                                                        height:
+                                                                            25,
+                                                                        decoration: BoxDecoration(
+                                                                            borderRadius:
+                                                                                BorderRadius.circular(7),
+                                                                            color: kPriPurple),
+                                                                        margin: const EdgeInsets.only(
+                                                                            top:
+                                                                                3),
+                                                                        padding: const EdgeInsets.symmetric(
+                                                                            vertical:
+                                                                                5,
+                                                                            horizontal:
+                                                                                10),
+                                                                        child: Row(
+                                                                            children: [
+                                                                              Padding(
+                                                                                  padding: const EdgeInsets.only(right: 5),
+                                                                                  child: Icon(
+                                                                                      events[index].formats.contains('Bootcamp')
+                                                                                          ? FontAwesome5.campground
+                                                                                          : events[index].formats.contains('Hackathon')
+                                                                                              ? FontAwesome5.trophy
+                                                                                              : Icons.people,
+                                                                                      size: 12,
+                                                                                      color: kLightPurple)),
+                                                                              Text(events[index].formats[0], style: kWhiteTxt)
+                                                                            ]),
+                                                                      )
+                                                                    : const SizedBox(),
+                                                                Text(
                                                                   events[index]
-                                                                      .day,
-                                                                  style:
-                                                                      kPurpleTxt),
-                                                              Text(
-                                                                  events[index]
-                                                                      .month,
-                                                                  style:
-                                                                      kPurpleTxt)
-                                                            ]))
+                                                                      .themeString,
+                                                                  style: const TextStyle(
+                                                                      color:
+                                                                          kPriMaroon,
+                                                                      fontFamily:
+                                                                          'Nunito',
+                                                                      fontSize:
+                                                                          12,
+                                                                      fontWeight:
+                                                                          FontWeight
+                                                                              .w600),
+                                                                ),
+                                                              ]),
+                                                          Container(
+                                                              width: 50,
+                                                              height: 50,
+                                                              decoration: BoxDecoration(
+                                                                  borderRadius:
+                                                                      BorderRadius
+                                                                          .circular(
+                                                                              7),
+                                                                  color:
+                                                                      kPriPurple),
+                                                              padding:
+                                                                  const EdgeInsets
+                                                                      .all(5),
+                                                              child: Column(
+                                                                  children: [
+                                                                    Text(
+                                                                        events[index]
+                                                                            .day,
+                                                                        style:
+                                                                            kWhiteTxt),
+                                                                    Text(
+                                                                        events[index]
+                                                                            .month,
+                                                                        style:
+                                                                            kWhiteTxt)
+                                                                  ]))
+                                                        ]),
                                                   ]),
-                                                ));
-                                          },
-                                          itemCount:
-                                              eventsCtrl.filteredEvents.length),
-                                    ),
-                                  ])
-                            : noDataWidget(
-                                '''No events found matching your filter at the moment
-                                    Check again tomorrow'''))
-                      ]))),
+                                            )));
+                                  },
+                                  itemCount: eventsCtrl.filteredEvents.length)
+                              : noDataWidget(
+                                  '''No events found matching your filter at the moment! Check again tomorrow''')
+                        ]))
+            ])),
         floatingActionButton: _showBackToTopBtn
             ? FloatingActionButton(
                 elevation: 2.0,
@@ -260,10 +339,8 @@ class _EventsPageState extends State<EventsPage> {
   }
 }
 
-Widget filterTile(
-    {required String filterTitle,
-    required StateSetter setState,
-    required groupValue}) {
+Widget formatFilterTile(
+    {required String filterTitle, required StateSetter setState}) {
   return RadioListTile(
     title: Text(filterTitle,
         style: const TextStyle(
@@ -272,9 +349,9 @@ Widget filterTile(
             fontWeight: FontWeight.w500,
             fontFamily: 'Nunito')),
     toggleable: true,
-    activeColor: Colors.white,
+    activeColor: kPriPurple,
     value: filterTitle,
-    groupValue: groupValue,
+    groupValue: eventsCtrl.filterFormat.value,
     onChanged: (value) {
       setState(() {
         eventsCtrl.filterFormat.value = value.toString();
@@ -286,16 +363,16 @@ Widget filterTile(
 Widget formatFilterSheet(BuildContext context, StateSetter setState) {
   return SingleChildScrollView(
       child: Container(
-          color: kPriDark,
-          padding: const EdgeInsets.only(left: 10, top: 10, right: 10),
+          color: kLightPurple,
+          padding: const EdgeInsets.only(left: 20, top: 10, right: 10),
           child:
               Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                const Text('Choose an Event Format', style: kBlackTxt),
+                const Text('Choose an Event Format', style: kBlackTitle),
                 primaryBtn(
-                    width: 70,
+                    width: 120.0,
                     label: 'Filter',
                     isLoading: isLoading,
                     function: () {
@@ -304,50 +381,50 @@ Widget formatFilterSheet(BuildContext context, StateSetter setState) {
                     })
               ],
             ),
-            filterTile(
-                filterTitle: 'Meetup',
-                setState: setState,
-                groupValue: eventsCtrl.filterFormat.value),
-            filterTile(
-                filterTitle: 'Info Session',
-                setState: setState,
-                groupValue: eventsCtrl.filterFormat.value),
-            filterTile(
-                filterTitle: 'Conference',
-                setState: setState,
-                groupValue: eventsCtrl.filterFormat.value),
-            filterTile(
-                filterTitle: 'Hackathon',
-                setState: setState,
-                groupValue: eventsCtrl.filterFormat.value),
-            filterTile(
-                filterTitle: 'Bootcamp',
-                setState: setState,
-                groupValue: eventsCtrl.filterFormat.value),
-            filterTile(
-                filterTitle: 'Networking',
-                setState: setState,
-                groupValue: eventsCtrl.filterFormat.value),
-            filterTile(
-                filterTitle: 'Mentorship',
-                setState: setState,
-                groupValue: eventsCtrl.filterFormat.value)
+            formatFilterTile(filterTitle: 'Meetup', setState: setState),
+            formatFilterTile(filterTitle: 'Info Session', setState: setState),
+            formatFilterTile(filterTitle: 'Conference', setState: setState),
+            formatFilterTile(filterTitle: 'Hackathon', setState: setState),
+            formatFilterTile(filterTitle: 'Bootcamp', setState: setState),
+            formatFilterTile(filterTitle: 'Networking', setState: setState),
+            formatFilterTile(filterTitle: 'Mentorship', setState: setState)
           ])));
+}
+
+Widget dateFilterTile(
+    {required String filterTitle, required StateSetter setState}) {
+  return RadioListTile(
+    title: Text(filterTitle,
+        style: const TextStyle(
+            color: kPriPurple,
+            fontSize: 14,
+            fontWeight: FontWeight.w500,
+            fontFamily: 'Nunito')),
+    toggleable: true,
+    activeColor: kPriPurple,
+    value: filterTitle,
+    groupValue: eventsCtrl.filterPeriod.value,
+    onChanged: (value) {
+      setState(() {
+        eventsCtrl.filterPeriod.value = value.toString();
+      });
+    },
+  );
 }
 
 Widget dateFilterSheet(BuildContext context, StateSetter setState) {
   return SingleChildScrollView(
       child: Container(
-          color: kPriDark,
-          padding: const EdgeInsets.only(left: 10, top: 10, right: 10),
+          color: kLightPurple,
+          padding: const EdgeInsets.only(left: 20, top: 10, right: 10),
           child:
               Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                const Text('Choose an Event Period', style: kBlackTxt),
+                const Text('Choose an Event Period', style: kBlackTitle),
                 primaryBtn(
-                    width: 70,
+                    width: 120.0,
                     label: 'Filter',
                     isLoading: isLoading,
                     function: () {
@@ -356,38 +433,46 @@ Widget dateFilterSheet(BuildContext context, StateSetter setState) {
                     })
               ],
             ),
-            filterTile(
-                filterTitle: 'Today',
-                setState: setState,
-                groupValue: eventsCtrl.filterPeriod.value),
-            filterTile(
-                filterTitle: 'This Week',
-                setState: setState,
-                groupValue: eventsCtrl.filterPeriod.value),
-            filterTile(
-                filterTitle: 'This Month',
-                setState: setState,
-                groupValue: eventsCtrl.filterPeriod.value),
-            filterTile(
-                filterTitle: 'Later',
-                setState: setState,
-                groupValue: eventsCtrl.filterPeriod.value)
+            dateFilterTile(filterTitle: 'Today', setState: setState),
+            dateFilterTile(filterTitle: 'This Week', setState: setState),
+            dateFilterTile(filterTitle: 'This Month', setState: setState)
           ])));
+}
+
+Widget themeFilterTile(
+    {required String filterTitle, required StateSetter setState}) {
+  return RadioListTile(
+    title: Text(filterTitle,
+        style: const TextStyle(
+            color: kPriPurple,
+            fontSize: 14,
+            fontWeight: FontWeight.w500,
+            fontFamily: 'Nunito')),
+    toggleable: true,
+    activeColor: kPriPurple,
+    value: filterTitle,
+    groupValue: eventsCtrl.filterTheme.value,
+    onChanged: (value) {
+      setState(() {
+        eventsCtrl.filterTheme.value = value.toString();
+      });
+    },
+  );
 }
 
 Widget themeFilterSheet(BuildContext context, StateSetter setState) {
   return SingleChildScrollView(
       child: Container(
-          color: kPriDark,
-          padding: const EdgeInsets.only(left: 10, top: 10, right: 10),
+          color: kLightPurple,
+          padding: const EdgeInsets.only(left: 20, top: 10, right: 10),
           child:
               Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                const Text('Choose an Event Theme', style: kBlackTxt),
+                const Text('Choose an Event Theme', style: kBlackTitle),
                 primaryBtn(
-                    width: 70,
+                    width: 120.0,
                     isLoading: isLoading,
                     label: 'Filter',
                     function: () {
@@ -396,49 +481,38 @@ Widget themeFilterSheet(BuildContext context, StateSetter setState) {
                     })
               ],
             ),
-            filterTile(
-                filterTitle: 'AI',
-                setState: setState,
-                groupValue: eventsCtrl.filterTheme.value),
-            filterTile(
-                filterTitle: 'DevOps',
-                setState: setState,
-                groupValue: eventsCtrl.filterTheme.value),
-            filterTile(
-                filterTitle: 'Mobile Dev',
-                setState: setState,
-                groupValue: eventsCtrl.filterTheme.value),
-            filterTile(
-                filterTitle: 'Web Dev',
-                setState: setState,
-                groupValue: eventsCtrl.filterTheme.value),
-            filterTile(
-                filterTitle: 'Programming',
-                setState: setState,
-                groupValue: eventsCtrl.filterTheme.value),
-            filterTile(
-                filterTitle: 'Cybersecurity',
-                setState: setState,
-                groupValue: eventsCtrl.filterTheme.value),
-            filterTile(
-                filterTitle: 'Cloud Computing',
-                setState: setState,
-                groupValue: eventsCtrl.filterTheme.value),
-            filterTile(
-                filterTitle: 'Internet of Things',
-                setState: setState,
-                groupValue: eventsCtrl.filterTheme.value),
-            filterTile(
-                filterTitle: 'Blockchain',
-                setState: setState,
-                groupValue: eventsCtrl.filterTheme.value),
-            filterTile(
-                filterTitle: 'Databases',
-                setState: setState,
-                groupValue: eventsCtrl.filterTheme.value),
-            filterTile(
-                filterTitle: 'Design',
-                setState: setState,
-                groupValue: eventsCtrl.filterTheme.value)
+            themeFilterTile(filterTitle: 'AI', setState: setState),
+            themeFilterTile(filterTitle: 'DevOps', setState: setState),
+            themeFilterTile(filterTitle: 'Mobile Dev', setState: setState),
+            themeFilterTile(filterTitle: 'Web Dev', setState: setState),
+            themeFilterTile(filterTitle: 'Programming', setState: setState),
+            themeFilterTile(filterTitle: 'Cybersecurity', setState: setState),
+            themeFilterTile(filterTitle: 'Cloud Computing', setState: setState),
+            themeFilterTile(
+                filterTitle: 'Internet of Things', setState: setState),
+            themeFilterTile(filterTitle: 'Blockchain', setState: setState),
+            themeFilterTile(filterTitle: 'Databases', setState: setState),
+            themeFilterTile(filterTitle: 'Design', setState: setState)
           ])));
+}
+
+Widget filterTile(
+    {required String filterTitle,
+    required StateSetter setState,
+    required RxString groupValue}) {
+  return RadioListTile(
+    title: Text(filterTitle,
+        style: const TextStyle(
+            color: kPriPurple,
+            fontSize: 14,
+            fontWeight: FontWeight.w500,
+            fontFamily: 'Nunito')),
+    toggleable: true,
+    activeColor: Colors.white,
+    value: filterTitle,
+    groupValue: eventsCtrl.filterPeriod.value,
+    onChanged: (value) {
+      eventsCtrl.filterPeriod.value = value.toString();
+    },
+  );
 }

@@ -125,9 +125,6 @@ class NewsController extends GetxController {
     for (int i = startIndex; i < endIndex; i++) {
       filteredPaginated.add(filteredNews[i]);
     }
-    print(currentPage);
-    print(startIndex);
-    print(endIndex);
   }
 
   clearLists() {
