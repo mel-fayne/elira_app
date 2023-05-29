@@ -34,96 +34,122 @@ class _NewsPageState extends State<NewsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-            elevation: 0,
-            backgroundColor: Colors.transparent,
-            automaticallyImplyLeading: false,
-            actions: [
-              GestureDetector(
-                  onTap: () {
-                    Get.to(const EventsPage());
-                  },
-                  child: Container(
-                    decoration: const BoxDecoration(
-                      color: kPriDark,
-                      shape: BoxShape.circle,
-                    ),
-                    child:
-                        const Icon(Icons.event, color: Colors.white, size: 16),
-                  ))
-            ]),
-        body: SingleChildScrollView(
-            padding: const EdgeInsets.all(20),
-            child: Obx(() => newsctrl.loadingData.value
-                ? loadingWidget('Loading News ...')
-                : Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                        const Text(
-                          'Daily Rundown',
-                          style: kPageTitle,
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.only(top: 10, bottom: 25),
-                          child: Text(
-                            today,
-                            style: kPurpleTxt,
-                          ),
-                        ),
-                        const Text(
-                          'Filter News by Topic',
-                          style: kBlackTxt,
-                        ),
-                        Padding(
-                            padding: const EdgeInsets.only(top: 10, bottom: 25),
-                            child: SingleChildScrollView(
-                                scrollDirection: Axis.horizontal,
-                                child: Wrap(
-                                  spacing: 8.0,
-                                  children: List<Widget>.generate(
-                                    newsctrl.newsTags.length,
-                                    (int index) {
-                                      final tag = newsctrl.newsTags[index];
-                                      return FilterChip(
-                                        disabledColor: kLightPurple,
-                                        selectedColor: kPriPurple,
-                                        label: Text(
-                                          tag,
-                                          style: TextStyle(
-                                              color:
-                                                  newsctrl.currentTag.value ==
-                                                          tag
-                                                      ? Colors.white
-                                                      : kPriDark),
-                                        ),
-                                        selected:
-                                            newsctrl.currentTag.value == tag,
-                                        onSelected: (bool selected) {
-                                          setState(() {
-                                            if (selected) {
-                                              newsctrl.currentTag.value = tag;
-                                            }
-                                            newsctrl.filterByTags();
-                                          });
-                                        },
-                                      );
-                                    },
-                                  ).toList(),
-                                ))),
-                        Obx(() => newsctrl.showData.value
-                            ? Obx(() => StaggeredGrid.count(
-                                    crossAxisCount: 2,
-                                    crossAxisSpacing: 7,
-                                    mainAxisSpacing: 12,
-                                    children: [
-                                      ...newsctrl.filteredNews
-                                          .map(buildNewsPiece)
-                                          .toList()
-                                    ]))
-                            : noDataWidget(
-                                '''No news found matching your filter at the moment
-                                    Check again tomorrow'''))
-                      ]))));
+      body: RefreshIndicator(
+          onRefresh: () async {
+            // newsctrl.currentPage++;
+            // if (newsctrl.currentPage >= newsctrl.filteredNews.length ~/ 16) {
+            //   newsctrl.currentPage = 0;
+            // }
+            // newsctrl.filterPaginator();
+            newsctrl.getStudentNews();
+            await Future.delayed(const Duration(seconds: 1));
+          },
+          child: CustomScrollView(slivers: [
+            SliverFillRemaining(
+                child: Obx(() => newsctrl.loadingData.value
+                    ? Center(child: loadingWidget('Loading News ...'))
+                    : SingleChildScrollView(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 20, vertical: 30),
+                        child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Padding(
+                                  padding: const EdgeInsets.only(
+                                      top: 80, right: 8, bottom: 15),
+                                  child: Row(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              const Text(
+                                                'Daily Rundown',
+                                                style: kPageTitle,
+                                              ),
+                                              Padding(
+                                                padding: const EdgeInsets.only(
+                                                    top: 5),
+                                                child: Text(
+                                                  today,
+                                                  style: kBlackTitle,
+                                                ),
+                                              ),
+                                            ]),
+                                        GestureDetector(
+                                            onTap: () {
+                                              Get.to(const EventsPage());
+                                            },
+                                            child: Container(
+                                              width: 35,
+                                              height: 35,
+                                              decoration: const BoxDecoration(
+                                                color: kPriDark,
+                                                shape: BoxShape.circle,
+                                              ),
+                                              child: const Icon(Icons.event,
+                                                  color: Colors.white,
+                                                  size: 25),
+                                            ))
+                                      ])),
+                              const Text(
+                                'Filter News by Topic',
+                                style: kDarkTxt,
+                              ),
+                              Wrap(
+                                spacing: 5.0,
+                                children: List<Widget>.generate(
+                                  newsctrl.newsTags.length,
+                                  (int index) {
+                                    final tag = newsctrl.newsTags[index];
+                                    return FilterChip(
+                                      backgroundColor:
+                                          newsctrl.currentTag.value == tag
+                                              ? kPriPurple
+                                              : kLightPurple,
+                                      selectedColor: kPriPurple,
+                                      label: Text(
+                                        tag,
+                                        style: TextStyle(
+                                            color:
+                                                newsctrl.currentTag.value == tag
+                                                    ? Colors.white
+                                                    : kPriDark),
+                                      ),
+                                      selected:
+                                          newsctrl.currentTag.value == tag,
+                                      onSelected: (bool selected) {
+                                        setState(() {
+                                          if (selected) {
+                                            newsctrl.currentTag.value = tag;
+                                          }
+                                          newsctrl.filterByTags();
+                                        });
+                                      },
+                                    );
+                                  },
+                                ).toList(),
+                              ),
+                              Obx(() => newsctrl.showData.value
+                                  ? Obx(() => StaggeredGrid.count(
+                                          crossAxisCount: 2,
+                                          crossAxisSpacing: 7,
+                                          mainAxisSpacing: 12,
+                                          children: [
+                                            ...newsctrl.filteredPaginated
+                                                .map(buildNewsPiece)
+                                                .toList()
+                                          ]))
+                                  : noDataWidget(
+                                      '''No news found matching your filter at the moment
+                              Check again tomorrow'''))
+                            ]))))
+          ])),
+    );
   }
 
   Widget buildNewsPiece(NewsPiece newsPiece) =>
@@ -134,58 +160,60 @@ class _NewsPageState extends State<NewsPage> {
         onTap: () {
           Get.to(AppWebView(url: newsPiece.link, title: newsPiece.title));
         },
-        child: ShaderMask(
-            shaderCallback: (rect) => kDarkGradient.createShader(rect),
-            blendMode: BlendMode.darken,
-            child: Container(
-              padding: const EdgeInsets.all(10),
-              decoration: BoxDecoration(
-                  image: DecorationImage(
-                      image: AssetImage(newsPiece.headerImg),
-                      fit: BoxFit.cover,
-                      colorFilter: const ColorFilter.mode(
-                          Colors.black45, BlendMode.darken))),
-              child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.baseline,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.only(bottom: 3),
-                      child: Text(newsPiece.title,
-                          style: const TextStyle(
-                              fontFamily: 'Nunito',
-                              color: Colors.white,
-                              fontSize: 13,
-                              fontWeight: FontWeight.w500)),
+        child: Container(
+          height: 160,
+          padding: const EdgeInsets.all(10),
+          decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(7),
+              image: DecorationImage(
+                  image: NetworkImage(newsPiece.headerImg),
+                  fit: BoxFit.cover,
+                  colorFilter: const ColorFilter.mode(
+                      Color.fromRGBO(0, 0, 0, 0.75), BlendMode.darken))),
+          child: Column(
+              textBaseline: TextBaseline.alphabetic,
+              crossAxisAlignment: CrossAxisAlignment.baseline,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 3),
+                  child: Text(newsPiece.title,
+                      style: const TextStyle(
+                          fontFamily: 'Nunito',
+                          color: Colors.white,
+                          fontSize: 14,
+                          fontWeight: FontWeight.w500)),
+                ),
+                Row(children: [
+                  Text(
+                    newsPiece.source,
+                    style: const TextStyle(
+                      color: kLightPurple,
+                      fontFamily: 'Nunito',
+                      fontSize: 12,
+                      fontWeight: FontWeight.w700,
                     ),
-                    Row(children: [
-                      Text(
-                        newsPiece.source,
-                        style: const TextStyle(
-                          color: kLightPurple,
-                          fontFamily: 'Nunito',
-                          fontSize: 10,
-                          fontWeight: FontWeight.w700,
-                        ),
-                      ),
-                      Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 3),
-                          child: Container(
-                              width: 5,
-                              height: 5,
-                              decoration: const BoxDecoration(
-                                shape: BoxShape.circle,
-                              ))),
-                      Text(
-                        newsPiece.days,
-                        style: const TextStyle(
-                          color: kLightPurple,
-                          fontFamily: 'Nunito',
-                          fontSize: 10,
-                          fontWeight: FontWeight.w700,
-                        ),
-                      ),
-                    ])
-                  ]),
-            )));
+                  ),
+                  Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 3),
+                      child: Container(
+                          width: 5,
+                          height: 5,
+                          decoration: const BoxDecoration(
+                            color: kLightPurple,
+                            shape: BoxShape.circle,
+                          ))),
+                  Text(
+                    newsPiece.days,
+                    style: const TextStyle(
+                      color: kLightPurple,
+                      fontFamily: 'Nunito',
+                      fontSize: 12,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                ])
+              ]),
+        ));
   }
 }

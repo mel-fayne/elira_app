@@ -182,8 +182,7 @@ class InsightsController extends GetxController {
 
         // store specialisation
         var prefs = await SharedPreferences.getInstance();
-        await prefs.setString(
-            "specialisation", json.encode(studentSpec.abbreviation));
+        await prefs.setString("specialisation", studentSpec.abbreviation);
       } else {
         showSnackbar(
             path: Icons.close_rounded,

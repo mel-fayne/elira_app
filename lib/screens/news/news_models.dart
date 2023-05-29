@@ -19,8 +19,8 @@ class NewsPiece {
         link = json['link'],
         headerImg = json['header_img'],
         publication = json['publication'],
-        tags = json['tags'],
-        days = getPublicationDays(json['publication']);
+        days = getPublicationDays(json['publication']),
+        tags = getTags(json['tags']);
 }
 
 String getPublicationDays(String publicationDate) {
@@ -29,6 +29,12 @@ String getPublicationDays(String publicationDate) {
   DateTime givenDate = format.parse(publicationDate);
   DateTime today = DateTime.now();
   int difference = today.difference(givenDate).inDays;
-  days = difference == 1 ? '1d' : '${difference}d';
+  days = difference <= 1 ? '1d' : '${difference}d';
   return days;
+}
+
+List<String> getTags(List<dynamic> apiTags) {
+  List<String> tags = [];
+  tags = apiTags.map((dynamic item) => item.toString()).toList();
+  return tags;
 }

@@ -33,10 +33,10 @@ List<SpecialisationConst> specObjects = <SpecialisationConst>[
       imagePath: 'assets/images/ai.png',
       newsTags: [
         'AI & Data',
-        'Programming',
-        'Databases',
         'Big Tech',
         'Apps',
+        'Programming',
+        'Databases',
         'Tech Business',
         'Entertainment',
         'Others'

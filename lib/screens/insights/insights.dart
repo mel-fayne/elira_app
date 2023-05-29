@@ -1,3 +1,4 @@
+import 'package:elira_app/core/navigator.dart';
 import 'package:elira_app/screens/insights/academics/views//academics.dart';
 import 'package:elira_app/screens/insights/github/views/technicals.dart';
 import 'package:elira_app/screens/insights/internships/views/internships.dart';
@@ -183,7 +184,7 @@ class _PredictionPageState extends State<PredictionPage> {
             pageTitle: 'Specialisation Analysis',
             hasLeading: true,
             onTap: () {
-              Get.off(const InsightsPage());
+              Get.off(const NavigatorHandler(1));
             }),
         body: SingleChildScrollView(
             padding: const EdgeInsets.symmetric(vertical: 25, horizontal: 30),

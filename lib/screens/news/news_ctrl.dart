@@ -1,3 +1,4 @@
+import 'package:elira_app/screens/insights/insights_ctrl.dart';
 import 'package:elira_app/screens/news/news_models.dart';
 import 'package:elira_app/utils/functions.dart';
 import 'package:flutter/material.dart';
@@ -7,13 +8,21 @@ import 'package:elira_app/theme/global_widgets.dart';
 import 'package:http/http.dart' as http;
 import 'package:elira_app/utils/constants.dart';
 
+final insightsCtrl = Get.find<InsightsController>();
+// ignore: constant_identifier_names
+const PAGE_SIZE = 16;
+
 class NewsController extends GetxController {
   String? studentSpec;
   int? studentId;
   List<String> newsTags = [];
   RxList<NewsPiece> studentNews = RxList<NewsPiece>();
   RxList<NewsPiece> otherNews = RxList<NewsPiece>();
+
   RxList<NewsPiece> filteredNews = RxList<NewsPiece>();
+  RxList<NewsPiece> filteredPaginated = RxList<NewsPiece>();
+  int currentPage = 0;
+
   RxString currentTag = ''.obs;
   RxBool loadingData = false.obs;
   RxBool showData = false.obs;
@@ -23,11 +32,17 @@ class NewsController extends GetxController {
     super.onInit();
     studentId = await getStudentId();
     studentSpec = await getSpecialisation();
+    if (studentSpec == null) {
+      await insightsCtrl.getStudentPredictions();
+      studentSpec = await getSpecialisation();
+    }
     await getStudentNews();
   }
 
   getStudentNews() async {
     filteredNews.clear();
+    studentNews.clear();
+    otherNews.clear();
     loadingData.value = true;
     try {
       var res = await http.get(Uri.parse(filterNewsUrl + studentId.toString()),
@@ -49,12 +64,16 @@ class NewsController extends GetxController {
             .newsTags;
         currentTag.value = newsTags[0];
         filteredNews.value = [...studentNews];
+        filterPaginator();
         loadingData.value = false;
         if (filteredNews.isNotEmpty) {
           showData.value = true;
         } else {
           showData.value = false;
         }
+
+        update();
+        debugPrint('done getting news');
       } else {
         showSnackbar(
             path: Icons.close_rounded,
@@ -76,13 +95,38 @@ class NewsController extends GetxController {
     clearLists();
     filteredNews.value =
         otherNews.where((obj) => obj.tags.contains(currentTag.value)).toList();
-    update();
+    filterPaginator();
     loadingData.value = false;
     if (filteredNews.isNotEmpty) {
       showData.value = true;
     } else {
       showData.value = false;
     }
+
+    update();
+  }
+
+  filterPaginator() {
+    filteredPaginated.clear();
+    int startIndex = currentPage * PAGE_SIZE;
+    int endIndex = startIndex + PAGE_SIZE;
+    if (endIndex > filteredNews.length) {
+      endIndex = filteredNews.length;
+    }
+    for (int i = startIndex; i < endIndex; i++) {
+      filteredPaginated.add(filteredNews[i]);
+    }
+    print(filteredNews.length);
+    print(filteredPaginated.length);
+  }
+
+  Future<void> Function() refreshPage() {
+    currentPage++;
+    if (currentPage >= filteredNews.length ~/ 16) {
+      currentPage = 0;
+    }
+    filterPaginator();
+    return refreshPage();
   }
 
   clearLists() {

@@ -1,3 +1,4 @@
+import 'package:elira_app/core/navigator.dart';
 import 'package:elira_app/screens/insights/insights.dart';
 import 'package:elira_app/screens/insights/insights_ctrl.dart';
 import 'package:elira_app/screens/insights/softskills/softskills_ctrl.dart';
@@ -40,7 +41,7 @@ class _SoftSkillsPageState extends State<SoftSkillsPage> {
             pageTitle: 'Soft Skills Overview',
             hasLeading: true,
             onTap: () {
-              Get.off(const InsightsPage());
+              Get.off(const NavigatorHandler(1));
             }),
         body: SingleChildScrollView(
             padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 20),
