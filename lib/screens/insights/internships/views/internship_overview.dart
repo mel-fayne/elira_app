@@ -2,6 +2,7 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:elira_app/screens/insights/insights_ctrl.dart';
 import 'package:elira_app/screens/insights/internships/internships_ctrl.dart';
 import 'package:elira_app/screens/insights/internships/internships_models.dart';
+import 'package:elira_app/screens/insights/internships/views/internship_forms.dart';
 import 'package:elira_app/theme/colors.dart';
 import 'package:elira_app/theme/global_widgets.dart';
 import 'package:elira_app/theme/text_styles.dart';
@@ -97,14 +98,15 @@ class _InternshipsOverviewState extends State<InternshipsOverview> {
                   color: kLightPurple,
                   child: Column(children: [
                     const Padding(
-                        padding: EdgeInsets.symmetric(vertical: 10),
+                        padding: EdgeInsets.symmetric(vertical: 20),
                         child: Text('Industry Experience', style: kBlackTitle)),
                     SizedBox(
                         width: 240,
                         height: 250,
                         child: PieChart(industriesData())),
                     Padding(
-                        padding: const EdgeInsets.all(10),
+                        padding: const EdgeInsets.symmetric(
+                            vertical: 28, horizontal: 10),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: pieIndicators(),
@@ -119,7 +121,9 @@ class _InternshipsOverviewState extends State<InternshipsOverview> {
                 width: 130.0,
                 isLoading: isLoading,
                 function: () {
-                  workExpCtrl.addInternship();
+                  Get.dialog(CrudWorkExpForm(
+                      insightsCtrl.stdWxProf.internships[0],
+                      isEdit: false));
                 })
           ]),
           Padding(

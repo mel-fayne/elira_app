@@ -1,4 +1,5 @@
 import 'package:elira_app/screens/insights/internships/internships_ctrl.dart';
+import 'package:elira_app/screens/insights/internships/internships_models.dart';
 import 'package:elira_app/theme/auth_widgets.dart';
 import 'package:elira_app/theme/colors.dart';
 import 'package:elira_app/theme/global_widgets.dart';
@@ -6,6 +7,7 @@ import 'package:elira_app/theme/text_styles.dart';
 import 'package:elira_app/utils/app_models.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 
 final workExpCtrl = Get.find<WorkExpController>();
 
@@ -102,7 +104,16 @@ class WorkExpForm extends StatefulWidget {
 }
 
 class _WorkExpFormState extends State<WorkExpForm> {
+  final GlobalKey<FormState> workForm = GlobalKey<FormState>();
+  TextEditingController titlectrl = TextEditingController();
+  TextEditingController locationctrl = TextEditingController();
+  TextEditingController companyNamectrl = TextEditingController();
+  TextEditingController startDatectrl = TextEditingController();
+  TextEditingController endDatectrl = TextEditingController();
   bool _isLoading = false;
+  DateTime startDate = DateTime.now();
+  DateTime endDate = DateTime.now();
+  DateFormat dateFormat = DateFormat('yyyy-MM-dd');
 
   @override
   void initState() {
@@ -113,6 +124,58 @@ class _WorkExpFormState extends State<WorkExpForm> {
     setState(() {
       _isLoading = !_isLoading;
     });
+  }
+
+  Future<void> selectStartDate(BuildContext context) async {
+    final DateTime? picked = await showDatePicker(
+      context: context,
+      initialDate: startDate,
+      firstDate: DateTime(2000),
+      lastDate: DateTime.now(),
+      initialDatePickerMode: DatePickerMode.year,
+      initialEntryMode: DatePickerEntryMode.calendarOnly,
+      helpText: "Start Date",
+      cancelText: 'Cancel',
+      confirmText: 'Select',
+      selectableDayPredicate: (DateTime date) {
+        return date.isBefore(endDate);
+      },
+    );
+
+    if (picked != null && picked != startDate) {
+      startDate = picked;
+      startDatectrl.text = dateFormat.format(picked);
+    }
+  }
+
+  Future<void> selectEndDate(BuildContext context) async {
+    final DateTime? picked = await showDatePicker(
+      context: context,
+      initialDate: startDate,
+      firstDate: startDate,
+      lastDate: DateTime.now(),
+      initialDatePickerMode: DatePickerMode.year,
+      initialEntryMode: DatePickerEntryMode.calendarOnly,
+      cancelText: 'Cancel',
+      confirmText: 'Select',
+      selectableDayPredicate: (DateTime date) {
+        return date.isAfter(startDate) || date.isAtSameMomentAs(startDate);
+      },
+    );
+
+    if (picked != null && picked != endDate) {
+      endDatectrl.text = dateFormat.format(picked);
+    }
+  }
+
+  @override
+  void dispose() {
+    titlectrl.dispose();
+    companyNamectrl.dispose();
+    locationctrl.dispose();
+    startDatectrl.dispose();
+    endDatectrl.dispose();
+    super.dispose();
   }
 
   @override
@@ -144,11 +207,106 @@ class _WorkExpFormState extends State<WorkExpForm> {
                       child: Wrap(runSpacing: 5.0, children: [
                         ...workExpCtrl.intShpBoxes.map(buildintShp).toList()
                       ])),
-                  workExpForm(
-                      btnLabel: 'Add Internship',
-                      fromSetup: true,
-                      isEdit: false,
-                      context: context),
+                  formField(
+                      label: 'Title e.g Frontend Developer',
+                      require: true,
+                      controller: titlectrl,
+                      type: TextInputType.name,
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Please enter your title';
+                        }
+                        return null;
+                      }),
+                  formField(
+                      label: 'Company Name',
+                      require: true,
+                      controller: companyNamectrl,
+                      type: TextInputType.name,
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Please enter the company name';
+                        }
+                        return null;
+                      }),
+                  Obx(() => formDropDownField(
+                      label: 'Employment Type',
+                      dropdownValue: workExpCtrl.empTypeDropdown.value,
+                      dropItems: workExpCtrl.empTypeStrs,
+                      function: (String? newValue) {
+                        workExpCtrl.empTypeDropdown.value = newValue!;
+                      })),
+                  formField(
+                      label: 'Location',
+                      require: true,
+                      controller: locationctrl,
+                      type: TextInputType.name,
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Please enter the location';
+                        }
+                        return null;
+                      }),
+                  Obx(() => formDropDownField(
+                      label: 'Location Type',
+                      dropdownValue: workExpCtrl.locTypeDropdown.value,
+                      dropItems: workExpCtrl.locTypeStrs,
+                      function: (String? newValue) {
+                        workExpCtrl.locTypeDropdown.value = newValue!;
+                      })),
+                  dateFormField(
+                      label: 'Start Date',
+                      require: true,
+                      controller: startDatectrl,
+                      onTap: () {
+                        selectStartDate(context);
+                      },
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Please enter the start date';
+                        }
+                        return null;
+                      }),
+                  Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 3),
+                      child: Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            const SizedBox(),
+                            const Text('Currently Working Here:',
+                                style: kBlackTxt),
+                            Obx(() => Checkbox(
+                                  side: const BorderSide(color: kPriPurple),
+                                  checkColor: Colors.white,
+                                  activeColor: kPriMaroon,
+                                  value: workExpCtrl.currentlyWorking.value,
+                                  onChanged: (value) {
+                                    workExpCtrl.currentlyWorking.value = value!;
+                                  },
+                                ))
+                          ])),
+                  Obx(() => workExpCtrl.currentlyWorking.value
+                      ? Container()
+                      : dateFormField(
+                          require: true,
+                          label: 'End Date',
+                          controller: endDatectrl,
+                          onTap: () {
+                            selectEndDate(context);
+                          },
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return 'Please enter the end date';
+                            }
+                            return null;
+                          })),
+                  Obx(() => formDropDownField(
+                      label: 'Industry the internship was/is based in',
+                      dropdownValue: workExpCtrl.indDropdown.value,
+                      dropItems: workExpCtrl.industryStrs,
+                      function: (String? newValue) {
+                        workExpCtrl.indDropdown.value = newValue!;
+                      })),
                   primaryBtn(
                     label: 'Add Internship',
                     isLoading: workExpCtrl.addExpLoading,
@@ -156,8 +314,15 @@ class _WorkExpFormState extends State<WorkExpForm> {
                             workExpCtrl.indDropdown.value == '' ||
                             workExpCtrl.locTypeDropdown.value == ''
                         ? () async {
-                            workExpCtrl.addWorkExp(
-                                fromSetup: true, isEdit: false);
+                            workExpCtrl.crudWorkExp(expData: [
+                              endDate,
+                              startDate,
+                              titlectrl.text,
+                              companyNamectrl.text,
+                              locationctrl.text,
+                              startDatectrl.text,
+                              endDatectrl.text
+                            ], fromSetup: true, isEdit: false);
                           }
                         : null,
                   )
@@ -194,162 +359,265 @@ class _WorkExpFormState extends State<WorkExpForm> {
   }
 }
 
-class AddWorkExpForm extends StatefulWidget {
-  static const routeName = "/AddWorkExpForm";
+class CrudWorkExpForm extends StatefulWidget {
+  static const routeName = "/CrudWorkExpForm";
 
   final bool isEdit;
+  final WorkExperience workExp;
 
-  const AddWorkExpForm({Key? key, required this.isEdit}) : super(key: key);
+  const CrudWorkExpForm(
+    this.workExp, {
+    Key? key,
+    required this.isEdit,
+  }) : super(key: key);
 
   @override
   State<StatefulWidget> createState() {
     // ignore: no_logic_in_create_state
-    return AddWorkExpFormState(isEdit);
+    return CrudWorkExpFormState(isEdit, workExp);
   }
 }
 
-class AddWorkExpFormState extends State<AddWorkExpForm> {
+class CrudWorkExpFormState extends State<CrudWorkExpForm> {
+  final GlobalKey<FormState> workForm = GlobalKey<FormState>();
+  TextEditingController titlectrl = TextEditingController();
+  TextEditingController locationctrl = TextEditingController();
+  TextEditingController companyNamectrl = TextEditingController();
+  TextEditingController startDatectrl = TextEditingController();
+  TextEditingController endDatectrl = TextEditingController();
   late bool isEdit;
-  AddWorkExpFormState(this.isEdit);
+  late WorkExperience workExp;
+  DateTime startDate = DateTime.now();
+  DateTime endDate = DateTime.now();
+  DateFormat dateFormat = DateFormat('yyyy-MM-dd');
+
+  CrudWorkExpFormState(this.isEdit, this.workExp);
+
   String btnLabel = 'Add Internship';
 
   @override
   void initState() {
     super.initState();
     if (isEdit) {
-      btnLabel = 'Edit Internship';
+      setEditForm();
+    } else {
+      setAddForm();
     }
+  }
+
+  setEditForm() {
+    btnLabel = 'Edit Internship';
+    titlectrl.text = workExp.title;
+    companyNamectrl.text = workExp.companyName;
+    locationctrl.text = workExp.location;
+    workExpCtrl.locTypeDropdown.value = workExp.locationType;
+    workExpCtrl.empTypeDropdown.value = workExp.employmentType;
+    workExpCtrl.indDropdown.value = workExp.industry;
+    startDatectrl.text = workExp.startDate;
+    startDate = dateFormat.parse(workExp.startDate);
+    if (workExp.endDate == '') {
+      endDate = DateTime.now();
+      endDatectrl.text = '';
+      workExpCtrl.currentlyWorking.value = true;
+    } else {
+      endDate = dateFormat.parse(workExp.endDate);
+      endDatectrl.text = workExp.endDate;
+      workExpCtrl.currentlyWorking.value = false;
+    }
+  }
+
+  setAddForm() {
+    workExpCtrl.locTypeDropdown = ''.obs;
+    workExpCtrl.empTypeDropdown = ''.obs;
+    workExpCtrl.indDropdown = ''.obs;
+    workExpCtrl.currentlyWorking = false.obs;
+    startDate = DateTime.now();
+    endDate = DateTime.now();
+  }
+
+  Future<void> selectStartDate(BuildContext context) async {
+    final DateTime? picked = await showDatePicker(
+      context: context,
+      initialDate: startDate,
+      firstDate: DateTime(2000),
+      lastDate: DateTime.now(),
+      initialDatePickerMode: DatePickerMode.year,
+      initialEntryMode: DatePickerEntryMode.calendarOnly,
+      helpText: "Start Date",
+      cancelText: 'Cancel',
+      confirmText: 'Select',
+      selectableDayPredicate: (DateTime date) {
+        return date.isBefore(endDate);
+      },
+    );
+
+    if (picked != null && picked != startDate) {
+      startDate = picked;
+      startDatectrl.text = dateFormat.format(picked);
+    }
+  }
+
+  Future<void> selectEndDate(BuildContext context) async {
+    final DateTime? picked = await showDatePicker(
+      context: context,
+      initialDate: startDate,
+      firstDate: startDate,
+      lastDate: DateTime.now(),
+      initialDatePickerMode: DatePickerMode.year,
+      initialEntryMode: DatePickerEntryMode.calendarOnly,
+      cancelText: 'Cancel',
+      confirmText: 'Select',
+      selectableDayPredicate: (DateTime date) {
+        return date.isAfter(startDate) || date.isAtSameMomentAs(startDate);
+      },
+    );
+
+    if (picked != null && picked != endDate) {
+      endDatectrl.text = dateFormat.format(picked);
+    }
+  }
+
+  @override
+  void dispose() {
+    titlectrl.dispose();
+    companyNamectrl.dispose();
+    locationctrl.dispose();
+    startDatectrl.dispose();
+    endDatectrl.dispose();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return formPopupScaffold(
-      formKey: workExpCtrl.workForm,
+      formKey: workForm,
       children: [
         popupHeader(label: btnLabel),
-        workExpForm(
-            btnLabel: btnLabel,
-            fromSetup: false,
-            isEdit: isEdit,
-            context: context),
-        primaryBtn(
-          label: btnLabel,
-          isLoading: workExpCtrl.addExpLoading,
-          function: workExpCtrl.empTypeDropdown.value == '' ||
-                  workExpCtrl.indDropdown.value == '' ||
-                  workExpCtrl.locTypeDropdown.value == ''
-              ? () async {
-                  workExpCtrl.addWorkExp(fromSetup: false, isEdit: isEdit);
-                }
-              : null,
-        )
-      ],
-    );
-  }
-}
-
-Widget workExpForm(
-    {required bool fromSetup,
-    required String btnLabel,
-    required BuildContext context,
-    required bool isEdit}) {
-  return Column(children: [
-    formField(
-        label: 'Title e.g Frontend Developer',
-        require: true,
-        controller: workExpCtrl.titlectrl,
-        type: TextInputType.name,
-        validator: (value) {
-          if (value == null || value.isEmpty) {
-            return 'Please enter your title';
-          }
-          return null;
-        }),
-    formField(
-        label: 'Company Name',
-        require: true,
-        controller: workExpCtrl.companyNamectrl,
-        type: TextInputType.name,
-        validator: (value) {
-          if (value == null || value.isEmpty) {
-            return 'Please enter the company name';
-          }
-          return null;
-        }),
-    Obx(() => formDropDownField(
-        label: 'Employment Type',
-        dropdownValue: workExpCtrl.empTypeDropdown.value,
-        dropItems: workExpCtrl.empTypeStrs,
-        function: (String? newValue) {
-          workExpCtrl.empTypeDropdown.value = newValue!;
-        })),
-    formField(
-        label: 'Location',
-        require: true,
-        controller: workExpCtrl.locationctrl,
-        type: TextInputType.name,
-        validator: (value) {
-          if (value == null || value.isEmpty) {
-            return 'Please enter the location';
-          }
-          return null;
-        }),
-    Obx(() => formDropDownField(
-        label: 'Location Type',
-        dropdownValue: workExpCtrl.locTypeDropdown.value,
-        dropItems: workExpCtrl.locTypeStrs,
-        function: (String? newValue) {
-          workExpCtrl.locTypeDropdown.value = newValue!;
-        })),
-    dateFormField(
-        label: 'Start Date',
-        require: true,
-        controller: workExpCtrl.startDatectrl,
-        onTap: () {
-          workExpCtrl.selectStartDate(context);
-        },
-        validator: (value) {
-          if (value == null || value.isEmpty) {
-            return 'Please enter the start date';
-          }
-          return null;
-        }),
-    Padding(
-        padding: const EdgeInsets.symmetric(vertical: 3),
-        child: Row(mainAxisAlignment: MainAxisAlignment.end, children: [
-          const SizedBox(),
-          const Text('Currently Working Here:', style: kBlackTxt),
-          Obx(() => Checkbox(
-                side: const BorderSide(color: kPriPurple),
-                checkColor: Colors.white,
-                activeColor: kPriMaroon,
-                value: workExpCtrl.currentlyWorking.value,
-                onChanged: (value) {
-                  workExpCtrl.currentlyWorking.value = value!;
-                },
-              ))
-        ])),
-    Obx(() => workExpCtrl.currentlyWorking.value
-        ? Container()
-        : dateFormField(
+        formField(
+            label: 'Title e.g Frontend Developer',
+            labelColor: Colors.white,
             require: true,
-            label: 'End Date',
-            controller: workExpCtrl.endDatectrl,
+            controller: titlectrl,
+            type: TextInputType.name,
+            validator: (value) {
+              if (value == null || value.isEmpty) {
+                return 'Please enter your title';
+              }
+              return null;
+            }),
+        formField(
+            label: 'Company Name',
+            labelColor: Colors.white,
+            require: true,
+            controller: companyNamectrl,
+            type: TextInputType.name,
+            validator: (value) {
+              if (value == null || value.isEmpty) {
+                return 'Please enter the company name';
+              }
+              return null;
+            }),
+        Obx(() => formDropDownField(
+            label: 'Employment Type',
+            labelStyle: kWhiteTxt,
+            dropdownValue: workExpCtrl.empTypeDropdown.value,
+            dropItems: workExpCtrl.empTypeStrs,
+            function: (String? newValue) {
+              workExpCtrl.empTypeDropdown.value = newValue!;
+            })),
+        formField(
+            label: 'Location',
+            labelColor: Colors.white,
+            require: true,
+            controller: locationctrl,
+            type: TextInputType.name,
+            validator: (value) {
+              if (value == null || value.isEmpty) {
+                return 'Please enter the location';
+              }
+              return null;
+            }),
+        Obx(() => formDropDownField(
+            label: 'Location Type',
+            labelStyle: kWhiteTxt,
+            dropdownValue: workExpCtrl.locTypeDropdown.value,
+            dropItems: workExpCtrl.locTypeStrs,
+            function: (String? newValue) {
+              workExpCtrl.locTypeDropdown.value = newValue!;
+            })),
+        dateFormField(
+            label: 'Start Date',
+            labelColor: Colors.white,
+            require: true,
+            controller: startDatectrl,
             onTap: () {
-              workExpCtrl.selectStartDate(context);
+              selectStartDate(context);
             },
             validator: (value) {
               if (value == null || value.isEmpty) {
-                return 'Please enter the end date';
+                return 'Please enter the start date';
               }
               return null;
+            }),
+        Padding(
+            padding: const EdgeInsets.symmetric(vertical: 3),
+            child: Row(mainAxisAlignment: MainAxisAlignment.end, children: [
+              const SizedBox(),
+              const Text('Currently Working Here:', style: kWhiteTxt),
+              Obx(() => Checkbox(
+                    side: const BorderSide(color: kPriPurple),
+                    checkColor: Colors.white,
+                    activeColor: kPriMaroon,
+                    value: workExpCtrl.currentlyWorking.value,
+                    onChanged: (value) {
+                      workExpCtrl.currentlyWorking.value = value!;
+                    },
+                  ))
+            ])),
+        Obx(() => workExpCtrl.currentlyWorking.value
+            ? Container()
+            : dateFormField(
+                require: true,
+                labelColor: Colors.white,
+                label: 'End Date',
+                controller: endDatectrl,
+                onTap: () {
+                  selectEndDate(context);
+                },
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please enter the end date';
+                  }
+                  return null;
+                })),
+        Obx(() => formDropDownField(
+            label: 'Industry the internship was/is based in',
+            labelStyle: kWhiteTxt,
+            dropdownValue: workExpCtrl.indDropdown.value,
+            dropItems: workExpCtrl.industryStrs,
+            function: (String? newValue) {
+              workExpCtrl.indDropdown.value = newValue!;
             })),
-    Obx(() => formDropDownField(
-        label: 'Industry the internship was/is based in',
-        dropdownValue: workExpCtrl.indDropdown.value,
-        dropItems: workExpCtrl.industryStrs,
-        function: (String? newValue) {
-          workExpCtrl.indDropdown.value = newValue!;
-        })),
-  ]);
+        primaryBtn(
+            label: btnLabel,
+            width: double.infinity,
+            isLoading: workExpCtrl.addExpLoading,
+            function: workExpCtrl.empTypeDropdown.value == '' ||
+                    workExpCtrl.indDropdown.value == '' ||
+                    workExpCtrl.locTypeDropdown.value == ''
+                ? null
+                : () async {
+                    workExpCtrl.crudWorkExp(expData: [
+                      endDate,
+                      startDate,
+                      titlectrl.text,
+                      companyNamectrl.text,
+                      locationctrl.text,
+                      startDatectrl.text,
+                      endDatectrl.text
+                    ], fromSetup: false, isEdit: isEdit);
+                  })
+      ],
+    );
+  }
 }

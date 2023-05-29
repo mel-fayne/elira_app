@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:elira_app/core/navigator.dart';
 import 'package:elira_app/screens/insights/insights.dart';
 import 'package:elira_app/screens/insights/insights_ctrl.dart';
 import 'package:elira_app/screens/insights/internships/internships_models.dart';
@@ -15,7 +16,6 @@ import 'package:fluttericon/font_awesome5_icons.dart';
 import 'package:http/http.dart' as http;
 import 'package:elira_app/utils/constants.dart';
 import 'package:get/get.dart';
-import 'package:intl/intl.dart';
 
 final insightsCtrl = Get.find<InsightsController>();
 
@@ -38,15 +38,6 @@ class WorkExpController extends GetxController {
   List<String> locTypeStrs = ['', 'On-Site', 'Online', 'Hybrid'];
   RxString locTypeDropdown = ''.obs;
 
-  final GlobalKey<FormState> workForm = GlobalKey<FormState>();
-  TextEditingController titlectrl = TextEditingController();
-  TextEditingController locationctrl = TextEditingController();
-  TextEditingController companyNamectrl = TextEditingController();
-  TextEditingController startDatectrl = TextEditingController();
-  TextEditingController endDatectrl = TextEditingController();
-  DateTime startDate = DateTime.now();
-  DateTime endDate = DateTime.now();
-  DateFormat dateFormat = DateFormat('yyyy-MM-dd');
   IndustryChartData indChart = IndustryChartData();
 
   int formCount = 0;
@@ -62,16 +53,10 @@ class WorkExpController extends GetxController {
     studentId = await getStudentId();
   }
 
-  @override
-  void dispose() {
-    titlectrl.dispose();
-    companyNamectrl.dispose();
-    locationctrl.dispose();
-    super.dispose();
-  }
-
   getIndustryChart() {
     List<InternshipIndustry> inds = [];
+    indChart.indicators = [];
+    indChart.sections = [];
     inds = insightsCtrl.stdWxProf.indPieChart;
     for (int i = 0; i < inds.length; i++) {
       var sect = PieChartSectionData(
@@ -134,71 +119,30 @@ class WorkExpController extends GetxController {
     update();
   }
 
-  Future<void> selectStartDate(BuildContext context) async {
-    final DateTime? picked = await showDatePicker(
-      context: context,
-      initialDate: startDate,
-      firstDate: DateTime(2000),
-      lastDate: DateTime.now(),
-      initialDatePickerMode: DatePickerMode.year,
-      initialEntryMode: DatePickerEntryMode.calendarOnly,
-      helpText: "Start Date",
-      cancelText: 'Cancel',
-      confirmText: 'Select',
-      selectableDayPredicate: (DateTime date) {
-        return date.isBefore(endDate);
-      },
-    );
-
-    if (picked != null && picked != startDate) {
-      startDate = picked;
-      startDatectrl.text = dateFormat.format(picked);
-    }
-    update();
-  }
-
-  Future<void> selectEndDate(BuildContext context) async {
-    final DateTime? picked = await showDatePicker(
-      context: context,
-      initialDate: startDate,
-      firstDate: startDate,
-      lastDate: DateTime.now(),
-      initialDatePickerMode: DatePickerMode.year,
-      initialEntryMode: DatePickerEntryMode.calendarOnly,
-      cancelText: 'Cancel',
-      confirmText: 'Select',
-      selectableDayPredicate: (DateTime date) {
-        return date.isAfter(startDate) || date.isAtSameMomentAs(startDate);
-      },
-    );
-
-    if (picked != null && picked != endDate) {
-      endDatectrl.text = dateFormat.format(picked);
-    }
-    update();
-  }
-
-  addWorkExp({required bool fromSetup, required bool isEdit}) async {
+  crudWorkExp(
+      {required List<dynamic> expData,
+      required bool fromSetup,
+      required bool isEdit}) async {
     addExpLoading.value = true;
     // calculate time spent
     var lastDate = DateTime.now();
     if (!currentlyWorking.value) {
-      lastDate = endDate;
+      lastDate = expData[0];
     }
-    int timeSpent = lastDate.difference(startDate).inDays ~/ 30;
+    int timeSpent = lastDate.difference(expData[1]).inDays ~/ 30;
     Map workExp = {
-      'title': titlectrl.text,
+      'title': expData[2],
       'employment_type': empTypeDropdown.value,
-      'company_name': companyNamectrl.text,
-      'location': locationctrl.text,
+      'company_name': expData[3],
+      'location': expData[4],
       'location_type': locTypeDropdown.value,
-      'start_date': startDatectrl.text,
+      'start_date': expData[5],
       'industry': getApiInd(indDropdown.value),
       'time_spent': timeSpent,
       'skills': []
     };
     if (!currentlyWorking.value) {
-      workExp['end_date'] = endDatectrl.text;
+      workExp['end_date'] = expData[6];
     }
 
     var body = jsonEncode({"student_id": studentId, "workExp": workExp});
@@ -208,7 +152,6 @@ class WorkExpController extends GetxController {
           await http.post(Uri.parse(wxpUrl), body: body, headers: headers);
 
       debugPrint("Got response ${res.statusCode}");
-      debugPrint(res.body);
 
       if (res.statusCode == 200) {
         if (!fromSetup) {
@@ -216,13 +159,13 @@ class WorkExpController extends GetxController {
           if (isEdit) {
             snackTitle = "Internship Updated!";
           }
-          // await insightsCtrl.getStudentInsights();
+          insightsCtrl.getStudentInsights();
           showSnackbar(
               path: Icons.check_rounded,
               title: snackTitle,
               subtitle: "Recomputing Overview ...");
           await Future.delayed(const Duration(seconds: 2));
-          Get.back();
+          Get.off(const NavigatorHandler(0));
         } else {
           intShpBoxes
               .where((element) => element.title == formCount.toString())
@@ -255,7 +198,6 @@ class WorkExpController extends GetxController {
             title: "Seems there's a problem on our side!",
             subtitle: "Please try again later");
       }
-      return;
     } catch (error) {
       showSnackbar(
           path: Icons.close_rounded,
@@ -264,39 +206,7 @@ class WorkExpController extends GetxController {
     }
     addExpLoading.value = false;
     update();
-  }
-
-  addInternship() {
-    workForm.currentState!.reset();
-    locTypeDropdown = ''.obs;
-    empTypeDropdown = ''.obs;
-    indDropdown = ''.obs;
-    currentlyWorking = false.obs;
-    startDate = DateTime.now();
-    endDate = DateTime.now();
-    Get.to(const AddWorkExpForm(isEdit: true));
-  }
-
-  editInternship(WorkExperience workExp) {
-    titlectrl.text = workExp.title;
-    companyNamectrl.text = workExp.companyName;
-    locationctrl.text = workExp.location;
-    locTypeDropdown.value = workExp.locationType;
-    empTypeDropdown.value = workExp.employmentType;
-    indDropdown.value = workExp.industry;
-    startDatectrl.text = workExp.startDate;
-    startDate = dateFormat.parse(workExp.startDate);
-    if (workExp.endDate == '') {
-      endDate = DateTime.now();
-      endDatectrl.text = '';
-      currentlyWorking.value = true;
-    } else {
-      endDate = dateFormat.parse(workExp.endDate);
-      endDatectrl.text = workExp.endDate;
-      currentlyWorking.value = false;
-    }
-
-    Get.to(const AddWorkExpForm(isEdit: true));
+    return;
   }
 
   String getApiInd(String intpName) {
@@ -334,7 +244,9 @@ class WorkExpController extends GetxController {
               children: [
                 GestureDetector(
                     onTap: () {
-                      editInternship(insightsCtrl.stdWxProf.internships[i]);
+                      Get.dialog(CrudWorkExpForm(
+                          insightsCtrl.stdWxProf.internships[i],
+                          isEdit: true));
                     },
                     child: Container(
                         width: 40,

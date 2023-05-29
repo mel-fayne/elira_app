@@ -188,12 +188,13 @@ Widget dropDownField(
 Widget formDropDownField(
     {required dropdownValue,
     required label,
+    labelStyle = kBlackTxt,
     required List<String> dropItems,
     required void Function(String?)? function}) {
   return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
     RichText(
         text: TextSpan(children: [
-      TextSpan(text: label, style: kBlackTxt),
+      TextSpan(text: label, style: labelStyle),
       const TextSpan(
         text: '*',
         style: TextStyle(
@@ -454,6 +455,7 @@ Widget studDtlsHeader(
 Widget dateFormField(
     {required label,
     required require,
+    labelColor = kPriDark,
     required TextEditingController controller,
     required final Function() onTap,
     required final String? Function(String?) validator}) {
@@ -466,11 +468,11 @@ Widget dateFormField(
                 text: TextSpan(children: [
               TextSpan(
                   text: label,
-                  style: const TextStyle(
+                  style: TextStyle(
                       fontSize: 12,
                       fontFamily: 'Nunito',
                       fontWeight: FontWeight.w500,
-                      color: kPriDark)),
+                      color: labelColor)),
               TextSpan(
                 text: require ? ' *' : '',
                 style: const TextStyle(
