@@ -53,7 +53,7 @@ class TechnicalsController extends GetxController {
           body: body, headers: headers);
 
       debugPrint("Got response ${res.statusCode}");
-      debugPrint(res.body);
+      ;
 
       if (res.statusCode == 200) {
         showSnackbar(
@@ -89,7 +89,7 @@ class TechnicalsController extends GetxController {
           headers: headers);
 
       debugPrint("Got response ${res.statusCode}");
-      debugPrint(res.body);
+      ;
 
       if (res.statusCode == 200) {
         insightsCtrl.getStudentInsights();

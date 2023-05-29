@@ -29,7 +29,7 @@ class SoftSkillsController extends GetxController {
           headers: headers);
 
       debugPrint("Got response ${res.statusCode}");
-      debugPrint(res.body);
+      ;
 
       if (res.statusCode == 200) {
         await insightsCtrl.getSoftSkillProfile();

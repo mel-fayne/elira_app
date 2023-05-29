@@ -39,7 +39,7 @@ class AuthController extends GetxController {
       var res =
           await http.post(Uri.parse(signUpUrl), body: body, headers: headers);
 
-      debugPrint(res.body);
+      ;
 
       var respBody = json.decode(res.body);
       if (res.statusCode == 200) {
@@ -124,7 +124,7 @@ class AuthController extends GetxController {
           body: body,
           headers: headers);
       debugPrint('Got resCode: ${res.statusCode}');
-      debugPrint(res.body);
+      ;
       if (res.statusCode == 200) {
         var profile = json.decode(res.body);
         setProfile(profile);
