@@ -65,6 +65,7 @@ class _MyAppState extends State<MyApp> {
 
   Future<bool> startApp() async {
     authCheck = await authCtrl.isLoggedIn();
+    // authCheck = false;
     return authCheck;
   }
 

@@ -228,6 +228,7 @@ class InsightsController extends GetxController {
 
   createSoftSkillProfie() async {
     debugPrint('Creating Soft Skills profile ...');
+    studentId = await getStudentId();
     var body = jsonEncode({'student_id': studentId});
     try {
       var res = await http.post(Uri.parse(ssProfileUrl),

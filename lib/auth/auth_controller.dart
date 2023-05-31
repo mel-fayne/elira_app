@@ -39,12 +39,12 @@ class AuthController extends GetxController {
       var res =
           await http.post(Uri.parse(signUpUrl), body: body, headers: headers);
 
-      ;
-
       var respBody = json.decode(res.body);
       if (res.statusCode == 200) {
         setlastLogin(DateFormat("EEE, dd/MM/yy, HH:mm").format(DateTime.now()));
         setProfile(respBody);
+        signUpLoading.value = false;
+        update();
         showSnackbar(
             path: Icons.check_rounded,
             title: "Successful Sign Up!",
@@ -53,6 +53,8 @@ class AuthController extends GetxController {
         await Future.delayed(const Duration(seconds: 2));
         Get.off(() => const SecurityQuestions(fromRecovery: false));
       } else {
+        signUpLoading.value = false;
+        update();
         showSnackbar(
             path: Icons.close_rounded,
             title: "Failed Sign Up!",
@@ -65,8 +67,6 @@ class AuthController extends GetxController {
           title: "Failed Sign Up!",
           subtitle: "Please check your internet connection or try again later");
     }
-    signUpLoading.value = false;
-    update();
   }
 
   signIn(List userdata) async {
@@ -81,6 +81,7 @@ class AuthController extends GetxController {
         setlastLogin(respBody['last_active']);
         setProfile(respBody);
         signInLoading.value = false;
+        update();
         showSnackbar(
             path: Icons.check_rounded,
             title: "Successful Sign In!",
@@ -91,12 +92,16 @@ class AuthController extends GetxController {
 
         Get.off(() => const NavigatorHandler(0));
       } else if (respBody['detail'] == 'Student not found!') {
+        signInLoading.value = false;
+        update();
         showSnackbar(
             path: Icons.close_rounded,
-            title: "Hey Newbie :)",
+            title: "Hello New user :)",
             subtitle:
-                "No account with the given email! Please register to create an account");
+                "Seems there's no account with your email! Tap Register to create an account");
       } else {
+        signInLoading.value = false;
+        update();
         showSnackbar(
             path: Icons.close_rounded,
             title: "Opps wrong password!",
@@ -124,7 +129,6 @@ class AuthController extends GetxController {
           body: body,
           headers: headers);
       debugPrint('Got resCode: ${res.statusCode}');
-      ;
       if (res.statusCode == 200) {
         var profile = json.decode(res.body);
         setProfile(profile);

@@ -178,7 +178,7 @@ match''',
                                             title: 'Soft Skills',
                                             statDesc: 'Current Avg.:',
                                             stat:
-                                                '${insightsCtrl.stdSsProf.avgScore.toString()}%',
+                                                '${insightsCtrl.stdSsProf.avgScore.round()}%',
                                             page: const SoftSkillsPage())
                                       ]))
                             ])
