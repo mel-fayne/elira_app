@@ -235,6 +235,32 @@ Widget bottomTitleWidgets(double value, TitleMeta meta) {
   );
 }
 
+Widget bottomStrathTitleWidgets(double value, TitleMeta meta) {
+  Widget text;
+  switch (value.toInt()) {
+    case 1:
+      text = const Text('First Year', style: kBlackTxt);
+      break;
+    case 2:
+      text = const Text('Second Year', style: kBlackTxt);
+      break;
+    case 3:
+      text = const Text('Third Year', style: kBlackTxt);
+      break;
+    case 4:
+      text = const Text('Fourth Year', style: kBlackTxt);
+      break;
+    default:
+      text = const Text('', style: kBlackTxt);
+      break;
+  }
+
+  return SideTitleWidget(
+    axisSide: meta.axisSide,
+    child: text,
+  );
+}
+
 Widget leftTitleWidgets(double value, TitleMeta meta) {
   Widget text;
   switch (value.toInt()) {

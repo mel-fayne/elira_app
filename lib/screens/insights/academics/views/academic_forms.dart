@@ -65,25 +65,51 @@ class _AcademicProfileFormState extends State<AcademicProfileForm> {
                                       setState(() {
                                         acProfCtrl.schoolDropdown.value =
                                             newValue!;
+                                        if (newValue ==
+                                            'Strathmore University') {
+                                          acProfCtrl.isStrath.value = true;
+                                        } else {
+                                          acProfCtrl.isStrath.value = false;
+                                        }
+                                        acProfCtrl.fourSemDropdown.value = '';
+                                        acProfCtrl.eightSemDropdown.value = '';
+                                        acProfCtrl.semValue.value = '';
                                       });
                                     }),
-                                formDropDownField(
-                                    label: 'Current Semester',
-                                    dropdownValue: acProfCtrl.semDropdown.value,
-                                    dropItems: acProfCtrl.semesterStrs,
-                                    function: (String? newValue) {
-                                      setState(() {
-                                        acProfCtrl.semDropdown.value =
-                                            newValue!;
-                                      });
-                                    }),
+                                Obx(() => acProfCtrl.isStrath.value
+                                    ? formDropDownField(
+                                        label: 'Current Semester',
+                                        dropdownValue:
+                                            acProfCtrl.fourSemDropdown.value,
+                                        dropItems: acProfCtrl.fourStrs,
+                                        function: (String? newValue) {
+                                          setState(() {
+                                            acProfCtrl.fourSemDropdown.value =
+                                                newValue!;
+                                            acProfCtrl.semValue.value =
+                                                newValue;
+                                          });
+                                        })
+                                    : formDropDownField(
+                                        label: 'Current Semester',
+                                        dropdownValue:
+                                            acProfCtrl.eightSemDropdown.value,
+                                        dropItems: acProfCtrl.eightStrs,
+                                        function: (String? newValue) {
+                                          setState(() {
+                                            acProfCtrl.eightSemDropdown.value =
+                                                newValue!;
+                                            acProfCtrl.semValue.value =
+                                                newValue;
+                                          });
+                                        })),
                               ],
                             )),
                         primaryBtn(
                             label: 'Load Transcripts',
                             isLoading: acProfCtrl.createAcLoading,
                             function: acProfCtrl.schoolDropdown.value == '' ||
-                                    acProfCtrl.semDropdown.value == ''
+                                    acProfCtrl.semValue.value == ''
                                 ? null
                                 : () async {
                                     await acProfCtrl.createAcademicProfile();
@@ -171,20 +197,22 @@ class _TranscriptPageState extends State<TranscriptPage> {
                               shrinkWrap: true,
                               physics: const NeverScrollableScrollPhysics(),
                               itemBuilder: (context, index) {
-                                var units =
+                                List<StudentUnit> units =
                                     acProfCtrl.currentTranscript.studentUnits;
                                 return buildSingleUnit(
                                     setState: setState, unit: units[index]);
                               },
                               itemCount: acProfCtrl
-                                  .currentTranscript.studentUnits.length,
-                            )
-                          : Container()),
+                                  .currentTranscript.studentUnits.length)
+                          : const SizedBox()),
                   primaryBtn(
                       label: 'Upload Transcript',
                       isLoading: acProfCtrl.updateAcLoading,
                       function: () async {
-                        acProfCtrl.updateAcademicProfile(true, false);
+                        await acProfCtrl.updateAcademicProfile(true, false);
+                        setState(() {
+                          debugPrint('refresh');
+                        });
                       })
                 ])));
   }
@@ -217,31 +245,6 @@ class _TranscriptPageState extends State<TranscriptPage> {
                             : kPriPurple,
                     fontFamily: 'Nunito',
                     fontWeight: FontWeight.bold))));
-  }
-
-  buildSingleUnit({required StudentUnit unit, required StateSetter setState}) {
-    return Padding(
-        padding: const EdgeInsets.symmetric(vertical: 10),
-        child: Row(children: [
-          Container(
-              width: 225,
-              margin: const EdgeInsets.only(right: 25),
-              padding: const EdgeInsets.symmetric(horizontal: 15),
-              child: Text(
-                unit.unitName,
-                style: kWhiteTxt,
-                softWrap: true,
-              )),
-          dropDownField(
-              dropdownValue: unit.grade.value,
-              dropItems: acProfCtrl.grades,
-              bgcolor: kLightPurple,
-              function: (String? newValue) {
-                setState(() {
-                  unit.grade.value = newValue!;
-                });
-              })
-        ]));
   }
 }
 
@@ -340,6 +343,32 @@ class _AddTranscriptFormState extends State<AddTranscriptForm> {
               })
         ]));
   }
+}
+
+Widget buildSingleUnit(
+    {required StudentUnit unit, required StateSetter setState}) {
+  return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 10),
+      child: Row(children: [
+        Container(
+            width: 225,
+            margin: const EdgeInsets.only(right: 25),
+            padding: const EdgeInsets.symmetric(horizontal: 15),
+            child: Text(
+              unit.unitName,
+              style: kWhiteTxt,
+              softWrap: true,
+            )),
+        dropDownField(
+            dropdownValue: unit.grade.value,
+            dropItems: acProfCtrl.grades,
+            bgcolor: kLightPurple,
+            function: (String? newValue) {
+              setState(() {
+                unit.grade.value = newValue!;
+              });
+            })
+      ]));
 }
 
 class TermsConditions extends StatefulWidget {

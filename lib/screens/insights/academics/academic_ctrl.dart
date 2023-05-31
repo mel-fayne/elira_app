@@ -1,6 +1,7 @@
 import 'package:elira_app/core/navigator.dart';
 import 'package:elira_app/screens/insights/academics/views/academic_forms.dart';
 import 'package:elira_app/screens/insights/github/views/technical_forms.dart';
+import 'package:elira_app/screens/insights/insights.dart';
 import 'package:elira_app/screens/insights/insights_ctrl.dart';
 import 'package:elira_app/screens/insights/insights_models.dart';
 import 'package:elira_app/screens/insights/academics/academic_models.dart';
@@ -21,9 +22,15 @@ final insightsCtrl = Get.find<InsightsController>();
 
 class AcademicController extends GetxController {
   int? studentId;
-  List<String> schoolStrs = ['', 'JKUAT', 'UoN', 'Strathmore'];
+  List<String> schoolStrs = [
+    '',
+    'Jomo Kenyatta',
+    'University of Nairobi',
+    'Strathmore University'
+  ];
   RxString schoolDropdown = ''.obs;
-  List<String> semesterStrs = [
+  RxBool isStrath = false.obs;
+  List<String> eightStrs = [
     '',
     '1.1',
     '1.2',
@@ -34,7 +41,10 @@ class AcademicController extends GetxController {
     '4.1',
     '4.2'
   ];
-  RxString semDropdown = ''.obs;
+  List<String> fourStrs = ['', '1.0', '2.0', '3.0', '4.0'];
+  RxString eightSemDropdown = ''.obs;
+  RxString fourSemDropdown = ''.obs;
+  RxString semValue = ''.obs;
   List<String> grades = ['', 'A', 'B', 'C', 'D', 'E'];
   List<Transcript> emptyTranscripts = [];
   Transcript currentTranscript = Transcript();
@@ -56,7 +66,7 @@ class AcademicController extends GetxController {
   void onInit() async {
     super.onInit();
     studentId = await getStudentId();
-    getSemUnitsData();
+    await getSemUnitsData();
   }
 
   getSemUnitsData() async {
@@ -78,8 +88,14 @@ class AcademicController extends GetxController {
         // load student semesters
         studentSemesters = RxList<StudentSemester>();
         respBody['semData'].forEach((sem, details) {
+          String semTitle = '';
+          if (insightsCtrl.stdAcdProf.school == 'STRATH') {
+            semTitle = getStrathSemTitle(sem);
+          } else {
+            semTitle = getSemTitle(double.parse(sem));
+          }
           StudentSemester semHolder = StudentSemester(
-              getSemTitle(double.parse(sem)),
+              semTitle,
               details['honours'],
               details['status'],
               double.parse(details['average'].toString()),
@@ -102,16 +118,29 @@ class AcademicController extends GetxController {
 
         carSems = [];
         for (int i = 0; i < groupedSemesters.length; i++) {
-          String title = getYearTitle(i + 1);
-          double semAvg = 0.0;
-          List<StudentSemester> semList = groupedSemesters[i];
-          for (var sem in semList) {
-            semAvg = semAvg + sem.average;
+          if (insightsCtrl.stdAcdProf.school == 'STRATH') {
+            String title = getStrathYearTitle(i + 1);
+            double semAvg = 0.0;
+            List<StudentSemester> semList = groupedSemesters[i];
+            for (var sem in semList) {
+              semAvg = semAvg + sem.average;
+            }
+            semAvg = semAvg / semList.length;
+            CarouselSemesters carHolder =
+                CarouselSemesters(title, semAvg, semList);
+            carSems.add(carHolder);
+          } else {
+            String title = getYearTitle(i + 1);
+            double semAvg = 0.0;
+            List<StudentSemester> semList = groupedSemesters[i];
+            for (var sem in semList) {
+              semAvg = semAvg + sem.average;
+            }
+            semAvg = semAvg / semList.length;
+            CarouselSemesters carHolder =
+                CarouselSemesters(title, semAvg, semList);
+            carSems.add(carHolder);
           }
-          semAvg = semAvg / semList.length;
-          CarouselSemesters carHolder =
-              CarouselSemesters(title, semAvg, semList);
-          carSems.add(carHolder);
         }
         update();
         debugPrint('gotten all sem units');
@@ -125,7 +154,7 @@ class AcademicController extends GetxController {
     } catch (error) {
       showSnackbar(
           path: Icons.close_rounded,
-          title: "Failed To Load Academic Profile!",
+          title: "Failed To Load Semester Units!",
           subtitle: "Please check your internet connection or try again later");
     }
   }
@@ -134,8 +163,8 @@ class AcademicController extends GetxController {
     createAcLoading.value = true;
     var body = jsonEncode({
       'student_id': studentId,
-      'school': schoolDropdown.value,
-      'current_sem': double.parse(semDropdown.value)
+      'school': getSchoolName(schoolDropdown.value),
+      'current_sem': double.parse(semValue.value)
     });
     try {
       var res = await http.post(Uri.parse(academicProfileUrl),
@@ -144,7 +173,9 @@ class AcademicController extends GetxController {
       debugPrint("Got response ${res.statusCode}");
 
       if (res.statusCode == 200) {
-        if (double.parse(semDropdown.value) == 1.1) {
+        if (double.parse(semValue.value) == 1.1 ||
+            double.parse(semValue.value) == 1.0) {
+          // has no previous units
           showSnackbar(
               path: Icons.check_rounded,
               title: "Academic Profile Complete!",
@@ -153,8 +184,9 @@ class AcademicController extends GetxController {
           await Future.delayed(const Duration(seconds: 2));
           Get.off(const TechProfileForm());
         } else {
-          var respBody = json.decode(res.body);
+          // has at least one semester's units
 
+          var respBody = json.decode(res.body);
           // store empty transcripts
           respBody.forEach((semester, units) {
             if (units.isNotEmpty) {
@@ -202,15 +234,19 @@ class AcademicController extends GetxController {
 
   updateAcademicProfile(bool fromSetup, bool isEdit) async {
     updateAcLoading.value = true;
-    // upload current semester's transcript
+
     var units = [];
     for (var unit in currentTranscript.studentUnits) {
       var holder = CompleteUnit.fromStudentUnit(unit);
       units.add(holder.toJson());
     }
+
     double currentSem = 1.1;
+
     if (fromSetup) {
-      currentSem = double.parse(semDropdown.value);
+      currentSem = double.parse(semValue.value);
+    } else if (isEdit) {
+      currentSem = insightsCtrl.stdAcdProf.currentSem;
     } else {
       currentSem = getNextSem(insightsCtrl.stdAcdProf.currentSem.toString());
     }
@@ -226,7 +262,6 @@ class AcademicController extends GetxController {
       debugPrint("Got response ${res.statusCode}");
       if (res.statusCode == 200) {
         if (fromSetup) {
-          // move to the next transcript
           semBoxes
               .where((element) =>
                   element.title == currentTranscript.semester.value)
@@ -234,7 +269,9 @@ class AcademicController extends GetxController {
               .complete
               .value = true;
           transcriptIdx = transcriptIdx + 1;
+
           if (transcriptIdx == emptyTranscripts.length) {
+            // all scripts filled
             showSnackbar(
                 path: Icons.check_rounded,
                 title: "Academic Profile Complete!",
@@ -243,17 +280,21 @@ class AcademicController extends GetxController {
             await Future.delayed(const Duration(seconds: 2));
             Get.off(const TechProfileForm());
           } else {
+            // move to the next transcript
             currentTranscript = emptyTranscripts[transcriptIdx];
+            updateAcLoading.value = false;
+            update();
             showSnackbar(
                 path: Icons.check_rounded,
                 title: "Transcript Uploaded",
                 subtitle: "Onto the next!");
             await Future.delayed(const Duration(seconds: 2));
           }
-          update();
         } else {
           await getSemUnitsData();
           insightsCtrl.getStudentInsights();
+          updateAcLoading.value = false;
+          update();
           if (isEdit) {
             showSnackbar(
                 path: FontAwesome5.hand_sparkles,
@@ -266,8 +307,8 @@ class AcademicController extends GetxController {
                 subtitle:
                     "Congratulations on finishing ${insightsCtrl.stdAcdProf.currentSem.toString()}");
           }
-          await Future.delayed(const Duration(seconds: 7));
-          Get.off(const NavigatorHandler(0));
+          await Future.delayed(const Duration(seconds: 4));
+          Get.off(const InsightsPage());
         }
       } else {
         showSnackbar(
@@ -281,8 +322,7 @@ class AcademicController extends GetxController {
           title: "Transcripts not uploaded!",
           subtitle: "Please check your internet connection or try again later");
     }
-    updateAcLoading.value = false;
-    update();
+
     return;
   }
 
@@ -345,7 +385,7 @@ class AcademicController extends GetxController {
       title = 'First Year';
     } else if (year == 2) {
       title = 'Second Year';
-    } else if (year == 2) {
+    } else if (year == 3) {
       title = 'Third Year';
     } else {
       title = 'Fourth Year';
@@ -353,7 +393,17 @@ class AcademicController extends GetxController {
     return title;
   }
 
-  getSemTitle(double sem) {
+  String getStrathYearTitle(int year) {
+    var title = '';
+    if (year == 1) {
+      title = 'First Half';
+    } else {
+      title = 'Second Half';
+    }
+    return title;
+  }
+
+  String getSemTitle(double sem) {
     int decimalPart = ((sem * 10) % 10).toInt();
     var title = '';
     if (decimalPart == 1) {
@@ -364,13 +414,48 @@ class AcademicController extends GetxController {
     return title;
   }
 
+  String getStrathSemTitle(String sem) {
+    var title = '';
+    if (sem == '1.0') {
+      title = '1st Year';
+    } else if (sem == '2.0') {
+      title = '2nd Year';
+    } else if (sem == '3.0') {
+      title = '3rd Year';
+    } else {
+      title = '4th Year';
+    }
+    return title;
+  }
+
   double getNextSem(String currSem) {
     String nextSem = '';
+    List<String> semesterStrs = [...eightStrs];
+    if (insightsCtrl.stdAcdProf.school == 'STRATH') {
+      semesterStrs = [];
+      semesterStrs = [...fourStrs];
+    }
     var nextSemIdx = semesterStrs.indexWhere((element) =>
             element == insightsCtrl.stdAcdProf.currentSem.toString()) +
         1;
-    nextSem = semesterStrs[nextSemIdx];
+    if (nextSemIdx == semesterStrs.length) {
+      nextSem = semesterStrs[semesterStrs.length - 1];
+    } else {
+      nextSem = semesterStrs[nextSemIdx];
+    }
     return double.parse(nextSem);
+  }
+
+  String getSchoolName(String appName) {
+    String schoolName = '';
+    if (appName == 'Jomo Kenyatta') {
+      schoolName = 'JKUAT';
+    } else if (appName == 'University of Nairobi') {
+      schoolName = 'UoN';
+    } else {
+      schoolName = 'STRATH';
+    }
+    return schoolName;
   }
 
   List<Widget> semSliders() {
@@ -402,7 +487,7 @@ class AcademicController extends GetxController {
                               vertical: 5, horizontal: 10),
                           decoration: const BoxDecoration(color: Colors.white),
                           child: Text(
-                            '${carSems[i].average}%',
+                            '${carSems[i].average.toStringAsFixed(2)}%',
                             textAlign: TextAlign.center,
                             style: kPurpleTxt,
                           )),
@@ -467,8 +552,8 @@ class AcademicController extends GetxController {
                                   ),
                                   Row(children: [
                                     Padding(
-                                        padding:
-                                            const EdgeInsets.only(right: 5),
+                                        padding: const EdgeInsets.only(
+                                            left: 2, right: 2),
                                         child: Icon(
                                             semesters[index].status == 'Drop'
                                                 ? Icons.arrow_downward
@@ -479,14 +564,14 @@ class AcademicController extends GetxController {
                                                 ? kPriRed
                                                 : kPriGreen)),
                                     Text(
-                                      '${semesters[index].difference}%',
+                                      '${semesters[index].difference.toStringAsFixed(1)}%',
                                       style: TextStyle(
                                           color:
                                               semesters[index].status == 'Drop'
                                                   ? kPriRed
                                                   : kPriGreen,
                                           fontFamily: 'Nunito',
-                                          fontSize: 17,
+                                          fontSize: 15,
                                           fontWeight: FontWeight.w700),
                                     )
                                   ])

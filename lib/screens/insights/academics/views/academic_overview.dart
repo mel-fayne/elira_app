@@ -87,10 +87,14 @@ class honours''', softWrap: true, textAlign: TextAlign.center, style: kDarkTxt)
                             width: 135.0,
                             isLoading: acProfCtrl.newTransLoading,
                             function: () async {
-                              Get.dialog(
-                                   AddTranscriptForm(isEdit: false, year: '', sem: StudentSemester(
-                                    '', '', '', 0.0, 0.0, []
-                                   )));
+                              acProfCtrl.getNextSem(insightsCtrl
+                                  .stdAcdProf.currentSem
+                                  .toString());
+                              // Get.dialog(AddTranscriptForm(
+                              //     isEdit: false,
+                              //     year: '',
+                              //     sem: StudentSemester(
+                              //         '', '', '', 0.0, 0.0, [])));
                             })
                       ])),
               Container(
@@ -179,7 +183,11 @@ class honours''', softWrap: true, textAlign: TextAlign.center, style: kDarkTxt)
                               bottomTitles: AxisTitles(
                                   sideTitles: SideTitles(
                                       showTitles: true,
-                                      getTitlesWidget: bottomTitleWidgets)),
+                                      getTitlesWidget:
+                                          insightsCtrl.stdAcdProf.school ==
+                                                  'STRATH'
+                                              ? bottomStrathTitleWidgets
+                                              : bottomTitleWidgets)),
                               leftTitles: AxisTitles(
                                   sideTitles: SideTitles(
                                       reservedSize: 55,
@@ -201,7 +209,9 @@ class honours''', softWrap: true, textAlign: TextAlign.center, style: kDarkTxt)
                             ),
                             lineTouchData: LineTouchData(enabled: true),
                             minX: 0,
-                            maxX: 8,
+                            maxX: insightsCtrl.stdAcdProf.school == 'STRATH'
+                                ? 4
+                                : 8,
                             minY: 0,
                             maxY: 100),
                       ),
