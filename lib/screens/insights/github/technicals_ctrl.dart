@@ -1,7 +1,7 @@
 import 'dart:convert';
 
-import 'package:elira_app/core/navigator.dart';
 import 'package:elira_app/screens/insights/github/technical_models.dart';
+import 'package:elira_app/screens/insights/insights.dart';
 import 'package:elira_app/screens/insights/insights_ctrl.dart';
 import 'package:elira_app/screens/insights/internships/views/internship_forms.dart';
 import 'package:elira_app/theme/colors.dart';
@@ -53,8 +53,6 @@ class TechnicalsController extends GetxController {
           body: body, headers: headers);
 
       debugPrint("Got response ${res.statusCode}");
-      ;
-
       if (res.statusCode == 200) {
         showSnackbar(
             path: Icons.check_rounded,
@@ -89,7 +87,6 @@ class TechnicalsController extends GetxController {
           headers: headers);
 
       debugPrint("Got response ${res.statusCode}");
-      ;
 
       if (res.statusCode == 200) {
         insightsCtrl.getStudentInsights();
@@ -100,7 +97,7 @@ class TechnicalsController extends GetxController {
             title: "Technical Profile Updated!",
             subtitle: "Recomputing Overview ...");
         await Future.delayed(const Duration(seconds: 2));
-        Get.off(() => const NavigatorHandler(0));
+        Get.off(() => const InsightsPage());
       } else {
         showSnackbar(
             path: Icons.close_rounded,

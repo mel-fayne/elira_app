@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:elira_app/screens/insights/insights.dart';
 import 'package:elira_app/screens/insights/insights_ctrl.dart';
 import 'package:elira_app/screens/insights/softskills/softskills_models.dart';
 import 'package:elira_app/theme/global_widgets.dart';
@@ -23,23 +24,20 @@ class SoftSkillsController extends GetxController {
   editSoftSkillProfile(SoftSkill skill) async {
     var body = jsonEncode(skill.toJson());
     try {
-      var res = await http.patch(
-          Uri.parse('$ssProfileUrl/${studentId.toString()}'),
-          body: body,
-          headers: headers);
+      var res = await http.patch(Uri.parse('$ssProfileUrl/$studentId'),
+          body: body, headers: headers);
 
       debugPrint("Got response ${res.statusCode}");
-      ;
 
       if (res.statusCode == 200) {
-        await insightsCtrl.getSoftSkillProfile();
+        insightsCtrl.getStudentInsights();
         update();
         showSnackbar(
             path: Icons.check_rounded,
             title: "Soft Skill Profile Updated!",
             subtitle: "Recomputing Overview ...");
         await Future.delayed(const Duration(seconds: 2));
-        Get.back();
+        Get.off(() => const InsightsPage());
       } else {
         showSnackbar(
             path: Icons.close_rounded,

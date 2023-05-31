@@ -57,7 +57,7 @@ class _SoftSkillsPageState extends State<SoftSkillsPage> {
                         const Padding(
                             padding: EdgeInsets.only(bottom: 10),
                             child: Text('Overall Score', style: kCardSubtitle)),
-                        Text(insightsCtrl.stdSsProf.avgScore.toString(),
+                        Text(insightsCtrl.stdSsProf.avgScore.round().toString(),
                             style: kCardTitle)
                       ]),
                       Container(
@@ -120,7 +120,7 @@ class _SoftSkillsPageState extends State<SoftSkillsPage> {
                                     animation: true,
                                     percent: skills[index].score / 100,
                                     center: Text(
-                                      '${skills[index].score}%',
+                                      '${skills[index].score.round()}%',
                                       style: kWhiteTxt,
                                     ),
                                     barRadius: const Radius.circular(10),
@@ -164,6 +164,7 @@ class SoftSkillsForm extends StatefulWidget {
 
 class SoftSkillsFormState extends State<SoftSkillsForm> {
   late SoftSkill skill;
+  RxBool isLoading = false.obs;
   SoftSkillsFormState(this.skill);
 
   @override
@@ -179,7 +180,7 @@ class SoftSkillsFormState extends State<SoftSkillsForm> {
         popupTitle(label: skill.name),
         popupSubtitle(label: skill.desc),
         const Text('Out of 100, how would you rate yourself in this skill?',
-            style: kWhiteTxt),
+            style: kLightPurTxt),
         Container(
           width: double.maxFinite,
           decoration: BoxDecoration(
@@ -189,7 +190,7 @@ class SoftSkillsFormState extends State<SoftSkillsForm> {
           child: Slider(
               min: 0.0,
               max: 100.0,
-              label: '${skill.score.round()}',
+              label: skill.score.round().toString(),
               inactiveColor: kLightPurple,
               activeColor: kPriPurple,
               thumbColor: kPriMaroon,
@@ -199,7 +200,19 @@ class SoftSkillsFormState extends State<SoftSkillsForm> {
                   skill.score = value;
                 });
               }),
-        )
+        ),
+        Padding(
+            padding: const EdgeInsets.symmetric(vertical: 10),
+            child: Text(
+              '${skill.score.round().toString()}%',
+              style: kCardTitle,
+            )),
+        primaryBtn(
+            label: 'Edit Soft Skill',
+            isLoading: isLoading,
+            function: () {
+              ssProfCtrl.editSoftSkillProfile(skill);
+            })
       ],
     );
   }
