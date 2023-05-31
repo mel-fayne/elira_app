@@ -194,7 +194,7 @@ class _UserFormState extends State<UserForm> {
                       "last_name": lastnamectrl.text,
                       "email": emailctrl.text
                     });
-                    authCtrl.updateStudent(studentBody, "Redirecting ...",
+                    await authCtrl.updateStudent(studentBody, "Redirecting ...",
                         "Account Details Updated", false);
                     Get.back();
                   } else {

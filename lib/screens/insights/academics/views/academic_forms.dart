@@ -193,17 +193,47 @@ class _TranscriptPageState extends State<TranscriptPage> {
                           borderRadius: BorderRadius.circular(15)),
                       child: acProfCtrl
                               .currentTranscript.studentUnits.isNotEmpty
-                          ? ListView.builder(
+                          ? Obx(() => ListView.builder(
                               shrinkWrap: true,
                               physics: const NeverScrollableScrollPhysics(),
                               itemBuilder: (context, index) {
-                                List<StudentUnit> units =
-                                    acProfCtrl.currentTranscript.studentUnits;
-                                return buildSingleUnit(
-                                    setState: setState, unit: units[index]);
+                                return Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        vertical: 10),
+                                    child: Row(children: [
+                                      Container(
+                                          width: 225,
+                                          margin:
+                                              const EdgeInsets.only(right: 25),
+                                          padding: const EdgeInsets.symmetric(
+                                              horizontal: 15),
+                                          child: Text(
+                                            acProfCtrl.currentTranscript
+                                                .studentUnits[index].unitName,
+                                            style: kWhiteTxt,
+                                            softWrap: true,
+                                          )),
+                                      dropDownField(
+                                          dropdownValue: acProfCtrl
+                                              .currentTranscript
+                                              .studentUnits[index]
+                                              .grade
+                                              .value,
+                                          dropItems: acProfCtrl.grades,
+                                          bgcolor: kLightPurple,
+                                          function: (String? newValue) {
+                                            setState(() {
+                                              acProfCtrl
+                                                  .currentTranscript
+                                                  .studentUnits[index]
+                                                  .grade
+                                                  .value = newValue!;
+                                            });
+                                          })
+                                    ]));
                               },
                               itemCount: acProfCtrl
-                                  .currentTranscript.studentUnits.length)
+                                  .currentTranscript.studentUnits.length))
                           : const SizedBox()),
                   primaryBtn(
                       label: 'Upload Transcript',

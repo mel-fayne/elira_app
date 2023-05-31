@@ -82,7 +82,7 @@ String getIndName(String apiName) {
   String name = '';
   if (apiName == 'sd_industry') {
     name = 'Software Development';
-  } else if (apiName == 'sd_industry') {
+  } else if (apiName == 'ai_industry') {
     name = 'A.I & Data';
   } else if (apiName == 'gd_industry') {
     name = 'Design & Graphics';

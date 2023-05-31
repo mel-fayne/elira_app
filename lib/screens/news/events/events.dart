@@ -28,7 +28,8 @@ class _EventsPageState extends State<EventsPage> {
   Widget build(BuildContext context) {
     return Scaffold(
         body: SingleChildScrollView(
-            padding: const EdgeInsets.symmetric(vertical: 40, horizontal: 20),
+            padding:
+                const EdgeInsets.only(top: 75, bottom: 20, left: 20, right: 20),
             child:
                 Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
               const Text(

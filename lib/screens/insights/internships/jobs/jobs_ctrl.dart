@@ -20,6 +20,7 @@ class JobsController extends GetxController {
   RxString currentView = ''.obs;
   RxString filterArea = ''.obs;
   List<String> jobAreas = [
+    '',
     'Data & AI',
     'Software',
     'Networking & Cloud',

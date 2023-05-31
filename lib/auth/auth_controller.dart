@@ -132,6 +132,8 @@ class AuthController extends GetxController {
       if (res.statusCode == 200) {
         var profile = json.decode(res.body);
         setProfile(profile);
+        updateStdLoading.value = false;
+        update();
         showSnackbar(
             path: Icons.check_rounded, title: title, subtitle: subtitle);
         await Future.delayed(const Duration(seconds: 2));
@@ -142,20 +144,22 @@ class AuthController extends GetxController {
           Get.back();
         }
       } else {
+        updateStdLoading.value = false;
+        update();
         showSnackbar(
             path: Icons.close_rounded,
             title: "Update Failed",
-            subtitle: "Please confirm your details!");
+            subtitle: "User account with this email exists!");
       }
       return;
     } catch (error) {
+      updateStdLoading.value = false;
+      update();
       showSnackbar(
           path: Icons.close_rounded,
           title: "Details not updated!",
           subtitle: "Please check your internet connection or try again later");
     }
-    updateStdLoading.value = false;
-    update();
   }
 
   sendRecovery(String email) async {

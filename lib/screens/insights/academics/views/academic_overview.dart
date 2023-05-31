@@ -86,15 +86,12 @@ class honours''', softWrap: true, textAlign: TextAlign.center, style: kDarkTxt)
                             label: 'Add Transcript',
                             width: 135.0,
                             isLoading: acProfCtrl.newTransLoading,
-                            function: () async {
-                              acProfCtrl.getNextSem(insightsCtrl
-                                  .stdAcdProf.currentSem
-                                  .toString());
-                              // Get.dialog(AddTranscriptForm(
-                              //     isEdit: false,
-                              //     year: '',
-                              //     sem: StudentSemester(
-                              //         '', '', '', 0.0, 0.0, [])));
+                            function: ()  {
+                              Get.dialog(AddTranscriptForm(
+                                  isEdit: false,
+                                  year: '',
+                                  sem: StudentSemester(
+                                      '', '', '', 0.0, 0.0, [])));
                             })
                       ])),
               Container(
