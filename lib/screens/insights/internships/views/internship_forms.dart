@@ -337,6 +337,9 @@ class _WorkExpFormState extends State<WorkExpForm> {
                                 startDatectrl.text,
                                 endDatectrl.text
                               ], fromSetup: true, isEdit: false);
+                              workExpCtrl.empTypeDropdown.value = '';
+                              workExpCtrl.indDropdown.value = '';
+                              workExpCtrl.locTypeDropdown.value = '';
                               workForm.currentState!.reset();
                             }
                           }

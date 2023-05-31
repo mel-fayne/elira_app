@@ -29,6 +29,7 @@ class _AcademicOverviewState extends State<AcademicOverview> {
   @override
   void initState() {
     super.initState();
+    acProfCtrl.getSemUnitsData();
   }
 
   @override
@@ -86,7 +87,8 @@ class honours''', softWrap: true, textAlign: TextAlign.center, style: kDarkTxt)
                             label: 'Add Transcript',
                             width: 135.0,
                             isLoading: acProfCtrl.newTransLoading,
-                            function: ()  {
+                            function: () async {
+                              await acProfCtrl.getNewTranscript();
                               Get.dialog(AddTranscriptForm(
                                   isEdit: false,
                                   year: '',

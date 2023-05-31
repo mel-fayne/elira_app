@@ -151,7 +151,8 @@ class LoginState extends State<Login> {
                     function: () {
                       Get.to(const SignUp());
                     })
-              ])
+              ]),
+              const SizedBox(height: 150)
             ])));
   }
 }
