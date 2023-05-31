@@ -88,7 +88,7 @@ class WorkExpController extends GetxController {
               subtitle:
                   "Your student profile is complete. Your specialisation is ...");
           await Future.delayed(const Duration(seconds: 2));
-          Get.off(() => const InsightsPage());
+          Get.off(() => const NavigatorHandler(0));
         } else {
           for (var i = 0; i < internshipNo; i++) {
             NumberBox intShp = NumberBox();
@@ -121,7 +121,8 @@ class WorkExpController extends GetxController {
   }
 
   crudWorkExp(
-      {required List<dynamic> expData,
+      {int wxpId = 0,
+      required List<dynamic> expData,
       required bool fromSetup,
       required bool isEdit}) async {
     addExpLoading.value = true;
@@ -131,6 +132,7 @@ class WorkExpController extends GetxController {
       lastDate = expData[0];
     }
     int timeSpent = lastDate.difference(expData[1]).inDays ~/ 30;
+
     Map workExp = {
       'title': expData[2],
       'employment_type': empTypeDropdown.value,
@@ -146,12 +148,21 @@ class WorkExpController extends GetxController {
       workExp['end_date'] = expData[6];
     }
 
-    var body = jsonEncode({"student_id": studentId, "workExp": workExp});
+    String body = '';
+    if (isEdit) {
+      body = jsonEncode(workExp);
+    } else {
+      body = jsonEncode({"student_id": studentId, "workExp": workExp});
+    }
 
     try {
-      var res =
-          await http.post(Uri.parse(wxpUrl), body: body, headers: headers);
-
+      dynamic res;
+      if (isEdit) {
+        res = await http.patch(Uri.parse('$wxpUrl/$wxpId'),
+            body: body, headers: headers);
+      } else {
+        res = await http.post(Uri.parse(wxpUrl), body: body, headers: headers);
+      }
       debugPrint("Got response ${res.statusCode}");
 
       if (res.statusCode == 200) {
@@ -166,7 +177,7 @@ class WorkExpController extends GetxController {
               title: snackTitle,
               subtitle: "Recomputing Overview ...");
           await Future.delayed(const Duration(seconds: 2));
-          Get.off(const NavigatorHandler(0));
+          Get.off(const InsightsPage());
         } else {
           intShpBoxes
               .where((element) => element.title == formCount.toString())
@@ -206,6 +217,35 @@ class WorkExpController extends GetxController {
     }
     addExpLoading.value = false;
     update();
+    return;
+  }
+
+  deleteInternship(int id) async {
+    try {
+      var res = await http.delete(Uri.parse('$wxpUrl/$id'), headers: headers);
+
+      debugPrint("Got response ${res.statusCode}");
+
+      if (res.statusCode == 200) {
+        insightsCtrl.getStudentInsights();
+        showSnackbar(
+            path: Icons.check_rounded,
+            title: "Internship Deleted",
+            subtitle: "Recomputing Overview ...");
+        await Future.delayed(const Duration(seconds: 2));
+        Get.off(const InsightsPage());
+      } else {
+        showSnackbar(
+            path: Icons.close_rounded,
+            title: "Seems there's a problem on our side!",
+            subtitle: "Please try again later");
+      }
+    } catch (error) {
+      showSnackbar(
+          path: Icons.close_rounded,
+          title: "Failed To Delete Internship!",
+          subtitle: "Please check your internet connection or try again later");
+    }
     return;
   }
 
@@ -324,6 +364,27 @@ class WorkExpController extends GetxController {
                               style: kPurpleTxt,
                               textAlign: TextAlign.center)
                         ])),
+                Text(insightsCtrl.stdWxProf.internships[i].industry,
+                    style: const TextStyle(
+                        color: kPriDark,
+                        fontSize: 18,
+                        fontWeight: FontWeight.w600,
+                        fontFamily: 'Nunito'),
+                    textAlign: TextAlign.center),
+                Padding(
+                    padding: const EdgeInsets.only(top: 10),
+                    child: GestureDetector(
+                        onTap: () async {
+                          await deleteInternship(
+                              insightsCtrl.stdWxProf.internships[i].id);
+                        },
+                        child: Container(
+                            width: 40,
+                            height: 40,
+                            decoration: const BoxDecoration(
+                                shape: BoxShape.circle, color: kPriRed),
+                            child: const Icon(Icons.delete,
+                                size: 25, color: Colors.white))))
               ]));
 
       expCards.add(item);

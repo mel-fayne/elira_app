@@ -207,106 +207,119 @@ class _WorkExpFormState extends State<WorkExpForm> {
                       child: Wrap(runSpacing: 5.0, children: [
                         ...workExpCtrl.intShpBoxes.map(buildintShp).toList()
                       ])),
-                  formField(
-                      label: 'Title e.g Frontend Developer',
-                      require: true,
-                      controller: titlectrl,
-                      type: TextInputType.name,
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Please enter your title';
-                        }
-                        return null;
-                      }),
-                  formField(
-                      label: 'Company Name',
-                      require: true,
-                      controller: companyNamectrl,
-                      type: TextInputType.name,
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Please enter the company name';
-                        }
-                        return null;
-                      }),
-                  Obx(() => formDropDownField(
-                      label: 'Employment Type',
-                      dropdownValue: workExpCtrl.empTypeDropdown.value,
-                      dropItems: workExpCtrl.empTypeStrs,
-                      function: (String? newValue) {
-                        workExpCtrl.empTypeDropdown.value = newValue!;
-                      })),
-                  formField(
-                      label: 'Location',
-                      require: true,
-                      controller: locationctrl,
-                      type: TextInputType.name,
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Please enter the location';
-                        }
-                        return null;
-                      }),
-                  Obx(() => formDropDownField(
-                      label: 'Location Type',
-                      dropdownValue: workExpCtrl.locTypeDropdown.value,
-                      dropItems: workExpCtrl.locTypeStrs,
-                      function: (String? newValue) {
-                        workExpCtrl.locTypeDropdown.value = newValue!;
-                      })),
-                  dateFormField(
-                      label: 'Start Date',
-                      require: true,
-                      controller: startDatectrl,
-                      onTap: () {
-                        selectStartDate(context);
-                      },
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Please enter the start date';
-                        }
-                        return null;
-                      }),
-                  Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 3),
-                      child: Row(
-                          mainAxisAlignment: MainAxisAlignment.end,
+                  Form(
+                      key: workForm,
+                      child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            const SizedBox(),
-                            const Text('Currently Working Here:',
-                                style: kBlackTxt),
-                            Obx(() => Checkbox(
-                                  side: const BorderSide(color: kPriPurple),
-                                  checkColor: Colors.white,
-                                  activeColor: kPriMaroon,
-                                  value: workExpCtrl.currentlyWorking.value,
-                                  onChanged: (value) {
-                                    workExpCtrl.currentlyWorking.value = value!;
-                                  },
-                                ))
+                            formField(
+                                label: 'Title e.g Frontend Developer',
+                                require: true,
+                                controller: titlectrl,
+                                type: TextInputType.name,
+                                validator: (value) {
+                                  if (value == null || value.isEmpty) {
+                                    return 'Please enter your title';
+                                  }
+                                  return null;
+                                }),
+                            formField(
+                                label: 'Company Name',
+                                require: true,
+                                controller: companyNamectrl,
+                                type: TextInputType.name,
+                                validator: (value) {
+                                  if (value == null || value.isEmpty) {
+                                    return 'Please enter the company name';
+                                  }
+                                  return null;
+                                }),
+                            Obx(() => formDropDownField(
+                                label: 'Employment Type',
+                                dropdownValue:
+                                    workExpCtrl.empTypeDropdown.value,
+                                dropItems: workExpCtrl.empTypeStrs,
+                                function: (String? newValue) {
+                                  workExpCtrl.empTypeDropdown.value = newValue!;
+                                })),
+                            formField(
+                                label: 'Location',
+                                require: true,
+                                controller: locationctrl,
+                                type: TextInputType.name,
+                                validator: (value) {
+                                  if (value == null || value.isEmpty) {
+                                    return 'Please enter the location';
+                                  }
+                                  return null;
+                                }),
+                            Obx(() => formDropDownField(
+                                label: 'Location Type',
+                                dropdownValue:
+                                    workExpCtrl.locTypeDropdown.value,
+                                dropItems: workExpCtrl.locTypeStrs,
+                                function: (String? newValue) {
+                                  workExpCtrl.locTypeDropdown.value = newValue!;
+                                })),
+                            dateFormField(
+                                label: 'Start Date',
+                                require: true,
+                                controller: startDatectrl,
+                                onTap: () {
+                                  selectStartDate(context);
+                                },
+                                validator: (value) {
+                                  if (value == null || value.isEmpty) {
+                                    return 'Please enter the start date';
+                                  }
+                                  return null;
+                                }),
+                            Padding(
+                                padding:
+                                    const EdgeInsets.symmetric(vertical: 3),
+                                child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.end,
+                                    children: [
+                                      const SizedBox(),
+                                      const Text('Currently Working Here:',
+                                          style: kBlackTxt),
+                                      Obx(() => Checkbox(
+                                            side: const BorderSide(
+                                                color: kPriPurple),
+                                            checkColor: Colors.white,
+                                            activeColor: kPriMaroon,
+                                            value: workExpCtrl
+                                                .currentlyWorking.value,
+                                            onChanged: (value) {
+                                              workExpCtrl.currentlyWorking
+                                                  .value = value!;
+                                            },
+                                          ))
+                                    ])),
+                            Obx(() => workExpCtrl.currentlyWorking.value
+                                ? Container()
+                                : dateFormField(
+                                    require: true,
+                                    label: 'End Date',
+                                    controller: endDatectrl,
+                                    onTap: () {
+                                      selectEndDate(context);
+                                    },
+                                    validator: (value) {
+                                      if (value == null || value.isEmpty) {
+                                        return 'Please enter the end date';
+                                      }
+                                      return null;
+                                    })),
+                            Obx(() => formDropDownField(
+                                label:
+                                    'Industry the internship was/is based in',
+                                dropdownValue: workExpCtrl.indDropdown.value,
+                                dropItems: workExpCtrl.industryStrs,
+                                function: (String? newValue) {
+                                  workExpCtrl.indDropdown.value = newValue!;
+                                })),
                           ])),
-                  Obx(() => workExpCtrl.currentlyWorking.value
-                      ? Container()
-                      : dateFormField(
-                          require: true,
-                          label: 'End Date',
-                          controller: endDatectrl,
-                          onTap: () {
-                            selectEndDate(context);
-                          },
-                          validator: (value) {
-                            if (value == null || value.isEmpty) {
-                              return 'Please enter the end date';
-                            }
-                            return null;
-                          })),
-                  Obx(() => formDropDownField(
-                      label: 'Industry the internship was/is based in',
-                      dropdownValue: workExpCtrl.indDropdown.value,
-                      dropItems: workExpCtrl.industryStrs,
-                      function: (String? newValue) {
-                        workExpCtrl.indDropdown.value = newValue!;
-                      })),
                   primaryBtn(
                     label: 'Add Internship',
                     isLoading: workExpCtrl.addExpLoading,
@@ -314,15 +327,18 @@ class _WorkExpFormState extends State<WorkExpForm> {
                             workExpCtrl.indDropdown.value == '' ||
                             workExpCtrl.locTypeDropdown.value == ''
                         ? () async {
-                            workExpCtrl.crudWorkExp(expData: [
-                              endDate,
-                              startDate,
-                              titlectrl.text,
-                              companyNamectrl.text,
-                              locationctrl.text,
-                              startDatectrl.text,
-                              endDatectrl.text
-                            ], fromSetup: true, isEdit: false);
+                            if (workForm.currentState!.validate()) {
+                              await workExpCtrl.crudWorkExp(expData: [
+                                endDate,
+                                startDate,
+                                titlectrl.text,
+                                companyNamectrl.text,
+                                locationctrl.text,
+                                startDatectrl.text,
+                                endDatectrl.text
+                              ], fromSetup: true, isEdit: false);
+                              workForm.currentState!.reset();
+                            }
                           }
                         : null,
                   )
@@ -607,15 +623,20 @@ class CrudWorkExpFormState extends State<CrudWorkExpForm> {
                     workExpCtrl.locTypeDropdown.value == ''
                 ? null
                 : () async {
-                    workExpCtrl.crudWorkExp(expData: [
-                      endDate,
-                      startDate,
-                      titlectrl.text,
-                      companyNamectrl.text,
-                      locationctrl.text,
-                      startDatectrl.text,
-                      endDatectrl.text
-                    ], fromSetup: false, isEdit: isEdit);
+                    workExpCtrl.crudWorkExp(
+                      wxpId: workExp.id,
+                      expData: [
+                        endDate,
+                        startDate,
+                        titlectrl.text,
+                        companyNamectrl.text,
+                        locationctrl.text,
+                        startDatectrl.text,
+                        endDatectrl.text
+                      ],
+                      fromSetup: false,
+                      isEdit: isEdit,
+                    );
                   })
       ],
     );

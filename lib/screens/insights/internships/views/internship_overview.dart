@@ -136,7 +136,7 @@ class _InternshipsOverviewState extends State<InternshipsOverview> {
                       carouselController: _sliderCtrl,
                       options: CarouselOptions(
                           enlargeCenterPage: true,
-                          aspectRatio: 1.4,
+                          aspectRatio: 1.1,
                           onPageChanged: (index, reason) {
                             setState(() {
                               _currentSlide = index;
