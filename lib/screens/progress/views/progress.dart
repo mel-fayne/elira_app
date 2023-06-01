@@ -32,6 +32,7 @@ class _GoalTrackerPageState extends State<GoalTrackerPage> {
 
   void getData() async {
     await progressCtrl.getStudentRoadmaps();
+    await progressCtrl.getStudentProjects();
   }
 
   @override

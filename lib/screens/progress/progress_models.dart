@@ -62,7 +62,7 @@ class StudentProject {
         status = getAppStatus(json['status']),
         progress = json['progress'],
         studentId = json['student_id'],
-        projectIdea = json['project_idea'] ?? '',
+        projectIdea = json['project_idea'] ?? 0,
         steps = getStepsList(json['steps']);
 
   Map<String, dynamic> toJson() => {
@@ -73,8 +73,10 @@ class StudentProject {
         'git_link': gitLink,
         'progress': progress,
         'student_id': studentId,
-        'project_idea': projectIdea,
-        'steps': steps.map((ProjectSteps item) => item.toJson()).toList()
+        'project_idea': null,
+        'steps': steps.isNotEmpty
+            ? steps.map((ProjectSteps item) => item.toJson()).toList()
+            : []
       };
 }
 

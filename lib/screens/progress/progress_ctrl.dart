@@ -104,7 +104,11 @@ class ProgressController extends GetxController {
         var cmptPrjs = respBody['completed'];
 
         for (var item in wishPrjs) {
-          wishlistPrjs.add(ProjectIdea.fromJson(item));
+          if (item['specialisation'] == null) {
+            debugPrint('');
+          } else {
+            wishlistPrjs.add(ProjectIdea.fromJson(item));
+          }
         }
         for (var item in ongPrjs) {
           ongoingPrjs.add(StudentProject.fromJson(item));
@@ -112,7 +116,6 @@ class ProgressController extends GetxController {
         for (var item in cmptPrjs) {
           compltedPrjs.add(StudentProject.fromJson(item));
         }
-
         if (wishlistPrjs.isNotEmpty) {
           showWishPageData.value = true;
         } else {
@@ -162,7 +165,6 @@ class ProgressController extends GetxController {
           body: body, headers: headers);
 
       debugPrint("Got response ${res.statusCode}");
-
       if (res.statusCode == 200) {
         await getStudentProjects();
         crudBtnLoading.value = false;
@@ -171,7 +173,6 @@ class ProgressController extends GetxController {
             title: "Project Created!",
             subtitle: "All the best on this new one :) Happy Coding!");
         await Future.delayed(const Duration(seconds: 2));
-        Get.back();
       } else {
         crudBtnLoading.value = false;
         showSnackbar(
@@ -209,7 +210,6 @@ class ProgressController extends GetxController {
             title: "Project Updated!",
             subtitle: "Way to make progres :) Happy Coding!");
         await Future.delayed(const Duration(seconds: 2));
-        Get.back();
       } else {
         crudBtnLoading.value = false;
         showSnackbar(
@@ -231,7 +231,7 @@ class ProgressController extends GetxController {
     crudBtnLoading.value = true;
     try {
       var res = await http.delete(
-          Uri.parse('$studentProjectUrl/$currentProject.id'),
+          Uri.parse('$studentProjectUrl/${currentProject.id}'),
           headers: headers);
 
       debugPrint("Got response ${res.statusCode}");
@@ -245,7 +245,6 @@ class ProgressController extends GetxController {
             subtitle:
                 "Sad to see it go :-( Looking forward to your next tech adventure)");
         await Future.delayed(const Duration(seconds: 2));
-        Get.back();
       } else {
         crudBtnLoading.value = false;
         showSnackbar(

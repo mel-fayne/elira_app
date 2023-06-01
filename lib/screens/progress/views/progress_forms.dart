@@ -181,8 +181,9 @@ class CrudProjectFormState extends State<CrudProjectForm> {
                     completed += 1;
                   }
                 }
-                if (projectSteps.isNotEmpty &&
-                    completed == projectSteps.length) {
+                if (projectSteps.isEmpty) {
+                  progress = 0.0;
+                } else if (completed == projectSteps.length) {
                   status = 'Completed';
                   progress = 100.0;
                 } else {
@@ -196,7 +197,7 @@ class CrudProjectFormState extends State<CrudProjectForm> {
                 } else {
                   await progressCtrl.createStudentProject();
                 }
-                Get.back();
+                Navigator.of(Get.overlayContext!).pop();
               }
             }),
         isFormEdit
@@ -219,19 +220,22 @@ class CrudProjectFormState extends State<CrudProjectForm> {
                       step.complete = true;
                     }
                     await progressCtrl.updateStudentProject();
-                    Get.back();
+                    Navigator.of(Get.overlayContext!).pop();
                   }
                 })
             : const SizedBox(),
-        primaryBtn(
-            label: 'Delete Project',
-            width: double.infinity,
-            bgColor: kPriRed,
-            isLoading: progressCtrl.crudBtnLoading,
-            function: () async {
-              progressCtrl.currentProject = studProject;
-              await progressCtrl.deleteStudentProject();
-            })
+        isFormEdit
+            ? primaryBtn(
+                label: 'Delete Project',
+                width: double.infinity,
+                bgColor: kPriRed,
+                isLoading: progressCtrl.crudBtnLoading,
+                function: () async {
+                  progressCtrl.currentProject = studProject;
+                  await progressCtrl.deleteStudentProject();
+                  Navigator.of(Get.overlayContext!).pop();
+                })
+            : const SizedBox(),
       ],
     );
   }
@@ -365,7 +369,7 @@ class CrudProjectFormState extends State<CrudProjectForm> {
                         addProjectStep(isEdit, stepObj.name, holder);
                         stepNamectrl.text = '';
                         stepDescctrl.text = '';
-                        Get.back();
+                        Navigator.of(Get.overlayContext!).pop();
                       }
                       await Future.delayed(const Duration(seconds: 2));
                       isStepFormLoading.value = false;
