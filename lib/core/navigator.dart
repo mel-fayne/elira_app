@@ -1,5 +1,5 @@
 import 'package:elira_app/screens/insights/insights.dart';
-import 'package:elira_app/screens/goals.dart';
+import 'package:elira_app/screens/progress/views/progress.dart';
 import 'package:elira_app/screens/news/news.dart';
 import 'package:elira_app/theme/colors.dart';
 import 'package:flutter/material.dart';
@@ -78,7 +78,7 @@ class _NavigatorHandlerState extends State<NavigatorHandler> {
                       ),
                       icon: Icon(FontAwesome5.bullseye,
                           size: 20, color: kPriGrey),
-                      label: 'Goals')
+                      label: 'Progress')
                 ])));
   }
 }

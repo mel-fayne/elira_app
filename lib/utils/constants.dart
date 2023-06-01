@@ -14,7 +14,13 @@ const filterNewsUrl = "$baseApiUrl/filter_news/";
 const filterJobsUrl = "$baseApiUrl/filter_jobs/";
 const filterEventsUrl = "$baseApiUrl/filter_events/";
 
-// ---------------- Student Prediction Urls ----------------
+// ---------------- Student Progress Urls ----------------
+const todaysProjectsUrl = "$baseApiUrl/todays_ideas/";
+const studentProjectsUrl = "$baseApiUrl/student_projects/";
+const projectWishlistUrl = "$baseApiUrl/idea_wishlist/";
+const studentProjectUrl = "$baseApiUrl/student_project";
+
+// ---------------- Student Insights Urls ----------------
 
 const academicProfileUrl = "$baseApiUrl/academic_profile";
 const studentUnitUrl = "$baseApiUrl/student_units/";
