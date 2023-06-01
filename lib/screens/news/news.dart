@@ -190,7 +190,7 @@ Check again tomorrow'''))
               fromPage: 'News', url: newsPiece.link, title: newsPiece.title));
         },
         child: Container(
-          height: 190,
+          height: newsPiece.height,
           padding: const EdgeInsets.all(10),
           decoration: BoxDecoration(
               color: const Color.fromRGBO(0, 0, 0, 0.75),

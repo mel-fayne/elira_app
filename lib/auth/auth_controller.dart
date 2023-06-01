@@ -90,7 +90,7 @@ class AuthController extends GetxController {
         await Future.delayed(const Duration(seconds: 2));
         insightsCtrl.getStudentInsights();
 
-        Get.off(() => const NavigatorHandler(0));
+        Get.offAll(() => const NavigatorHandler(0));
       } else if (respBody['detail'] == 'Student not found!') {
         signInLoading.value = false;
         update();
