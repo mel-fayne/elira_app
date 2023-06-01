@@ -65,12 +65,11 @@ class StudentProject {
 }
 
 class ProjectSteps {
-  late int count;
   late String name;
   late String description;
   late bool complete;
 
-  ProjectSteps(this.count, this.name, this.description, this.complete);
+  ProjectSteps(this.name, this.description, this.complete);
 }
 
 List<ProjectSteps> getStepsList(List<dynamic> apiList) {
