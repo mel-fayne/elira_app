@@ -164,10 +164,8 @@ class _GoalTrackerPageState extends State<GoalTrackerPage> {
                                           color: kPriDark,
                                           shape: BoxShape.circle,
                                         ),
-                                        child: const Icon(
-                                            Icons.keyboard_arrow_right,
-                                            color: Colors.white,
-                                            size: 20)))));
+                                        child: const Icon(Icons.edit,
+                                            color: Colors.white, size: 20)))));
                       },
                       itemCount: progressCtrl.ongoingPrjs.length)
                   : noDataFoundWidget(
@@ -211,16 +209,27 @@ class _GoalTrackerPageState extends State<GoalTrackerPage> {
                                     const EdgeInsets.symmetric(vertical: 10),
                                 child: ListTile(
                                     leading: Container(
-                                      width: 65,
-                                      height: 65,
-                                      decoration: const BoxDecoration(
-                                          shape: BoxShape.circle,
-                                          color: kPriPurple),
-                                      child: const Icon(
-                                          FontAwesome5.clipboard_list,
-                                          size: 45,
-                                          color: Colors.white),
-                                    ),
+                                        width: 65,
+                                        height: 65,
+                                        decoration: const BoxDecoration(
+                                            shape: BoxShape.circle,
+                                            color: kPriPurple),
+                                        child: CircularPercentIndicator(
+                                            radius: 20.0,
+                                            lineWidth: 2.0,
+                                            animation: true,
+                                            percent: projects[index].progress,
+                                            center: Text(
+                                              projects[index]
+                                                  .progress
+                                                  .toStringAsFixed(1),
+                                              style: kWhiteTitle,
+                                              textAlign: TextAlign.center,
+                                            ),
+                                            circularStrokeCap:
+                                                CircularStrokeCap.round,
+                                            backgroundColor: kLightPurple,
+                                            progressColor: Colors.white)),
                                     title: Text(
                                       projects[index].name,
                                       style: const TextStyle(

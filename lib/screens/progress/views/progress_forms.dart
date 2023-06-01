@@ -195,7 +195,18 @@ class CrudProjectFormState extends State<CrudProjectForm> {
                 function: _projectForm.currentState!.validate()
                     ? null
                     : () async {
-                        progressCtrl.completeProject();
+                        progressCtrl.currentProject.name = namectrl.text;
+                        progressCtrl.currentProject.description = descctrl.text;
+                        progressCtrl.currentProject.gitLink = gitlinkctrl.text;
+                        progressCtrl.currentProject.studentId =
+                            progressCtrl.studentId!;
+                        progressCtrl.currentProject.steps = projectSteps;
+                        progressCtrl.currentProject.status = 'Completed';
+                        progressCtrl.currentProject.progress = 100.0;
+                        for (var step in progressCtrl.currentProject.steps) {
+                          step.complete = true;
+                        }
+                        progressCtrl.updateStudentProject();
                       })
             : const SizedBox()
       ],

@@ -146,17 +146,6 @@ class ProgressController extends GetxController {
     return;
   }
 
-  completeProject() async {
-    crudBtnLoading.value = true;
-    currentProject.status = 'C';
-    currentProject.progress = 100.0;
-    for (var step in currentProject.steps) {
-      step.complete = true;
-    }
-    update();
-    await updateStudentProject();
-  }
-
   updateStudentProject() async {
     crudBtnLoading.value = true;
     var body = jsonEncode(currentProject.toJson());
