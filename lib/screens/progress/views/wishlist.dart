@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:elira_app/auth/auth_controller.dart';
+import 'package:elira_app/screens/insights/github/technical_models.dart';
 import 'package:elira_app/screens/progress/progress_ctrl.dart';
 import 'package:elira_app/screens/progress/progress_models.dart';
 import 'package:elira_app/screens/progress/views/progress_forms.dart';
@@ -35,6 +36,7 @@ class _ProjectWishlistPageState extends State<ProjectWishlistPage> {
   }
 
   getList() async {
+    progressCtrl.getStudentProjects();
     projectWishList = (await getWishList())!;
   }
 
@@ -51,150 +53,139 @@ class _ProjectWishlistPageState extends State<ProjectWishlistPage> {
                 style: kPageTitle,
               ),
               Obx(() => progressCtrl.showWishPageData.value
-                  ? Column(
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      children: [
-                          Obx(() => ExpansionPanelList(
-                                dividerColor: kPriPurple,
-                                expandIconColor: kPriPurple,
-                                expandedHeaderPadding: const EdgeInsets.all(0),
-                                expansionCallback:
-                                    (int index, bool isExpanded) {
-                                  setState(() {
-                                    progressCtrl.wishlistPrjs[index]
-                                        .isExpanded = !isExpanded;
-                                  });
-                                },
-                                children: progressCtrl.wishlistPrjs
-                                    .map<ExpansionPanel>(
-                                        (ProjectIdea projIdea) {
-                                  return ExpansionPanel(
-                                    canTapOnHeader: true,
-                                    backgroundColor: Colors.white,
-                                    headerBuilder: (BuildContext context,
-                                        bool isExpanded) {
-                                      return Container(
-                                          height: 150,
-                                          width: double.infinity,
-                                          padding: const EdgeInsets.symmetric(
-                                              vertical: 5),
-                                          child: ListTile(
-                                              tileColor: Colors.white,
-                                              leading: Container(
-                                                  width: 65,
-                                                  height: 65,
-                                                  decoration:
-                                                      const BoxDecoration(
-                                                    color: Colors.white,
-                                                    shape: BoxShape.circle,
-                                                  ),
-                                                  child: const Icon(
-                                                      Icons.lightbulb,
-                                                      color: kPriPurple)),
-                                              title: Text(
-                                                projIdea.name,
-                                                style: kWhiteTitle,
-                                              ),
-                                              subtitle: RichText(
-                                                  textAlign: TextAlign.center,
-                                                  text: TextSpan(
-                                                    text: 'Specialisation: ',
-                                                    style: const TextStyle(
-                                                        fontSize: 14,
-                                                        fontFamily: 'Nunito',
-                                                        fontWeight:
-                                                            FontWeight.w700,
-                                                        color: kPriMaroon),
-                                                    children: <TextSpan>[
-                                                      TextSpan(
-                                                          text: specObjects
-                                                              .firstWhere((element) =>
-                                                                  element
-                                                                      .abbreviation ==
-                                                                  projIdea
-                                                                      .specialisation)
-                                                              .name,
-                                                          style: kLightPurTxt)
-                                                    ],
-                                                  )),
-                                              trailing: Column(children: [
-                                                Icon(
-                                                    projIdea.level == 'Beginner'
-                                                        ? FontAwesome.star_empty
-                                                        : projIdea.level ==
-                                                                'Intermediate'
-                                                            ? FontAwesome
-                                                                .star_half
-                                                            : FontAwesome.star,
-                                                    color: Colors.white,
-                                                    size: 20),
-                                                Padding(
-                                                  padding:
-                                                      const EdgeInsets.only(
-                                                          top: 3),
-                                                  child: Text(
-                                                    projIdea.level,
-                                                    style: kWhiteTxt,
-                                                  ),
-                                                )
-                                              ])));
-                                    },
-                                    body: ListTile(
-                                        title: Column(children: [
-                                      Padding(
-                                          padding:
-                                              const EdgeInsets.only(bottom: 5),
-                                          child: Text(
-                                            projIdea.description,
-                                            softWrap: true,
-                                            textAlign: TextAlign.center,
-                                            style: kBlackTxt,
-                                          )),
-                                      primaryBtn(
-                                          width: 120.0,
-                                          label: 'Make it My Own',
-                                          isLoading: isLoading,
-                                          function: () {
-                                            Get.dialog(CrudProjectForm(
-                                                isEdit: false,
-                                                studProject: StudentProject(
-                                                    1,
-                                                    projIdea.name,
-                                                    projIdea.description,
-                                                    '',
-                                                    '',
-                                                    0.0,
-                                                    1,
-                                                    1, []),
-                                                btnLabel: 'Make it My Own'));
-                                          }),
-                                      primaryBtn(
-                                          label: 'Remove From Wishlist',
-                                          isLoading: isLoading,
-                                          function: () async {
-                                            isLoading.value = true;
-                                            projectWishList.removeWhere(
-                                                (element) =>
-                                                    element == projIdea.id);
-                                            var studentBody = jsonEncode({
-                                              "project_wishlist":
-                                                  projectWishList
-                                            });
-                                            await authCtrl.updateStudent(
-                                                studentBody,
-                                                "Project Idea Removed from wishList",
-                                                "Redirecting ...",
-                                                false);
-                                            await progressCtrl
-                                                .getStudentProjects();
-                                            isLoading.value = false;
-                                          })
-                                    ])),
-                                    isExpanded: projIdea.isExpanded,
-                                  );
-                                }).toList(),
-                              )),
-                        ])
+                  ? Padding(
+                      padding: const EdgeInsets.only(top: 15, bottom: 5),
+                      child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                          children: [
+                            Obx(() => ExpansionPanelList(
+                                  dividerColor: kPriPurple,
+                                  expandedHeaderPadding:
+                                      const EdgeInsets.all(0),
+                                  expansionCallback:
+                                      (int index, bool isExpanded) {
+                                    setState(() {
+                                      progressCtrl.wishlistPrjs[index]
+                                          .isExpanded = !isExpanded;
+                                    });
+                                  },
+                                  children: progressCtrl.wishlistPrjs
+                                      .map<ExpansionPanel>(
+                                          (ProjectIdea projIdea) {
+                                    return ExpansionPanel(
+                                      canTapOnHeader: true,
+                                      backgroundColor: Colors.white,
+                                      headerBuilder: (BuildContext context,
+                                          bool isExpanded) {
+                                        return Container(
+                                            height: 100,
+                                            width: double.infinity,
+                                            padding: const EdgeInsets.symmetric(
+                                                vertical: 5),
+                                            child: ListTile(
+                                                tileColor: Colors.white,
+                                                leading: Container(
+                                                    width: 65,
+                                                    height: 65,
+                                                    decoration:
+                                                        const BoxDecoration(
+                                                      color: kPriPurple,
+                                                      shape: BoxShape.circle,
+                                                    ),
+                                                    child: const Icon(
+                                                        Icons.lightbulb,
+                                                        color: Colors.white)),
+                                                title: Text(
+                                                  projIdea.name,
+                                                  style: kPurpleTxt,
+                                                ),
+                                                subtitle: Padding(
+                                                    padding:
+                                                        const EdgeInsets.only(
+                                                            top: 3),
+                                                    child: Row(children: [
+                                                      Icon(
+                                                          projIdea.level ==
+                                                                  'Beginner'
+                                                              ? FontAwesome
+                                                                  .star_empty
+                                                              : projIdea.level ==
+                                                                      'Intermediate'
+                                                                  ? FontAwesome
+                                                                      .star_half_alt
+                                                                  : FontAwesome
+                                                                      .star,
+                                                          color: kPriDark,
+                                                          size: 20),
+                                                      Padding(
+                                                        padding:
+                                                            const EdgeInsets
+                                                                .only(left: 3),
+                                                        child: Text(
+                                                          projIdea.level,
+                                                          style: kDarkTxt,
+                                                        ),
+                                                      )
+                                                    ]))));
+                                      },
+                                      body: ListTile(
+                                          title: Column(children: [
+                                        Padding(
+                                            padding: const EdgeInsets.only(
+                                                bottom: 5),
+                                            child: Text(
+                                              projIdea.description,
+                                              softWrap: true,
+                                              textAlign: TextAlign.center,
+                                              style: kBlackTxt,
+                                            )),
+                                        primaryBtn(
+                                            width: double.infinity,
+                                            label: 'Make it My Own',
+                                            isLoading: isLoading,
+                                            function: () {
+                                              Get.dialog(CrudProjectForm(
+                                                  isFormEdit: false,
+                                                  studProject: StudentProject(
+                                                      1,
+                                                      projIdea.name,
+                                                      projIdea.description,
+                                                      '',
+                                                      '',
+                                                      0.0,
+                                                      1,
+                                                      1, []),
+                                                  btnLabel: 'Make it My Own'));
+                                            }),
+                                        primaryBtn(
+                                            label: 'Remove From Wishlist',
+                                            bgColor: kPriRed,
+                                            width: double.infinity,
+                                            isLoading: isLoading,
+                                            function: () async {
+                                              isLoading.value = true;
+                                              projectWishList.removeWhere(
+                                                  (element) =>
+                                                      element == projIdea.id);
+                                              var studentBody = jsonEncode({
+                                                "project_wishlist":
+                                                    projectWishList
+                                              });
+                                              await authCtrl.updateStudent(
+                                                  studentBody,
+                                                  "Project Idea Removed from wishList",
+                                                  "Redirecting ...",
+                                                  false);
+                                              await progressCtrl
+                                                  .getStudentProjects();
+                                              isLoading.value = false;
+                                            })
+                                      ])),
+                                      isExpanded: projIdea.isExpanded,
+                                    );
+                                  }).toList(),
+                                )),
+                          ]))
                   : noDataFoundWidget('No project dreams logged yet'))
             ])));
   }

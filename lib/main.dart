@@ -11,6 +11,7 @@ import 'package:elira_app/screens/insights/internships/jobs/jobs_ctrl.dart';
 import 'package:elira_app/screens/insights/softskills/softskills_ctrl.dart';
 import 'package:elira_app/screens/news/events/events_ctrl.dart';
 import 'package:elira_app/screens/news/news_ctrl.dart';
+import 'package:elira_app/screens/progress/progress_ctrl.dart';
 import 'package:elira_app/theme/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -45,6 +46,7 @@ class InitialBinding implements Bindings {
     Get.lazyPut(() => NewsController(), fenix: true);
     Get.lazyPut(() => JobsController(), fenix: true);
     Get.lazyPut(() => EventsController(), fenix: true);
+    Get.lazyPut(() => ProgressController(), fenix: true);
   }
 }
 

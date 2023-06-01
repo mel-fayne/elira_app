@@ -124,7 +124,7 @@ class _InsightsPageState extends State<InsightsPage> {
                                                   percent: insightsCtrl
                                                       .studentSpec.score,
                                                   center: Text(
-                                                    '''${insightsCtrl.studentSpec.score * 100}%
+                                                    '''${(insightsCtrl.studentSpec.score * 100).toStringAsFixed(1)}%
 match''',
                                                     style: kWhiteTitle,
                                                     textAlign: TextAlign.center,

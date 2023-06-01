@@ -40,16 +40,20 @@ class TechnicalsController extends GetxController {
 
   getTodaysIdeas() async {
     todaysIdeas.clear();
-    loadingData.value = true;
     try {
-      var res = await http.get(
-          Uri.parse(studentProjectsUrl + studentId.toString()),
+      var spec = studentSpec;
+      if (studentSpec == 'IS') {
+        spec = 'SD';
+      } else if (studentSpec == 'NA') {
+        spec = 'CS';
+      }
+      var res = await http.get(Uri.parse(todaysProjectsUrl + spec!),
           headers: headers);
       debugPrint("Got response ${res.statusCode}");
       if (res.statusCode == 200) {
         var respBody = json.decode(res.body);
-        var wishPrjs = respBody['projectWishList'];
-        for (var item in wishPrjs) {
+        var ideaPrjs = respBody['ideas'];
+        for (var item in ideaPrjs) {
           todaysIdeas.add(ProjectIdea.fromJson(item));
         }
 
@@ -58,23 +62,19 @@ class TechnicalsController extends GetxController {
         } else {
           showData.value = false;
         }
-        showData.value = false;
-        loadingData.value = false;
         update();
         debugPrint('done getting todays ideas');
       } else {
         showData.value = false;
-        loadingData.value = false;
         update();
-        showSnackbar(
-            path: Icons.close_rounded,
-            title: "Seems there's a problem on our side!",
-            subtitle: "Please try again later");
+        // showSnackbar(
+        //     path: Icons.close_rounded,
+        //     title: "Seems there's a problem on our side!",
+        //     subtitle: "Please try again later");
       }
       return;
     } catch (error) {
       showData.value = false;
-      loadingData.value = false;
       update();
       showSnackbar(
           path: Icons.close_rounded,

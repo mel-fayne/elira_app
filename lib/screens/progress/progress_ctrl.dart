@@ -71,9 +71,9 @@ class ProgressController extends GetxController {
         }
 
         if (wishlistPrjs.isNotEmpty) {
-          showWishData.value = true;
+          showWishPageData.value = true;
         } else {
-          showWishData.value = false;
+          showWishPageData.value = false;
         }
         if (ongoingPrjs.isNotEmpty) {
           showOngData.value = true;
@@ -151,8 +151,10 @@ class ProgressController extends GetxController {
     var body = jsonEncode(currentProject.toJson());
 
     try {
-      dynamic res = await http.patch(Uri.parse(studentProjectUrl),
-          body: body, headers: headers);
+      dynamic res = await http.patch(
+          Uri.parse('$studentProjectUrl/${currentProject.id}'),
+          body: body,
+          headers: headers);
 
       debugPrint("Got response ${res.statusCode}");
 

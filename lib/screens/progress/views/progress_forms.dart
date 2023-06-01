@@ -12,13 +12,13 @@ final progressCtrl = Get.find<ProgressController>();
 class CrudProjectForm extends StatefulWidget {
   static const routeName = "/CrudProjectForm";
 
-  final bool isEdit;
+  final bool isFormEdit;
   final String btnLabel;
   final StudentProject studProject;
 
   const CrudProjectForm(
       {Key? key,
-      required this.isEdit,
+      required this.isFormEdit,
       required this.studProject,
       required this.btnLabel})
       : super(key: key);
@@ -26,16 +26,16 @@ class CrudProjectForm extends StatefulWidget {
   @override
   State<StatefulWidget> createState() {
     // ignore: no_logic_in_create_state
-    return CrudProjectFormState(isEdit, studProject, btnLabel);
+    return CrudProjectFormState(isFormEdit, studProject, btnLabel);
   }
 }
 
 class CrudProjectFormState extends State<CrudProjectForm> {
-  late bool isEdit;
+  late bool isFormEdit;
   late StudentProject studProject;
   late String btnLabel;
 
-  CrudProjectFormState(this.isEdit, this.studProject, btnLabel);
+  CrudProjectFormState(this.isFormEdit, this.studProject, this.btnLabel);
 
   final GlobalKey<FormState> _projectForm = GlobalKey<FormState>();
   final _stepForm = GlobalKey<FormState>();
@@ -55,6 +55,7 @@ class CrudProjectFormState extends State<CrudProjectForm> {
     namectrl.text = studProject.name;
     descctrl.text = studProject.description;
     gitlinkctrl.text = studProject.gitLink;
+    projectSteps = [...studProject.steps];
   }
 
   void addProjectStep(isEdit, name, stepObj) {
@@ -81,7 +82,7 @@ class CrudProjectFormState extends State<CrudProjectForm> {
     return formPopupScaffold(
       formKey: _projectForm,
       children: [
-        popupHeader(label: isEdit ? 'Update Project' : 'Create Project'),
+        popupHeader(label: isFormEdit ? 'Update Project' : 'Create Project'),
         formField(
             label: 'Project Name',
             labelColor: Colors.white,
@@ -97,6 +98,8 @@ class CrudProjectFormState extends State<CrudProjectForm> {
         formField(
             label: 'Description',
             labelColor: Colors.white,
+            maxLines: 7,
+            boxHeight: 130.0,
             require: false,
             controller: descctrl,
             type: TextInputType.name,
@@ -112,6 +115,22 @@ class CrudProjectFormState extends State<CrudProjectForm> {
             validator: (value) {
               return null;
             }),
+        projectSteps.isEmpty
+            ? const Text('No Steps Added', style: kWhiteTitle)
+            : Padding(
+                padding: const EdgeInsets.only(top: 10),
+                child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Text('Project Checklist', style: kLightPurTxt),
+                      ListView(
+                        shrinkWrap: true,
+                        physics: const NeverScrollableScrollPhysics(),
+                        children: [
+                          ...projectSteps.map(buildProjectSteps).toList()
+                        ],
+                      )
+                    ])),
         Padding(
             padding: const EdgeInsets.only(top: 20, bottom: 10),
             child:
@@ -134,81 +153,85 @@ class CrudProjectFormState extends State<CrudProjectForm> {
                                 color: kPriDark,
                                 shape: BoxShape.circle,
                               ),
+                              margin: const EdgeInsets.only(right: 5),
                               child: const Icon(Icons.add)),
                           const Text(
                             'Add Project Step',
-                            style: kWhiteTxt,
+                            style: kLightPurTxt,
                           )
                         ],
                       ))),
-              projectSteps.isEmpty
-                  ? const Text('No Steps Added', style: kLightPurTxt)
-                  : ListView(
-                      shrinkWrap: true,
-                      physics: const NeverScrollableScrollPhysics(),
-                      children: [
-                        ...projectSteps.map(buildProjectSteps).toList()
-                      ],
-                    ),
             ])),
         primaryBtn(
             label: btnLabel,
             width: double.infinity,
             isLoading: progressCtrl.crudBtnLoading,
-            function: _projectForm.currentState!.validate()
-                ? null
-                : () async {
+            function: () async {
+              if (_projectForm.currentState!.validate()) {
+                progressCtrl.currentProject.name = namectrl.text;
+                progressCtrl.currentProject.description = descctrl.text;
+                progressCtrl.currentProject.gitLink = gitlinkctrl.text;
+                progressCtrl.currentProject.studentId = progressCtrl.studentId!;
+                progressCtrl.currentProject.steps = projectSteps;
+                var status = 'Ongoing';
+                var progress = 0.0;
+                int completed = 0;
+                for (var step in projectSteps) {
+                  if (step.complete) {
+                    completed += 1;
+                  }
+                }
+                if (projectSteps.isNotEmpty &&
+                    completed == projectSteps.length) {
+                  status = 'Completed';
+                  progress = 100.0;
+                } else {
+                  progress = (completed / projectSteps.length) * 100.0;
+                }
+                progressCtrl.currentProject.status = status;
+                progressCtrl.currentProject.progress = progress;
+
+                if (isFormEdit) {
+                  await progressCtrl.updateStudentProject();
+                } else {
+                  await progressCtrl.createStudentProject();
+                }
+                Get.back();
+              }
+            }),
+        isFormEdit
+            ? primaryBtn(
+                label: 'Complete Project',
+                bgColor: kPriMaroon,
+                width: double.infinity,
+                isLoading: progressCtrl.crudBtnLoading,
+                function: () async {
+                  if (_projectForm.currentState!.validate()) {
                     progressCtrl.currentProject.name = namectrl.text;
                     progressCtrl.currentProject.description = descctrl.text;
                     progressCtrl.currentProject.gitLink = gitlinkctrl.text;
                     progressCtrl.currentProject.studentId =
                         progressCtrl.studentId!;
                     progressCtrl.currentProject.steps = projectSteps;
-                    var status = 'Ongoing';
-                    var progress = 0.0;
-                    int completed = 0;
-                    for (var step in projectSteps) {
-                      if (step.complete) {
-                        completed += 1;
-                      }
+                    progressCtrl.currentProject.status = 'Completed';
+                    progressCtrl.currentProject.progress = 100.0;
+                    for (var step in progressCtrl.currentProject.steps) {
+                      step.complete = true;
                     }
-                    if (completed == projectSteps.length) {
-                      status = 'Completed';
-                      progress = 100.0;
-                    } else {
-                      progress = (completed / projectSteps.length) * 100.0;
-                    }
-                    progressCtrl.currentProject.status = status;
-                    progressCtrl.currentProject.progress = progress;
-                    if (isEdit) {
-                      progressCtrl.updateStudentProject();
-                    } else {
-                      progressCtrl.createStudentProject();
-                    }
-                  }),
-        isEdit
-            ? primaryBtn(
-                label: 'Complete Project',
-                bgColor: kPriMaroon,
-                width: double.infinity,
-                isLoading: progressCtrl.crudBtnLoading,
-                function: _projectForm.currentState!.validate()
-                    ? null
-                    : () async {
-                        progressCtrl.currentProject.name = namectrl.text;
-                        progressCtrl.currentProject.description = descctrl.text;
-                        progressCtrl.currentProject.gitLink = gitlinkctrl.text;
-                        progressCtrl.currentProject.studentId =
-                            progressCtrl.studentId!;
-                        progressCtrl.currentProject.steps = projectSteps;
-                        progressCtrl.currentProject.status = 'Completed';
-                        progressCtrl.currentProject.progress = 100.0;
-                        for (var step in progressCtrl.currentProject.steps) {
-                          step.complete = true;
-                        }
-                        progressCtrl.updateStudentProject();
-                      })
-            : const SizedBox()
+                    await progressCtrl.updateStudentProject();
+                    Get.back();
+                  }
+                })
+            : const SizedBox(),
+        primaryBtn(
+            label: 'Delete Project',
+            width: double.infinity,
+            bgColor: kPriRed,
+            isLoading: progressCtrl.crudBtnLoading,
+            function: () async {
+              progressCtrl.currentProject = studProject;
+              await progressCtrl.deleteStudentProject();
+            })
       ],
     );
   }
@@ -217,56 +240,75 @@ class CrudProjectFormState extends State<CrudProjectForm> {
       buildSingleStep(projectStep: projectStep);
 
   Widget buildSingleStep({required ProjectSteps projectStep}) {
-    return Padding(
-        padding: const EdgeInsets.symmetric(vertical: 10),
-        child: ListTile(
-          title: Text(projectStep.name, style: kWhiteTxt),
-          subtitle: Text(projectStep.description, style: kLightPurTxt),
-          trailing: Row(mainAxisAlignment: MainAxisAlignment.end, children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 8),
-              child: InkWell(
-                  onTap: () {
-                    stepNamectrl.text = projectStep.name;
-                    stepDescctrl.text = projectStep.description;
-                    Get.dialog(stepPopup(isEdit: true, stepObj: projectStep));
-                  },
-                  child: Container(
-                    width: 25,
-                    height: 25,
-                    decoration: const BoxDecoration(
-                      color: kPriDark,
-                      shape: BoxShape.circle,
-                    ),
-                    child: const Icon(
-                      Icons.edit_note_rounded,
-                      size: 18,
-                      color: Colors.white,
-                    ),
-                  )),
+    return Container(
+      height: 50,
+      decoration: BoxDecoration(
+          color: kPriGrey, borderRadius: BorderRadius.circular(7)),
+      margin: const EdgeInsets.symmetric(vertical: 10),
+      padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+      child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+        Row(mainAxisAlignment: MainAxisAlignment.start, children: [
+          Padding(
+            padding: const EdgeInsets.only(right: 7),
+            child: Icon(
+              projectStep.complete
+                  ? Icons.check_circle_outline
+                  : Icons.circle_outlined,
+              size: 24,
+              color: kPriDark,
             ),
-            InkWell(
+          ),
+          Text(
+            projectStep.name,
+            style: kDarkTxt,
+          )
+        ]),
+        Row(mainAxisAlignment: MainAxisAlignment.start, children: [
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 8),
+            child: InkWell(
                 onTap: () {
-                  setState(() {
-                    projectSteps.removeWhere(
-                        (element) => element.name == projectStep.name);
-                  });
+                  stepNamectrl.text = projectStep.name;
+                  stepDescctrl.text = projectStep.description;
+                  Get.dialog(stepPopup(isEdit: true, stepObj: projectStep));
                 },
                 child: Container(
                   width: 25,
                   height: 25,
                   decoration: const BoxDecoration(
-                    color: kPriRed,
+                    color: kPriDark,
                     shape: BoxShape.circle,
                   ),
                   child: const Icon(
-                    Icons.delete_rounded,
+                    Icons.edit_note_rounded,
                     size: 18,
                     color: Colors.white,
                   ),
                 )),
-          ]),
-        ));
+          ),
+          InkWell(
+              onTap: () {
+                setState(() {
+                  projectSteps.removeWhere(
+                      (element) => element.name == projectStep.name);
+                });
+              },
+              child: Container(
+                width: 25,
+                height: 25,
+                decoration: const BoxDecoration(
+                  color: kPriRed,
+                  shape: BoxShape.circle,
+                ),
+                child: const Icon(
+                  Icons.delete_rounded,
+                  size: 18,
+                  color: Colors.white,
+                ),
+              )),
+        ])
+      ]),
+    );
   }
 
   Widget stepPopup({required bool isEdit, required ProjectSteps stepObj}) {
@@ -290,6 +332,7 @@ class CrudProjectFormState extends State<CrudProjectForm> {
                 ),
                 searchForm(
                   label: 'Step Description',
+                  maxLines: 2,
                   controller: stepDescctrl,
                   inputType: TextInputType.emailAddress,
                   validator: (value) {
@@ -297,11 +340,18 @@ class CrudProjectFormState extends State<CrudProjectForm> {
                   },
                   suffix: false,
                 ),
-                Checkbox(
-                    value: stepObj.complete,
-                    onChanged: (value) {
-                      stepObj.complete = !value!;
-                    }),
+                CheckboxListTile(
+                  value: stepObj.complete,
+                  onChanged: (value) {
+                    setState(() {
+                      stepObj.complete = value!;
+                    });
+                  },
+                  title: const Text(
+                    'Step Completed',
+                    style: kWhiteTxt,
+                  ),
+                ),
                 primaryBtn(
                     label: isEdit == true ? 'Edit Step' : 'Add Step',
                     width: double.infinity,

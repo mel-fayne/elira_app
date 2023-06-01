@@ -5,6 +5,8 @@ import 'package:get/get.dart';
 Widget formField(
     {required label,
     labelColor = kPriDark,
+    maxLines = 1,
+    boxHeight = 50.0,
     required require,
     required controller,
     type,
@@ -33,8 +35,9 @@ Widget formField(
               ),
             ]))),
         SizedBox(
-          height: 50,
+          height: boxHeight,
           child: TextFormField(
+            maxLines: maxLines,
             cursorColor: kPriPurple,
             controller: controller,
             keyboardType: type,

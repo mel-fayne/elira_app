@@ -1,4 +1,3 @@
-import 'package:elira_app/core/navigator.dart';
 import 'package:elira_app/screens/insights/academics/views/academic_forms.dart';
 import 'package:elira_app/screens/insights/github/views/technical_forms.dart';
 import 'package:elira_app/screens/insights/insights.dart';

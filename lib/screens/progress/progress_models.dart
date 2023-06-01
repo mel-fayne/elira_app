@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 class ProjectIdea {
   final int id;
   final String name;
@@ -60,21 +62,32 @@ class StudentProject {
         'progress': progress,
         'student_id': studentId,
         'project_idea': projectIdea,
-        'steps': steps
+        'steps': steps.map((ProjectSteps item) => item.toJson()).toList()
       };
 }
 
 class ProjectSteps {
   late String name;
   late String description;
-  late bool complete;
+  bool complete = false;
 
   ProjectSteps(this.name, this.description, this.complete);
+
+  ProjectSteps.fromJson(Map<String, dynamic> json)
+      : name = json['name'],
+        description = json['description'];
+
+  Map<String, dynamic> toJson() => {
+        'name': name,
+        'description': description,
+        'complete': complete.toString()
+      };
 }
 
 List<ProjectSteps> getStepsList(List<dynamic> apiList) {
   List<ProjectSteps> stepsList = [];
-  // stepsList = apiList.map((dynamic item) => item.toString()).toList();
+  stepsList =
+      apiList.map((dynamic item) => ProjectSteps.fromJson(item)).toList();
   return stepsList;
 }
 

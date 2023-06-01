@@ -109,6 +109,7 @@ Widget popupSubtitle({label}) {
 Widget searchForm(
     {required label,
     required = true,
+    maxLines = 1,
     required controller,
     required suffix,
     required inputType,
@@ -117,6 +118,7 @@ Widget searchForm(
   return Padding(
     padding: const EdgeInsets.only(bottom: 5),
     child: TextFormField(
+      minLines: maxLines,
       cursorColor: Colors.white,
       controller: controller,
       validator: validator,
@@ -541,11 +543,11 @@ Widget noDataFoundWidget(String title) {
   return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 70, vertical: 10),
       child: Column(children: [
-        Lottie.asset('assets/images/no_available.json', width: 250),
         Text(
           title,
           textAlign: TextAlign.center,
           style: kPurpleTxt,
         ),
+        Lottie.asset('assets/images/no_available.json', width: 250),
       ]));
 }
