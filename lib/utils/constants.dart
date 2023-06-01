@@ -19,6 +19,8 @@ const todaysProjectsUrl = "$baseApiUrl/todays_ideas/";
 const studentProjectsUrl = "$baseApiUrl/student_projects/";
 const projectWishlistUrl = "$baseApiUrl/idea_wishlist/";
 const studentProjectUrl = "$baseApiUrl/student_project";
+const studentMapsUrl = "$baseApiUrl/student_maps/";
+const specMapsUrl = "$baseApiUrl/spec_roadmaps/";
 
 // ---------------- Student Insights Urls ----------------
 

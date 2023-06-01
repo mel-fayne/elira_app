@@ -17,6 +17,7 @@ final insightsCtrl = Get.find<InsightsController>();
 class ProgressController extends GetxController {
   int? studentId;
   String? studentSpec;
+  RxList<SpecRoadMap> studentRoadmaps = RxList<SpecRoadMap>();
   RxList<StudentProject> ongoingPrjs = RxList<StudentProject>();
   RxList<StudentProject> compltedPrjs = RxList<StudentProject>();
   RxList<ProjectIdea> wishlistPrjs = RxList<ProjectIdea>();
@@ -29,6 +30,7 @@ class ProgressController extends GetxController {
   RxBool showWishPageData = false.obs;
   RxBool loadingData = false.obs;
   RxBool showData = false.obs;
+  RxBool showRmData = false.obs;
   RxBool showWishData = false.obs;
   RxBool showOngData = false.obs;
   RxBool showCmptData = false.obs;
@@ -42,7 +44,51 @@ class ProgressController extends GetxController {
       await insightsCtrl.getStudentPredictions();
       studentSpec = await getSpecialisation();
     }
+    await getStudentRoadmaps();
     await getStudentProjects();
+  }
+
+  getStudentRoadmaps() async {
+    studentRoadmaps.clear();
+    loadingData.value = true;
+    try {
+      var res = await http.get(Uri.parse(studentMapsUrl + studentId.toString()),
+          headers: headers);
+      debugPrint("Got response ${res.statusCode}");
+      if (res.statusCode == 200) {
+        var respBody = json.decode(res.body);
+
+        for (var item in respBody['maps']) {
+          studentRoadmaps.add(SpecRoadMap.fromJson(item));
+        }
+        if (studentRoadmaps.isNotEmpty) {
+          showRmData.value = true;
+        } else {
+          showRmData.value = false;
+        }
+        showRmData.value = false;
+        loadingData.value = false;
+        update();
+        debugPrint('done getting roadmaps');
+      } else {
+        showRmData.value = false;
+        loadingData.value = false;
+        update();
+        showSnackbar(
+            path: Icons.close_rounded,
+            title: "Seems there's a problem on our side!",
+            subtitle: "Please try again later");
+      }
+      return;
+    } catch (error) {
+      showRmData.value = false;
+      loadingData.value = false;
+      update();
+      showSnackbar(
+          path: Icons.close_rounded,
+          title: "Failed To Load Projects!",
+          subtitle: "Please check your internet connection or try again later");
+    }
   }
 
   getStudentProjects() async {
@@ -60,6 +106,7 @@ class ProgressController extends GetxController {
         var wishPrjs = respBody['projectWishList'];
         var ongPrjs = respBody['ongoing'];
         var cmptPrjs = respBody['completed'];
+
         for (var item in wishPrjs) {
           wishlistPrjs.add(ProjectIdea.fromJson(item));
         }

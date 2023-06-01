@@ -4,6 +4,7 @@ import 'package:elira_app/screens/insights/insights.dart';
 import 'package:elira_app/screens/insights/insights_ctrl.dart';
 import 'package:elira_app/screens/insights/insights_models.dart';
 import 'package:elira_app/screens/insights/academics/academic_models.dart';
+import 'package:elira_app/screens/progress/progress_models.dart';
 import 'package:elira_app/theme/colors.dart';
 import 'package:elira_app/theme/text_styles.dart';
 import 'package:elira_app/utils/app_models.dart';
@@ -21,6 +22,7 @@ final insightsCtrl = Get.find<InsightsController>();
 
 class AcademicController extends GetxController {
   int? studentId;
+  String? studentSpec;
   List<String> schoolStrs = [
     '',
     'Jomo Kenyatta',
@@ -57,6 +59,9 @@ class AcademicController extends GetxController {
   List<CarouselSemesters> carSems = [];
   List<FlSpot> avgSpots = [];
 
+  RxList<SpecRoadMap> specMaps = RxList<SpecRoadMap>();
+  RxList<SpecRoadMap> genMaps = RxList<SpecRoadMap>();
+
   RxBool createAcLoading = false.obs;
   RxBool updateAcLoading = false.obs;
   RxBool newTransLoading = false.obs;
@@ -66,6 +71,12 @@ class AcademicController extends GetxController {
     super.onInit();
     studentId = await getStudentId();
     await getSemUnitsData();
+    studentSpec = await getSpecialisation();
+    if (studentSpec == null) {
+      await insightsCtrl.getStudentPredictions();
+      studentSpec = await getSpecialisation();
+    }
+    await getSpecMaps();
   }
 
   getSemUnitsData() async {
@@ -154,6 +165,49 @@ class AcademicController extends GetxController {
       showSnackbar(
           path: Icons.close_rounded,
           title: "Failed To Load Semester Units!",
+          subtitle: "Please check your internet connection or try again later");
+    }
+  }
+
+  getSpecMaps() async {
+    specMaps.clear();
+    try {
+      var res = await http.get(Uri.parse(specMapsUrl + studentSpec!),
+          headers: headers);
+      debugPrint("Got response ${res.statusCode}");
+      if (res.statusCode == 200) {
+        var respBody = json.decode(res.body);
+        var specRdMaps = respBody['specMaps'];
+        var genRdMaps = respBody['generalMaps'];
+        for (var item in specRdMaps) {
+          specMaps.add(SpecRoadMap.fromJson(item));
+        }
+        for (var item in genRdMaps) {
+          genMaps.add(SpecRoadMap.fromJson(item));
+        }
+
+        if (genMaps.isNotEmpty) {
+          showData.value = true;
+        } else {
+          showData.value = false;
+        }
+        update();
+        debugPrint('done getting roadmaps');
+      } else {
+        showData.value = false;
+        update();
+        // showSnackbar(
+        //     path: Icons.close_rounded,
+        //     title: "Seems there's a problem on our side!",
+        //     subtitle: "Please try again later");
+      }
+      return;
+    } catch (error) {
+      showData.value = false;
+      update();
+      showSnackbar(
+          path: Icons.close_rounded,
+          title: "Failed To Load Project Ideas!",
           subtitle: "Please check your internet connection or try again later");
     }
   }

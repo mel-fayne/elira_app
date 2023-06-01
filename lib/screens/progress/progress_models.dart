@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 class ProjectIdea {
   final int id;
   final String name;
@@ -14,6 +12,20 @@ class ProjectIdea {
         description = json['description'],
         specialisation = json['specialisation'],
         level = getAppLevel(json['level']);
+}
+
+class SpecRoadMap {
+  final int id;
+  final String name;
+  final String description;
+  final String link;
+  bool isExpanded = false;
+
+  SpecRoadMap.fromJson(Map<String, dynamic> json)
+      : id = json['id'],
+        name = json['name'],
+        description = json['description'],
+        link = json['link'];
 }
 
 String getAppLevel(String apiName) {

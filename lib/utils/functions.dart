@@ -32,6 +32,15 @@ Future<List<int>?> getWishList() async {
   return ideaList;
 }
 
+Future<List<int>?> getRoadMaps() async {
+  var prefs = await SharedPreferences.getInstance();
+  var mapsList = prefs.getString("studentMaps");
+  var strList = getStringList(json.decode(mapsList!));
+  List<int> roadMapList =
+      strList.map((dynamic item) => int.parse(item)).toList();
+  return roadMapList;
+}
+
 List<String> getStringList(List<dynamic> apiList) {
   List<String> strList = [];
   strList = apiList.map((dynamic item) => item.toString()).toList();
