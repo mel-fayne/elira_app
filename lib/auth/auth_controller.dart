@@ -249,6 +249,7 @@ class AuthController extends GetxController {
     await prefs.setInt("studentId", profile['id']);
     await prefs.setString("studentName", profile['first_name']);
     await prefs.setString("specialisation", profile['specialisation'] ?? '');
+    await prefs.setString("projectWishList", profile['project_wishlist'] ?? '');
   }
 
   Future<String?> getProfile() async {
