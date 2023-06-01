@@ -4,6 +4,7 @@ import 'package:elira_app/screens/insights/github/technical_models.dart';
 import 'package:elira_app/screens/insights/insights.dart';
 import 'package:elira_app/screens/insights/insights_ctrl.dart';
 import 'package:elira_app/screens/insights/internships/views/internship_forms.dart';
+import 'package:elira_app/screens/progress/progress_models.dart';
 import 'package:elira_app/theme/colors.dart';
 import 'package:elira_app/theme/global_widgets.dart';
 import 'package:elira_app/utils/functions.dart';
@@ -17,14 +18,69 @@ final insightsCtrl = Get.find<InsightsController>();
 
 class TechnicalsController extends GetxController {
   int? studentId;
+  String? studentSpec;
   RxBool gitLoading = false.obs;
   RxBool createProf = false.obs;
   LanguageChartData langChart = LanguageChartData();
+  RxBool loadingData = false.obs;
+  RxBool showData = false.obs;
+  RxList<ProjectIdea> todaysIdeas = RxList<ProjectIdea>();
 
   @override
   void onInit() async {
     super.onInit();
     studentId = await getStudentId();
+    studentSpec = await getSpecialisation();
+    if (studentSpec == null) {
+      await insightsCtrl.getStudentPredictions();
+      studentSpec = await getSpecialisation();
+    }
+    await getTodaysIdeas();
+  }
+
+  getTodaysIdeas() async {
+    todaysIdeas.clear();
+    loadingData.value = true;
+    try {
+      var res = await http.get(
+          Uri.parse(studentProjectsUrl + studentId.toString()),
+          headers: headers);
+      debugPrint("Got response ${res.statusCode}");
+      if (res.statusCode == 200) {
+        var respBody = json.decode(res.body);
+        var wishPrjs = respBody['projectWishList'];
+        for (var item in wishPrjs) {
+          todaysIdeas.add(ProjectIdea.fromJson(item));
+        }
+
+        if (todaysIdeas.isNotEmpty) {
+          showData.value = true;
+        } else {
+          showData.value = false;
+        }
+        showData.value = false;
+        loadingData.value = false;
+        update();
+        debugPrint('done getting todays ideas');
+      } else {
+        showData.value = false;
+        loadingData.value = false;
+        update();
+        showSnackbar(
+            path: Icons.close_rounded,
+            title: "Seems there's a problem on our side!",
+            subtitle: "Please try again later");
+      }
+      return;
+    } catch (error) {
+      showData.value = false;
+      loadingData.value = false;
+      update();
+      showSnackbar(
+          path: Icons.close_rounded,
+          title: "Failed To Load Project Ideas!",
+          subtitle: "Please check your internet connection or try again later");
+    }
   }
 
   getLanguageChart() {
