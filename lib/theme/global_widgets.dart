@@ -536,3 +536,16 @@ Widget noDataWidget(String title) {
         Lottie.asset('assets/images/no_data.json', width: 250),
       ]));
 }
+
+Widget noDataFoundWidget(String title) {
+  return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 70, vertical: 10),
+      child: Column(children: [
+        Lottie.asset('assets/images/no_available.json', width: 250),
+        Text(
+          title,
+          textAlign: TextAlign.center,
+          style: kPurpleTxt,
+        ),
+      ]));
+}

@@ -90,6 +90,7 @@ flutter:
     - assets/images/sd.png
     - assets/images/confetti.json
     - assets/images/no_data.json
+    - assets/images/no_available.json
     - assets/images/loading.json
 
   # An image asset can refer to one or more resolution-specific "variants", see
