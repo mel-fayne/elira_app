@@ -27,6 +27,11 @@ class _GoalTrackerPageState extends State<GoalTrackerPage> {
   @override
   void initState() {
     super.initState();
+    getData();
+  }
+
+  void getData() async {
+    await progressCtrl.getStudentRoadmaps();
   }
 
   @override
@@ -42,58 +47,60 @@ class _GoalTrackerPageState extends State<GoalTrackerPage> {
                 style: kPageTitle,
               ),
               const Padding(
-                  padding: EdgeInsets.only(top: 15, bottom: 10),
+                  padding: EdgeInsets.only(top: 15),
                   child: Text('Roadmaps', style: kPageSubTitle)),
-              progressCtrl.showData.value
-                  ? ListView.builder(
-                      shrinkWrap: true,
-                      physics: const NeverScrollableScrollPhysics(),
-                      itemBuilder: (context, index) {
-                        var roadMaps = progressCtrl.studentRoadmaps;
-                        return GestureDetector(
-                            onTap: () {
-                              Get.to(AppWebView(
-                                  fromPage: 'roadMaps',
-                                  url: roadMaps[index].link,
-                                  title: roadMaps[index].name));
-                            },
-                            child: Container(
-                                decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(10),
-                                    color: Colors.white),
-                                height: 140,
-                                margin: const EdgeInsets.symmetric(vertical: 5),
-                                padding:
-                                    const EdgeInsets.symmetric(vertical: 10),
-                                child: ListTile(
-                                    leading: Container(
-                                        width: 65,
-                                        height: 65,
-                                        decoration: const BoxDecoration(
-                                          color: kPriPurple,
-                                          shape: BoxShape.circle,
+              progressCtrl.showRmData.value
+                  ? Obx(
+                      () => ListView.builder(
+                          shrinkWrap: true,
+                          physics: const NeverScrollableScrollPhysics(),
+                          itemBuilder: (context, index) {
+                            var roadMaps = progressCtrl.studentRoadmaps;
+                            return GestureDetector(
+                                onTap: () {
+                                  Get.to(AppWebView(
+                                      fromPage: 'My Roadmaps',
+                                      url: roadMaps[index].link,
+                                      title: roadMaps[index].name));
+                                },
+                                child: Container(
+                                    decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(10),
+                                        color: Colors.white),
+                                    height: 100,
+                                    padding: const EdgeInsets.symmetric(
+                                        vertical: 10),
+                                    child: ListTile(
+                                        leading: Container(
+                                            width: 65,
+                                            height: 65,
+                                            decoration: const BoxDecoration(
+                                              color: kPriPurple,
+                                              shape: BoxShape.circle,
+                                            ),
+                                            child: const Icon(FontAwesome5.road,
+                                                color: Colors.white)),
+                                        title: Text(
+                                          roadMaps[index].name,
+                                          style: kPurpleTxt,
                                         ),
-                                        child: const Icon(FontAwesome5.road,
-                                            color: Colors.white)),
-                                    title: Text(
-                                      roadMaps[index].name,
-                                      style: kPurpleTxt,
-                                    ),
-                                    subtitle: Text(
-                                      roadMaps[index].description,
-                                      style: kDarkTxt,
-                                    ),
-                                    trailing: Container(
-                                        width: 65,
-                                        height: 65,
-                                        decoration: const BoxDecoration(
-                                          color: kPriPurple,
-                                          shape: BoxShape.circle,
+                                        subtitle: Text(
+                                          roadMaps[index].description,
+                                          style: kDarkTxt,
                                         ),
-                                        child: const Icon(Icons.call_made,
-                                            color: Colors.white)))));
-                      },
-                      itemCount: progressCtrl.studentRoadmaps.length)
+                                        trailing: Container(
+                                            width: 30,
+                                            height: 30,
+                                            decoration: const BoxDecoration(
+                                              color: kPriDark,
+                                              shape: BoxShape.circle,
+                                            ),
+                                            child: const Icon(Icons.call_made,
+                                                color: Colors.white,
+                                                size: 20)))));
+                          },
+                          itemCount: progressCtrl.studentRoadmaps.length),
+                    )
                   : noDataFoundWidget(
                       '''No study plans made yet! Find a roadmap and let's start your learning journey'''),
               const Divider(

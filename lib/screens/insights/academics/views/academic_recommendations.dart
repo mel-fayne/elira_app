@@ -60,7 +60,7 @@ class _AcademicRecommendationsState extends State<AcademicRecommendations> {
                   style: kPurpleTxt),
               const Padding(
                   padding: EdgeInsets.only(top: 20, bottom: 10),
-                  child: Text('Specialisation Roadmaps', style: kPageSubTitle)),
+                  child: Text('Specialisation Roadmaps', style: kDarkTxt)),
               Obx(() => acProfCtrl.showData.value
                   ? Padding(
                       padding: const EdgeInsets.only(top: 15, bottom: 5),
@@ -92,58 +92,72 @@ class _AcademicRecommendationsState extends State<AcademicRecommendations> {
                                             padding: const EdgeInsets.symmetric(
                                                 vertical: 5),
                                             child: ListTile(
-                                                tileColor: Colors.white,
-                                                leading: Container(
-                                                    width: 65,
-                                                    height: 65,
-                                                    decoration:
-                                                        const BoxDecoration(
-                                                      color: kPriPurple,
-                                                      shape: BoxShape.circle,
-                                                    ),
-                                                    child: const Icon(
-                                                        FontAwesome5.road,
-                                                        color: Colors.white)),
-                                                title: Text(
-                                                  specMap.name,
-                                                  style: kPurpleTxt,
-                                                )));
+                                              tileColor: Colors.white,
+                                              leading: Container(
+                                                  width: 65,
+                                                  height: 65,
+                                                  decoration:
+                                                      const BoxDecoration(
+                                                    color: kPriPurple,
+                                                    shape: BoxShape.circle,
+                                                  ),
+                                                  child: const Icon(
+                                                      FontAwesome5.road,
+                                                      color: Colors.white)),
+                                              title: Text(
+                                                specMap.name,
+                                                style: kPurpleTxt,
+                                              ),
+                                              subtitle: Text(
+                                                specMap.description,
+                                                softWrap: true,
+                                                style: kBlackTxt,
+                                              ),
+                                            ));
                                       },
-                                      body: ListTile(
-                                          title: Column(children: [
-                                        Padding(
-                                            padding: const EdgeInsets.only(
-                                                bottom: 5),
-                                            child: Text(
-                                              specMap.description,
-                                              softWrap: true,
-                                              textAlign: TextAlign.center,
-                                              style: kBlackTxt,
-                                            )),
-                                        studentSpecMaps.contains(specMap.id)
-                                            ? const SizedBox()
-                                            : primaryBtn(
-                                                label: 'Add to Wishlist',
-                                                isLoading: isLoading,
-                                                function: () async {
-                                                  isLoading.value = true;
-                                                  studentSpecMaps
-                                                      .add(specMap.id);
-                                                  var studentBody = jsonEncode({
-                                                    "spec_roadmaps":
-                                                        studentSpecMaps
-                                                  });
-                                                  await authCtrl.updateStudent(
-                                                      studentBody,
-                                                      "Roadmap Added to My Roadmaps",
-                                                      "Redirecting ...",
-                                                      false);
-                                                  await getList();
-                                                  await progressCtrl
-                                                      .getStudentRoadmaps();
-                                                  isLoading.value = false;
-                                                })
-                                      ])),
+                                      body: studentSpecMaps.contains(specMap.id)
+                                          ? primaryBtn(
+                                              label: 'Remove From Wishlist',
+                                              bgColor: kPriRed,
+                                              isLoading: isLoading,
+                                              function: () async {
+                                                isLoading.value = true;
+                                                studentSpecMaps.removeWhere(
+                                                    (element) =>
+                                                        element == specMap.id);
+                                                var studentBody = jsonEncode({
+                                                  "spec_roadmaps":
+                                                      studentSpecMaps
+                                                });
+                                                await authCtrl.updateStudent(
+                                                    studentBody,
+                                                    "Roadmap Removed from My Roadmaps",
+                                                    "Redirecting ...",
+                                                    false);
+                                                await progressCtrl
+                                                    .getStudentRoadmaps();
+                                                isLoading.value = false;
+                                              })
+                                          : primaryBtn(
+                                              label: 'Add to Wishlist',
+                                              isLoading: isLoading,
+                                              function: () async {
+                                                isLoading.value = true;
+                                                studentSpecMaps.add(specMap.id);
+                                                var studentBody = jsonEncode({
+                                                  "spec_roadmaps":
+                                                      studentSpecMaps
+                                                });
+                                                await authCtrl.updateStudent(
+                                                    studentBody,
+                                                    "Roadmap Added to My Roadmaps",
+                                                    "Redirecting ...",
+                                                    false);
+                                                await getList();
+                                                await progressCtrl
+                                                    .getStudentRoadmaps();
+                                                isLoading.value = false;
+                                              }),
                                       isExpanded: specMap.isExpanded,
                                     );
                                   }).toList(),
@@ -154,7 +168,7 @@ class _AcademicRecommendationsState extends State<AcademicRecommendations> {
 Check again soon''')),
               const Padding(
                   padding: EdgeInsets.only(top: 20, bottom: 10),
-                  child: Text('General Roadmaps', style: kPageSubTitle)),
+                  child: Text('General Roadmaps', style: kDarkTxt)),
               Obx(() => acProfCtrl.showData.value
                   ? Padding(
                       padding: const EdgeInsets.only(top: 15, bottom: 5),
@@ -186,58 +200,70 @@ Check again soon''')),
                                             padding: const EdgeInsets.symmetric(
                                                 vertical: 5),
                                             child: ListTile(
-                                                tileColor: Colors.white,
-                                                leading: Container(
-                                                    width: 65,
-                                                    height: 65,
-                                                    decoration:
-                                                        const BoxDecoration(
-                                                      color: kPriPurple,
-                                                      shape: BoxShape.circle,
-                                                    ),
-                                                    child: const Icon(
-                                                        FontAwesome5.road,
-                                                        color: Colors.white)),
-                                                title: Text(
-                                                  specMap.name,
-                                                  style: kPurpleTxt,
-                                                )));
+                                              tileColor: Colors.white,
+                                              leading: Container(
+                                                  width: 65,
+                                                  height: 65,
+                                                  decoration:
+                                                      const BoxDecoration(
+                                                    color: kPriPurple,
+                                                    shape: BoxShape.circle,
+                                                  ),
+                                                  child: const Icon(
+                                                      FontAwesome5.road,
+                                                      color: Colors.white)),
+                                              title: Text(specMap.name,
+                                                  style: kPurpleTxt),
+                                              subtitle: Text(
+                                                specMap.description,
+                                                softWrap: true,
+                                                style: kBlackTxt,
+                                              ),
+                                            ));
                                       },
-                                      body: ListTile(
-                                          title: Column(children: [
-                                        Padding(
-                                            padding: const EdgeInsets.only(
-                                                bottom: 5),
-                                            child: Text(
-                                              specMap.description,
-                                              softWrap: true,
-                                              textAlign: TextAlign.center,
-                                              style: kBlackTxt,
-                                            )),
-                                        studentSpecMaps.contains(specMap.id)
-                                            ? const SizedBox()
-                                            : primaryBtn(
-                                                label: 'Add to Wishlist',
-                                                isLoading: isLoading,
-                                                function: () async {
-                                                  isLoading.value = true;
-                                                  studentSpecMaps
-                                                      .add(specMap.id);
-                                                  var studentBody = jsonEncode({
-                                                    "spec_roadmaps":
-                                                        studentSpecMaps
-                                                  });
-                                                  await authCtrl.updateStudent(
-                                                      studentBody,
-                                                      "Roadmap Added to My Roadmaps",
-                                                      "Redirecting ...",
-                                                      false);
-                                                  await getList();
-                                                  await progressCtrl
-                                                      .getStudentRoadmaps();
-                                                  isLoading.value = false;
-                                                })
-                                      ])),
+                                      body: studentSpecMaps.contains(specMap.id)
+                                          ? primaryBtn(
+                                              label: 'Remove From Wishlist',
+                                              bgColor: kPriRed,
+                                              isLoading: isLoading,
+                                              function: () async {
+                                                isLoading.value = true;
+                                                studentSpecMaps.removeWhere(
+                                                    (element) =>
+                                                        element == specMap.id);
+                                                var studentBody = jsonEncode({
+                                                  "spec_roadmaps":
+                                                      studentSpecMaps
+                                                });
+                                                await authCtrl.updateStudent(
+                                                    studentBody,
+                                                    "Roadmap Removed from My Roadmaps",
+                                                    "Redirecting ...",
+                                                    false);
+                                                await progressCtrl
+                                                    .getStudentRoadmaps();
+                                                isLoading.value = false;
+                                              })
+                                          : primaryBtn(
+                                              label: 'Add to Wishlist',
+                                              isLoading: isLoading,
+                                              function: () async {
+                                                isLoading.value = true;
+                                                studentSpecMaps.add(specMap.id);
+                                                var studentBody = jsonEncode({
+                                                  "spec_roadmaps":
+                                                      studentSpecMaps
+                                                });
+                                                await authCtrl.updateStudent(
+                                                    studentBody,
+                                                    "Roadmap Added to My Roadmaps",
+                                                    "Redirecting ...",
+                                                    false);
+                                                await getList();
+                                                await progressCtrl
+                                                    .getStudentRoadmaps();
+                                                isLoading.value = false;
+                                              }),
                                       isExpanded: specMap.isExpanded,
                                     );
                                   }).toList(),

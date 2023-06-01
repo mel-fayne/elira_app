@@ -50,7 +50,6 @@ class ProgressController extends GetxController {
 
   getStudentRoadmaps() async {
     studentRoadmaps.clear();
-    loadingData.value = true;
     try {
       var res = await http.get(Uri.parse(studentMapsUrl + studentId.toString()),
           headers: headers);
@@ -66,8 +65,6 @@ class ProgressController extends GetxController {
         } else {
           showRmData.value = false;
         }
-        showRmData.value = false;
-        loadingData.value = false;
         update();
         debugPrint('done getting roadmaps');
       } else {
@@ -82,7 +79,6 @@ class ProgressController extends GetxController {
       return;
     } catch (error) {
       showRmData.value = false;
-      loadingData.value = false;
       update();
       showSnackbar(
           path: Icons.close_rounded,
