@@ -4,6 +4,7 @@ class ProjectIdea {
   final String description;
   final String specialisation;
   final String level;
+  bool isExpanded = false;
 
   ProjectIdea.fromJson(Map<String, dynamic> json)
       : id = json['id'],
@@ -27,15 +28,17 @@ String getAppLevel(String apiName) {
 
 class StudentProject {
   late int id;
-  late int name;
+  late String name;
   late String description;
   late String gitLink;
   late String status;
   late double progress;
-  late int currentStep;
-  late String studentId;
-  late String projectIdea;
+  late int studentId;
+  late int projectIdea;
   late List<ProjectSteps> steps;
+
+  StudentProject(this.id, this.name, this.description, this.gitLink,
+      this.status, this.progress, this.studentId, this.projectIdea, this.steps);
 
   StudentProject.fromJson(Map<String, dynamic> json)
       : id = json['id'],
@@ -44,7 +47,6 @@ class StudentProject {
         gitLink = json['git_link'],
         status = getAppStatus(json['status']),
         progress = json['progress'],
-        currentStep = json['current_step'],
         studentId = json['student_id'],
         projectIdea = json['project_idea'] ?? '',
         steps = getStepsList(json['steps']);
@@ -56,7 +58,6 @@ class StudentProject {
         'status': getApiStatus(status),
         'git_link': gitLink,
         'progress': progress,
-        'current_step': currentStep,
         'student_id': studentId,
         'project_idea': projectIdea,
         'steps': steps
@@ -65,7 +66,7 @@ class StudentProject {
 
 class ProjectSteps {
   late int count;
-  late int name;
+  late String name;
   late String description;
   late bool complete;
 

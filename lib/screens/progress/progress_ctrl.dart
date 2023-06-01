@@ -2,9 +2,12 @@ import 'dart:convert';
 
 import 'package:elira_app/screens/insights/insights_ctrl.dart';
 import 'package:elira_app/screens/progress/progress_models.dart';
+import 'package:elira_app/theme/colors.dart';
 import 'package:elira_app/theme/global_widgets.dart';
+import 'package:elira_app/theme/text_styles.dart';
 import 'package:elira_app/utils/functions.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttericon/font_awesome5_icons.dart';
 import 'package:http/http.dart' as http;
 import 'package:elira_app/utils/constants.dart';
 import 'package:get/get.dart';
@@ -17,7 +20,8 @@ class ProgressController extends GetxController {
   RxList<StudentProject> ongoingPrjs = RxList<StudentProject>();
   RxList<StudentProject> compltedPrjs = RxList<StudentProject>();
   RxList<ProjectIdea> wishlistPrjs = RxList<ProjectIdea>();
-  StudentProject? currentProject;
+  StudentProject currentProject =
+      StudentProject(1, '', '', '', '', 0.0, 1, 1, []);
 
   RxBool crudBtnLoading = false.obs;
 
@@ -106,53 +110,9 @@ class ProgressController extends GetxController {
     }
   }
 
-  getWishList() async {
-    wishlistPrjs.clear();
-    loadingWishData.value = true;
-    try {
-      var res = await http.get(
-          Uri.parse(projectWishlistUrl + studentId.toString()),
-          headers: headers);
-      debugPrint("Got response ${res.statusCode}");
-      if (res.statusCode == 200) {
-        var respBody = json.decode(res.body);
-        for (var item in respBody['ideas']) {
-          wishlistPrjs.add(ProjectIdea.fromJson(item));
-        }
-
-        if (wishlistPrjs.isNotEmpty) {
-          showWishData.value = true;
-        } else {
-          showWishData.value = false;
-        }
-
-        loadingWishData.value = false;
-        update();
-        debugPrint('done getting project wishlist');
-      } else {
-        showWishData.value = false;
-        loadingWishData.value = false;
-        update();
-        showSnackbar(
-            path: Icons.close_rounded,
-            title: "Seems there's a problem on our side!",
-            subtitle: "Please try again later");
-      }
-      return;
-    } catch (error) {
-      showWishData.value = false;
-      loadingWishData.value = false;
-      update();
-      showSnackbar(
-          path: Icons.close_rounded,
-          title: "Failed To Load Project Wishlist!",
-          subtitle: "Please check your internet connection or try again later");
-    }
-  }
-
   createStudentProject() async {
     crudBtnLoading.value = true;
-    var body = jsonEncode(currentProject!.toJson());
+    var body = jsonEncode(currentProject.toJson());
 
     try {
       dynamic res = await http.post(Uri.parse(studentProjectUrl),
@@ -188,9 +148,9 @@ class ProgressController extends GetxController {
 
   completeProject() async {
     crudBtnLoading.value = true;
-    currentProject!.status = 'C';
-    currentProject!.progress = 100.0;
-    for (var step in currentProject!.steps) {
+    currentProject.status = 'C';
+    currentProject.progress = 100.0;
+    for (var step in currentProject.steps) {
       step.complete = true;
     }
     update();
@@ -199,7 +159,7 @@ class ProgressController extends GetxController {
 
   updateStudentProject() async {
     crudBtnLoading.value = true;
-    var body = jsonEncode(currentProject!.toJson());
+    var body = jsonEncode(currentProject.toJson());
 
     try {
       dynamic res = await http.patch(Uri.parse(studentProjectUrl),
@@ -267,5 +227,37 @@ class ProgressController extends GetxController {
           subtitle: "Please check your internet connection or try again later");
     }
     return;
+  }
+
+  List<Widget> completedStepsSliders(List<ProjectSteps> projectSteps) {
+    List<Widget> stpCards = [];
+    for (int i = 0; i < projectSteps.length; i++) {
+      Widget item = Container(
+          padding: const EdgeInsets.all(15),
+          decoration: BoxDecoration(
+              color: Colors.white, borderRadius: BorderRadius.circular(15)),
+          child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Padding(
+                    padding: const EdgeInsets.only(top: 20),
+                    child: Text(projectSteps[i].name, style: kBlackTitle)),
+                Text(projectSteps[i].description, style: kLightPurTxt),
+                Container(
+                    width: 35,
+                    height: 35,
+                    margin: const EdgeInsets.only(top: 20),
+                    decoration: const BoxDecoration(
+                      color: Colors.white,
+                      shape: BoxShape.circle,
+                    ),
+                    child: const Icon(FontAwesome5.check_circle,
+                        color: kPriMaroon, size: 20))
+              ]));
+
+      stpCards.add(item);
+    }
+    return stpCards;
   }
 }
